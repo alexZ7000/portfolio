@@ -1,17 +1,15 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-// Defina uma interface para a experiência
 interface Experience {
     type: "professional" | "academic" | "personal";
     title: string;
-    companyOrContext: string; // Empresa, faculdade ou contexto do projeto
+    companyOrContext: string;
     period: string;
     description: string;
     technologies: string[];
 }
 
-// Crie uma lista com suas experiências
 const experiences: Experience[] = [
     {
         type: "professional",

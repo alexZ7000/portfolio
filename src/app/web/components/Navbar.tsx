@@ -8,7 +8,7 @@ const navSections = [
     { id: "home", translationKey: "navHome" },
     { id: "about-me", translationKey: "navAbout" },
     { id: "work-experience", translationKey: "navWork" },
-    { id: "certificates", translationKey: "navCertificates" }, // Adicionado certificados
+    { id: "certificates", translationKey: "navCertificates" },
     { id: "contact", translationKey: "navContact" }
 ];
 
@@ -26,6 +26,7 @@ export default function Navbar() {
     return (
         <nav className="w-full fixed z-50 backdrop-blur-lg bg-white/50 dark:bg-black/50 shadow-lg py-4 flex justify-center">
             <section className="w-full max-w-7xl px-6 py-2 flex justify-between items-center">
+                {/* Logo */}
                 <div
                     className="text-xl font-bold text-gray-800 dark:text-gray-100 cursor-pointer"
                     onClick={() => handleScrollTo("home")}

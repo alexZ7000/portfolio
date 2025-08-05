@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-// ... outros imports
 import DragonAnimation from "@components/DragonAnimation.tsx";
 import Contact from "@components/Contact.tsx";
 import WorkExperience from "@components/WorkExperience.tsx";
