@@ -1,87 +1,131 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
-// TODO: Colocar experiências profissionais, fazer animação via TypeScript
+// Defina uma interface para a experiência
+interface Experience {
+    type: "professional" | "academic" | "personal";
+    title: string;
+    companyOrContext: string; // Empresa, faculdade ou contexto do projeto
+    period: string;
+    description: string;
+    technologies: string[];
+}
+
+// Crie uma lista com suas experiências
+const experiences: Experience[] = [
+    {
+        type: "professional",
+        title: "Desenvolvedor Front-end Pleno",
+        companyOrContext: "Empresa Incrível",
+        period: "JAN 2022 - Presente",
+        description:
+            "Desenvolvimento e manutenção de aplicações web de larga escala utilizando React e TypeScript, focado em performance e experiência do usuário.",
+        technologies: ["React", "TypeScript", "Redux", "Jest"]
+    },
+    {
+        type: "academic",
+        title: "Sistema de Gerenciamento Acadêmico",
+        companyOrContext: "Universidade Exemplo",
+        period: "2021",
+        description:
+            "Projeto de conclusão de curso para um sistema de gerenciamento de notas e matrículas, desenvolvido em equipe utilizando metodologias ágeis.",
+        technologies: ["Java", "Spring Boot", "MySQL", "Thymeleaf"]
+    },
+    {
+        type: "personal",
+        title: "Este Portfólio",
+        companyOrContext: "Projeto Pessoal",
+        period: "2024",
+        description:
+            "Meu portfólio pessoal construído com as tecnologias mais modernas do ecossistema React para demonstrar minhas habilidades.",
+        technologies: ["Vite", "React", "TypeScript", "TailwindCSS"]
+    }
+];
+
 export default function WorkExperience() {
-    const [activeTab, setActiveTab] = useState("professional");
+    const [activeTab, setActiveTab] =
+        useState<Experience["type"]>("professional");
+    const { t } = useTranslation();
 
-    const renderContent = () => {
-        switch (activeTab) {
-            case "professional":
-                return (
-                    <div>
-                        <h2 className={"text-2xl font-semibold mb-2"}>
-                            Experiência Profissional
-                        </h2>
-                        <p>
-                            Detalhes sobre suas experiências em empresas reais.
-                        </p>
-                    </div>
-                );
-            case "academic":
-                return (
-                    <div>
-                        <h2 className={"text-2xl font-semibold mb-2"}>
-                            Projetos Acadêmicos
-                        </h2>
-                        <p>Projetos desenvolvidos durante a faculdade.</p>
-                    </div>
-                );
-            case "personal":
-                return (
-                    <div>
-                        <h2 className={"text-2xl font-semibold mb-2"}>
-                            Projetos Pessoais
-                        </h2>
-                        <p>Seus projetos independentes e pessoais.</p>
-                    </div>
-                );
-            default:
-                return null;
-        }
-    };
+    const filteredExperiences = experiences.filter(
+        (exp) => exp.type === activeTab
+    );
 
     return (
         <section
-            className={"flex flex-col items-center justify-center py-16 px-4"}
+            id="work-experience"
+            className={
+                "flex flex-col items-center justify-center py-16 px-4 w-full max-w-7xl"
+            }
         >
-            <h1 className={"text-4xl font-bold text-center mb-8"}>
-                Work Experience
+            <h1 className={"text-4xl font-bold text-center mb-12"}>
+                {t("workExperienceTitle")}
             </h1>
-            <div className={"w-full max-w-4xl"}>
-                <ul className="flex border-b border-gray-300 mb-8">
+            <div className={"w-full"}>
+                <ul className="flex justify-center border-b border-gray-300 dark:border-gray-600 mb-8">
                     <li
-                        className={`cursor-pointer transition-all duration-300 px-6 py-2 ${
+                        className={`cursor-pointer transition-all duration-300 px-6 py-2 text-lg font-medium ${
                             activeTab === "professional"
-                                ? "border-b-2 border-blue-500 text-blue-500"
-                                : ""
+                                ? "border-b-2 border-green-d text-green-d"
+                                : "text-gray-600 dark:text-gray-400"
                         }`}
                         onClick={() => setActiveTab("professional")}
                     >
-                        Profissional
+                        {t("tabProfessional")}
                     </li>
                     <li
-                        className={`cursor-pointer px-6 py-2 ${
+                        className={`cursor-pointer px-6 py-2 text-lg font-medium ${
                             activeTab === "academic"
-                                ? "border-b-2 border-blue-500 text-blue-500"
-                                : ""
+                                ? "border-b-2 border-green-d text-green-d"
+                                : "text-gray-600 dark:text-gray-400"
                         }`}
                         onClick={() => setActiveTab("academic")}
                     >
-                        Acadêmicos
+                        {t("tabAcademic")}
                     </li>
                     <li
-                        className={`cursor-pointer px-6 py-2 ${
+                        className={`cursor-pointer px-6 py-2 text-lg font-medium ${
                             activeTab === "personal"
-                                ? "border-b-2 border-blue-500 text-blue-500"
-                                : ""
+                                ? "border-b-2 border-green-d text-green-d"
+                                : "text-gray-600 dark:text-gray-400"
                         }`}
                         onClick={() => setActiveTab("personal")}
                     >
-                        Pessoais
+                        {t("tabPersonal")}
                     </li>
                 </ul>
-                <div className="bg-white text-black transition-all duration-300 p-6 rounded-lg shadow-lg">
-                    {renderContent()}
+                <div className="transition-all duration-300 space-y-8">
+                    {filteredExperiences.map((exp, index) => (
+                        <div
+                            key={index}
+                            className="bg-white/5 dark:bg-black/20 p-6 rounded-lg shadow-lg backdrop-blur-sm"
+                        >
+                            <div className="flex justify-between items-start mb-2">
+                                <h3 className="text-2xl font-semibold">
+                                    {t(`exp${index + 1}Title`)}
+                                </h3>
+                                <span className="text-sm text-gray-500 dark:text-gray-400">
+                                    {t(`exp${index + 1}Period`)}
+                                </span>
+                            </div>
+                            <h4 className="text-lg font-medium text-green-d mb-4">
+                                {t(`exp${index + 1}Company`)}
+                            </h4>
+                            <p className="text-gray-600 dark:text-gray-300 mb-4">
+                                {t(`exp${index + 1}Description`)}
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                                {exp.technologies.map((tech) => (
+                                    <span
+                                        key={tech}
+                                        className="bg-gray-200 dark:bg-gray-700 text-sm py-1 px-3 rounded-full"
+                                    >
+                                        {tech}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>

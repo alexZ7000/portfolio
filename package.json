@@ -16,10 +16,13 @@
     },
     "dependencies": {
         "gsap": "^3.12.7",
+        "i18next": "^25.3.2",
+        "i18next-browser-languagedetector": "^8.2.0",
         "lucide-react": "^0.473.0",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "react-hot-toast": "^2.5.1",
+        "react-i18next": "^15.6.1",
         "react-router-dom": "^6.27.0"
     },
     "devDependencies": {
