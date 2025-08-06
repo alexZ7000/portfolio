@@ -49,6 +49,7 @@ export default function WorkExperience() {
         useState<Experience["type"]>("professional");
     const { t } = useTranslation();
     const sectionRef = useRef(null);
+    const experiencesContainerRef = useRef(null);
 
     const filteredExperiences = experiences.filter(
         (exp) => exp.type === activeTab
@@ -70,18 +71,52 @@ export default function WorkExperience() {
         );
     }, []);
 
+    useEffect(() => {
+        if (experiencesContainerRef.current) {
+            const cards = (experiencesContainerRef.current as HTMLElement)
+                .children;
+            gsap.fromTo(
+                cards,
+                { opacity: 0, y: 20 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.5,
+                    stagger: 0.2,
+                    delay: 0.2
+                }
+            );
+        }
+    }, [activeTab]);
+
+    const handleTabChange = (tab: Experience["type"]) => {
+        if (tab === activeTab) return;
+
+        if (experiencesContainerRef.current) {
+            const cards = (experiencesContainerRef.current as HTMLElement)
+                .children;
+            gsap.to(cards, {
+                opacity: 0,
+                y: -20,
+                duration: 0.2,
+                stagger: 0.1,
+                onComplete: () => {
+                    setActiveTab(tab);
+                }
+            });
+        }
+    };
+
     return (
         <section
             id="work-experience"
             ref={sectionRef}
-            className={
-                "flex flex-col items-center justify-center py-16 px-4 w-full max-w-7xl"
-            }
+            className="flex flex-col items-center justify-center py-16 px-4 w-full max-w-7xl"
         >
-            <h1 className={"text-4xl font-bold text-center mb-12"}>
+            <h1 className="text-4xl font-bold text-center mb-12">
                 {t("workExperienceTitle")}
             </h1>
-            <div className={"w-full"}>
+            <div className="w-full">
                 <ul className="flex justify-center border-b border-gray-300 dark:border-gray-600 mb-8">
                     <li
                         className={`cursor-pointer transition-all duration-300 px-6 py-2 text-lg font-medium ${
@@ -89,7 +124,7 @@ export default function WorkExperience() {
                                 ? "border-b-2 border-green-d text-green-d"
                                 : "text-gray-600 dark:text-gray-400"
                         }`}
-                        onClick={() => setActiveTab("professional")}
+                        onClick={() => handleTabChange("professional")}
                     >
                         {t("tabProfessional")}
                     </li>
@@ -99,7 +134,7 @@ export default function WorkExperience() {
                                 ? "border-b-2 border-green-d text-green-d"
                                 : "text-gray-600 dark:text-gray-400"
                         }`}
-                        onClick={() => setActiveTab("academic")}
+                        onClick={() => handleTabChange("academic")}
                     >
                         {t("tabAcademic")}
                     </li>
@@ -109,15 +144,18 @@ export default function WorkExperience() {
                                 ? "border-b-2 border-green-d text-green-d"
                                 : "text-gray-600 dark:text-gray-400"
                         }`}
-                        onClick={() => setActiveTab("personal")}
+                        onClick={() => handleTabChange("personal")}
                     >
                         {t("tabPersonal")}
                     </li>
                 </ul>
-                <div className="transition-all duration-300 space-y-8">
+                <div
+                    ref={experiencesContainerRef}
+                    className="transition-all duration-300 space-y-8"
+                >
                     {filteredExperiences.map((exp, index) => (
                         <div
-                            key={index}
+                            key={`${activeTab}-${index}`}
                             className="bg-white/5 dark:bg-black/20 p-6 rounded-lg shadow-lg backdrop-blur-sm"
                         >
                             <div className="flex justify-between items-start mb-2">

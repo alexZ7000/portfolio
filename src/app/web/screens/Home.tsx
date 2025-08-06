@@ -37,7 +37,7 @@ export default function Home() {
                                     .getElementById("contact")
                                     ?.scrollIntoView({ behavior: "smooth" })
                             }
-                            className="mt-8 px-8 py-3 bg-green-d text-white font-bold rounded-full hover:bg-green-l transition-colors duration-300"
+                            className="mt-8 px-8 py-3 bg-green-d text-white font-bold rounded-full hover:bg-green-l transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
                         >
                             Entre em Contato
                         </button>
