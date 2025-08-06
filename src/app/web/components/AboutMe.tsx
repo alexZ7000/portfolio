@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -14,16 +14,24 @@ export default function AboutMe() {
     const skillsRef = useRef<(HTMLDivElement | null)[]>([]);
 
     const skills = [
-        { name: "React", icon: <FaReact size={24} /> },
-        { name: "TypeScript", icon: <SiTypescript size={24} /> },
-        { name: "Node.js", icon: <FaNodeJs size={24} /> },
-        { name: "Jest", icon: <SiJest size={24} /> },
-        { name: "TailwindCSS", icon: <SiTailwindcss size={24} /> },
-        { name: "Git", icon: <FaGitAlt size={24} /> },
-        { name: "Docker", icon: <FaDocker size={24} /> },
-        { name: "AWS", icon: <FaAws size={24} /> },
-        { name: "CI/CD", icon: <GrCycle size={24} /> },
-        { name: "Scrum", icon: <SiGnubash size={24} /> }
+        { name: "React", icon: <FaReact size={24} />, color: "#61DAFB" },
+        {
+            name: "TypeScript",
+            icon: <SiTypescript size={24} />,
+            color: "#3178C6"
+        },
+        { name: "Node.js", icon: <FaNodeJs size={24} />, color: "#339933" },
+        { name: "Jest", icon: <SiJest size={24} />, color: "#C21325" },
+        {
+            name: "TailwindCSS",
+            icon: <SiTailwindcss size={24} />,
+            color: "#06B6D4"
+        },
+        { name: "Git", icon: <FaGitAlt size={24} />, color: "#F05032" },
+        { name: "Docker", icon: <FaDocker size={24} />, color: "#2496ED" },
+        { name: "AWS", icon: <FaAws size={24} />, color: "#FF9900" },
+        { name: "CI/CD", icon: <GrCycle size={24} />, color: "#8A2BE2" },
+        { name: "Scrum", icon: <SiGnubash size={24} />, color: "#00599C" }
     ];
 
     useEffect(() => {
@@ -60,6 +68,26 @@ export default function AboutMe() {
         );
     }, []);
 
+    const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+        gsap.to(e.currentTarget, {
+            y: -5,
+            scale: 1.1,
+            boxShadow: "0px 10px 20px rgba(0, 242, 161, 0.2)",
+            duration: 0.3,
+            ease: "power2.out"
+        });
+    };
+
+    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+        gsap.to(e.currentTarget, {
+            y: 0,
+            scale: 1,
+            boxShadow: "0px 0px 0px rgba(0,0,0,0)",
+            duration: 0.3,
+            ease: "power2.out"
+        });
+    };
+
     return (
         <section
             id="about-me"
@@ -81,9 +109,13 @@ export default function AboutMe() {
                         <div
                             key={skill.name}
                             ref={(el) => (skillsRef.current[index] = el)}
-                            className="flex items-center gap-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2 px-4 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:bg-green-d/80 dark:hover:bg-green-d/80 hover:text-white"
+                            onMouseEnter={handleMouseEnter}
+                            onMouseLeave={handleMouseLeave}
+                            className="flex items-center gap-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2 px-4 rounded-lg font-medium"
                         >
-                            {skill.icon}
+                            {React.cloneElement(skill.icon, {
+                                color: skill.color
+                            })}
                             <span>{skill.name}</span>
                         </div>
                     ))}
