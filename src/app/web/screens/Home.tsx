@@ -27,6 +27,20 @@ export default function Home() {
                         >
                             {t("heroTitle")}
                         </h1>
+                        <p className="mt-4 text-xl text-gray-600 dark:text-gray-300">
+                            Desenvolvedor de Software | Especialista em React e
+                            Soluções Criativas
+                        </p>
+                        <button
+                            onClick={() =>
+                                document
+                                    .getElementById("contact")
+                                    ?.scrollIntoView({ behavior: "smooth" })
+                            }
+                            className="mt-8 px-8 py-3 bg-green-d text-white font-bold rounded-full hover:bg-green-l transition-colors duration-300"
+                        >
+                            Entre em Contato
+                        </button>
                     </div>
                 </div>
             </section>

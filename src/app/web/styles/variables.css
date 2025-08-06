@@ -1,6 +1,6 @@
 :root {
     /* Dark Theme Pallet */
-    --gray-dark-theme: #1f2937; /* Dark Gray */
+    --gray-dark-theme: #1a1a1a; /* Dark Gray */
     --blue-dark-theme: #3b4c6b; /* Dark Blue */
     --darkblue-dark-theme: #2c3e50; /* Deep Blue */
     --grayblue-dark-theme: #34495e; /* Dark Gray-Blue */
@@ -8,17 +8,17 @@
     --gray-medium-dark-theme: #7f8c8d; /* Medium Dark Gray */
     --lightgray-dark-theme: #a1b2c1; /* Light Dark Gray */
     --offwhite-dark-theme: #d6d9e1; /* Off White (Dark) */
-    --palegray-dark-theme: #e8e9f2; /* Pale Gray (Dark) */
+    --palegray-dark-theme: #f0f2f5; /* Pale Gray (Dark) */
     --almostwhite-dark-theme: #ecf0f1; /* Almost White (Dark) */
     --yellow-dark-theme: #f1c40f; /* Dark Yellow */
     --orange: #f57c00; /* Orange */
     --bluebright-dark-theme: #2980b9; /* Bright Dark Blue */
-    --green-dark-theme: #27ae60; /* Dark Green */
+    --green-dark-theme: #00f2a1; /* Dark Green */
     --purple-dark-theme: #9b59b6; /* Dark Purple */
     --orangebright-dark-theme: #d35400; /* Bright Dark Orange */
 
     /* Light Theme Pallet */
-    --palegray-light-theme: #e8e9f2; /* Pale Gray (Light) */
+    --palegray-light-theme: #f0f2f5; /* Pale Gray (Light) */
     --almostwhite-light-theme: #ecf0f1; /* Almost White (Light) */
     --offwhite-light-theme: #d6d9e1; /* Off White (Light) */
     --lightgray-light-theme: #a1b2c1; /* Light Gray */
@@ -27,10 +27,10 @@
     --blue-dark-light-theme: #3b4c6b; /* Dark Blue (Light) */
     --grayblue-light-theme: #34495e; /* Light Gray-Blue */
     --darkblue-light-theme: #2c3e50; /* Dark Light Blue */
-    --gray-light-theme: #1f2937; /* Light Gray (Main) */
+    --gray-light-theme: #1a1a1a; /* Light Gray (Main) */
     --yellow-light-theme: #f1c40f; /* Light Yellow */
     --bluebright-light-theme: #2980b9; /* Bright Light Blue */
-    --green-light-theme: #27ae60; /* Light Green */
+    --green-light-theme: #008a5c; /* Light Green */
     --purple-light-theme: #9b59b6; /* Light Purple */
     --orangebright-light-theme: #d35400; /* Bright Light Orange */
 }

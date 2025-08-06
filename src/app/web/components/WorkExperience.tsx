@@ -1,5 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface Experience {
     type: "professional" | "academic" | "personal";
@@ -44,14 +48,32 @@ export default function WorkExperience() {
     const [activeTab, setActiveTab] =
         useState<Experience["type"]>("professional");
     const { t } = useTranslation();
+    const sectionRef = useRef(null);
 
     const filteredExperiences = experiences.filter(
         (exp) => exp.type === activeTab
     );
 
+    useEffect(() => {
+        gsap.fromTo(
+            sectionRef.current,
+            { opacity: 0, y: 50 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "top 80%"
+                }
+            }
+        );
+    }, []);
+
     return (
         <section
             id="work-experience"
+            ref={sectionRef}
             className={
                 "flex flex-col items-center justify-center py-16 px-4 w-full max-w-7xl"
             }

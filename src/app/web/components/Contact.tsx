@@ -1,18 +1,40 @@
 import { Github, Linkedin, Mail, Copy } from "lucide-react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
     const { t } = useTranslation();
     const email = "alessandrolimafilho@gmail.com";
+    const contactRef = useRef(null);
 
     const handleEmailClick = () => {
         navigator.clipboard.writeText(email);
         toast.success(t("copySuccess"));
     };
 
+    useEffect(() => {
+        gsap.fromTo(
+            contactRef.current,
+            { opacity: 0, y: 50 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: contactRef.current,
+                    start: "top 80%"
+                }
+            }
+        );
+    }, []);
+
     return (
-        <div className={"flex w-full"}>
+        <div ref={contactRef} className={"flex mb-20 w-full"}>
             <div
                 className={
                     "w-full px-10 py-10 rounded-2xl drop-shadow-2xl items-center flex flex-col md:flex-row gap-8 bg-green-500/20 dark:bg-green-900/30 backdrop-blur-md"

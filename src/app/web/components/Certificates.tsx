@@ -1,4 +1,9 @@
 import { useTranslation } from "react-i18next";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface Certificate {
     title: string;
@@ -24,9 +29,50 @@ const certificates: Certificate[] = [
 
 export default function Certificates() {
     const { t } = useTranslation();
+    const sectionRef = useRef(null);
+    const certificatesRef = useRef<(HTMLAnchorElement | null)[]>([]);
+
+    useEffect(() => {
+        const section = sectionRef.current;
+        const certificates = certificatesRef.current;
+
+        gsap.fromTo(
+            section,
+            { opacity: 0, y: 50 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 80%"
+                }
+            }
+        );
+
+        certificates.forEach((cert) => {
+            if (cert) {
+                gsap.fromTo(
+                    cert,
+                    { opacity: 0, y: 20 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.5,
+                        scrollTrigger: {
+                            trigger: cert,
+                            start: "top 90%"
+                        }
+                    }
+                );
+            }
+        });
+    }, []);
+
     return (
         <section
             id="certificates"
+            ref={sectionRef}
             className="w-full max-w-7xl flex flex-col items-center justify-center py-16 px-4"
         >
             <h2 className="text-4xl font-bold mb-12 text-center">
@@ -37,10 +83,10 @@ export default function Certificates() {
                     <a
                         key={index}
                         href={cert.link}
+                        ref={(el) => (certificatesRef.current[index] = el)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-white/5 dark:bg-black/20 p-6 rounded-lg shadow-lg backdrop-blur-sm
-                                   transform transition-transform duration-300 hover:-translate-y-2"
+                        className="card"
                     >
                         <h3 className="text-xl font-semibold mb-2">
                             {cert.title}

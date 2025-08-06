@@ -152,3 +152,15 @@
     src: url("@assets/fonts/playfair-display-v39-latin/playfair-display-v39-latin-900.woff2")
         format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
+
+.section-title {
+    @apply text-5xl font-bold mb-12 text-center;
+}
+
+.card {
+    @apply bg-white/5 dark:bg-black/20 p-6 rounded-lg shadow-lg backdrop-blur-sm transform transition-all duration-300;
+}
+
+.card:hover {
+    @apply -translate-y-2 shadow-2xl;
+}
