@@ -13,7 +13,7 @@ export default function Contact() {
     const contactRef = useRef(null);
 
     const handleEmailClick = () => {
-        navigator.clipboard.writeText(email);
+        void navigator.clipboard.writeText(email);
         toast.success(t("copySuccess"));
     };
 

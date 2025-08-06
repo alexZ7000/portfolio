@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-    font-family: "Nunito", serif;
+    font-family: "Nunito", sans-serif;
     font-weight: 400;
     font-style: normal;
 
@@ -17,6 +17,15 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Cinzel", serif;
 }
 
 @media (prefers-color-scheme: dark) {

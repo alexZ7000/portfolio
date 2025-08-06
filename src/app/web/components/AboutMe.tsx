@@ -92,7 +92,7 @@ export default function AboutMe() {
         <section
             id="about-me"
             ref={sectionRef}
-            className="w-full max-w-7xl flex flex-col lg:flex-row items-center justify-center gap-16 px-4"
+            className="w-full max-w-7xl flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-16 px-4"
         >
             <div className="lg:w-1/2 text-center lg:text-left">
                 <h2 className="text-4xl font-bold mb-6">{t("aboutTitle")}</h2>
@@ -100,7 +100,7 @@ export default function AboutMe() {
                     {t("aboutText")}
                 </p>
             </div>
-            <div className="lg:w-1/2">
+            <div className="lg:w-1/2 w-full">
                 <h3 className="text-3xl font-bold mb-6 text-center lg:text-left">
                     {t("skillsTitle")}
                 </h3>

@@ -99,8 +99,7 @@ export default function DragonAnimation() {
     return (
         <svg
             ref={dragonRef}
-            width="500"
-            height="500"
+            className="w-full h-auto lg:w-[600px] lg:h-[600px]"
             viewBox="0 0 1024 1024"
             xmlns="http://www.w3.org/2000/svg"
             style={{ background: "transparent", opacity: 0 }}

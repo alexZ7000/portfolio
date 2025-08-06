@@ -5,6 +5,11 @@ import LanguageDetector from "i18next-browser-languagedetector";
 const resources = {
     en: {
         translation: {
+            // Home
+            subText:
+                "Software Developer | React Specialist | Creative Solutions",
+            contactButton: "Contact Me",
+
             // Navbar
             navHome: "Home",
             navAbout: "About Me",
@@ -54,11 +59,21 @@ const resources = {
             contactTitle: "Contact",
             jobTitle: "Software Developer",
             copySuccess: "Email copied to clipboard!",
-            copyButton: "Copy email to clipboard"
+            copyButton: "Copy email to clipboard",
+
+            // 404
+            errorText:
+                "This endpoint doesn't match any other in our server. Please enter a valid endpoint to continue",
+            errorButton: "Click here to go back to the home page"
         }
     },
     pt: {
         translation: {
+            // Home
+            subText:
+                "Desenvolvedor de Software | Especialista em React | Soluções Criativas",
+            contactButton: "Entre em Contato",
+
             // Navbar
             navHome: "Início",
             navAbout: "Sobre Mim",
@@ -107,19 +122,27 @@ const resources = {
             contactTitle: "Contato",
             jobTitle: "Desenvolvedor de Software",
             copySuccess: "Email copiado para a área de transferência!",
-            copyButton: "Copiar e-mail para a área de transferência"
+            copyButton: "Copiar e-mail para a área de transferência",
+
+            // 404
+            errorText:
+                "Este endpoint não corresponde a nenhum outro em nosso servidor. Por favor, insira um endpoint válido para continuar",
+            errorButton: "Clique aqui para voltar à página inicial"
         }
     }
 };
 
-i18n.use(LanguageDetector)
+void i18n
+    .use(LanguageDetector)
     .use(initReactI18next)
     .init({
         resources,
         fallbackLng: "en",
         interpolation: {
             escapeValue: false
+        },
+        detection: {
+            order: ["navigator", "htmlTag", "path", "subdomain"],
+            caches: []
         }
     });
-
-export default i18n;
