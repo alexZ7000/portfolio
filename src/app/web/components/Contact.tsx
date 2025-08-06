@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import alexZ7000 from "@assets/alexZ7000 (2).jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,7 +14,7 @@ export default function Contact() {
     const contactRef = useRef(null);
 
     const handleEmailClick = () => {
-        void navigator.clipboard.writeText(email);
+        navigator.clipboard.writeText(email);
         toast.success(t("copySuccess"));
     };
 
@@ -37,14 +38,14 @@ export default function Contact() {
         <div ref={contactRef} className={"flex mb-20 w-full"}>
             <div
                 className={
-                    "w-full px-10 py-10 rounded-2xl drop-shadow-2xl items-center flex flex-col md:flex-row gap-8 bg-green-500/20 dark:bg-green-900/30 backdrop-blur-md"
+                    "w-full px-10 py-10 rounded-2xl drop-shadow-2xl items-center flex flex-col md:flex-row gap-8 bg-white/10 dark:bg-white/5 shadow-lg backdrop-blur-lg border border-white/20"
                 }
             >
                 <img
                     className={
                         "rounded-full shadow-2xl w-48 h-48 md:w-60 md:h-60 object-cover"
                     }
-                    src={"https://github.com/alexZ7000.png"}
+                    src={alexZ7000}
                     alt={"alexZ7000 github profile photo"}
                 />
                 <div

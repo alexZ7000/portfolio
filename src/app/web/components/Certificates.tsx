@@ -86,7 +86,7 @@ export default function Certificates() {
                         ref={(el) => (certificatesRef.current[index] = el)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="card"
+                        className="bg-white/10 dark:bg-white/5 p-6 rounded-2xl shadow-lg backdrop-blur-lg border border-white/20 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
                     >
                         <h3 className="text-xl font-semibold mb-2">
                             {cert.title}

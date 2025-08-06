@@ -156,7 +156,7 @@ export default function WorkExperience() {
                     {filteredExperiences.map((exp, index) => (
                         <div
                             key={`${activeTab}-${index}`}
-                            className="bg-white/5 dark:bg-black/20 p-6 rounded-lg shadow-lg backdrop-blur-sm"
+                            className="bg-white/10 dark:bg-white/5 p-6 rounded-2xl shadow-lg backdrop-blur-lg border border-white/20"
                         >
                             <div className="flex justify-between items-start mb-2">
                                 <h3 className="text-2xl font-semibold">
