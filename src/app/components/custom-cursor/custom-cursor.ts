@@ -1,42 +1,47 @@
-import { Component, HostListener, signal, computed, Inject, PLATFORM_ID, AfterViewInit } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    DestroyRef,
+    HostListener,
+    PLATFORM_ID,
+    computed,
+    inject,
+    signal,
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
     selector: 'app-custom-cursor',
     standalone: true,
-    imports: [CommonModule],
     template: `
-        <div class="cursor-dot"
-             [class.hovering]="isHovering()"
-             [style.transform]="dotTransform()">
-        </div>
-
-        <div class="cursor-outline"
-             [class.hovering]="isHovering()"
-             [style.transform]="outlineTransform()">
-        </div>
+        @if (enabled()) {
+            <div class="cursor-dot" [class.hovering]="isHovering()" [style.transform]="dotTransform()"></div>
+            <div class="cursor-outline" [class.hovering]="isHovering()" [style.transform]="outlineTransform()"></div>
+        }
     `,
     styles: [
         `
             :host {
                 pointer-events: none;
                 position: fixed;
+                inset: 0;
                 z-index: 9999;
+            }
+
+            .cursor-dot,
+            .cursor-outline {
+                position: absolute;
                 top: 0;
                 left: 0;
-                width: 100vw;
-                height: 100vh;
+                border-radius: 50%;
+                will-change: transform, background-color, border-color;
             }
 
             .cursor-dot {
                 width: 8px;
                 height: 8px;
                 background-color: #00f2a1;
-                border-radius: 50%;
-                position: absolute;
-                top: 0;
-                left: 0;
-                will-change: transform, background-color;
                 transition: background-color 0.2s, box-shadow 0.2s;
                 box-shadow: 0 0 10px rgba(0, 242, 161, 0.8);
             }
@@ -50,11 +55,6 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
                 width: 40px;
                 height: 40px;
                 border: 1px solid #00f2a1;
-                border-radius: 50%;
-                position: absolute;
-                top: 0;
-                left: 0;
-                will-change: transform, border-color, background-color;
                 transition: border-color 0.2s, background-color 0.2s;
                 opacity: 0.6;
             }
@@ -66,41 +66,48 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
             }
         `,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomCursorComponent implements AfterViewInit {
+    private platformId = inject(PLATFORM_ID);
+    private destroyRef = inject(DestroyRef);
+
+    enabled = signal(false);
     mouseX = signal(0);
     mouseY = signal(0);
     isHovering = signal(false);
     isClicked = signal(false);
-
-    outlineX = 0;
-    outlineY = 0;
-
-    dotTransform = computed(() => {
-        const x = this.mouseX();
-        const y = this.mouseY();
-        const scale = this.isClicked() ? 0.8 : 1;
-        return `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) scale(${scale})`;
-    });
-
     outlineTransform = signal('');
 
-    constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+    private outlineX = 0;
+    private outlineY = 0;
+    private rafId = 0;
+
+    dotTransform = computed(() => {
+        const scale = this.isClicked() ? 0.8 : 1;
+        return `translate3d(${this.mouseX()}px, ${this.mouseY()}px, 0) translate(-50%, -50%) scale(${scale})`;
+    });
 
     ngAfterViewInit() {
-        if (isPlatformBrowser(this.platformId)) {
-            this.animate();
-        }
+        if (!isPlatformBrowser(this.platformId)) return;
+        if (window.matchMedia('(hover: none)').matches) return;
+
+        this.enabled.set(true);
+        this.animate();
+        this.destroyRef.onDestroy(() => cancelAnimationFrame(this.rafId));
     }
 
     @HostListener('document:mousemove', ['$event'])
     onMouseMove(e: MouseEvent) {
+        if (!this.enabled()) return;
         this.mouseX.set(e.clientX);
         this.mouseY.set(e.clientY);
 
-        const target = e.target as HTMLElement;
-        const clickable = target.closest('a, button, .pointer, [role="button"], input, select, textarea, .card, .skill-card, .contact-card');
-        this.isHovering.set(!!clickable);
+        const target = e.target as HTMLElement | null;
+        const hit = target?.closest(
+            'a, button, [role="button"], input, select, textarea, .card, .skill-card, .contact-card, .cert-card-wrapper, .tab-btn',
+        );
+        this.isHovering.set(!!hit);
     }
 
     @HostListener('document:mousedown')
@@ -113,23 +120,14 @@ export class CustomCursorComponent implements AfterViewInit {
         this.isClicked.set(false);
     }
 
-    animate() {
-        if (!isPlatformBrowser(this.platformId)) return;
-
+    private animate = () => {
         const speed = 0.35;
-
-        const distX = this.mouseX() - this.outlineX;
-        const distY = this.mouseY() - this.outlineY;
-
-        this.outlineX += distX * speed;
-        this.outlineY += distY * speed;
-
+        this.outlineX += (this.mouseX() - this.outlineX) * speed;
+        this.outlineY += (this.mouseY() - this.outlineY) * speed;
         const scale = this.isClicked() ? 0.85 : 1;
-
         this.outlineTransform.set(
-            `translate3d(${this.outlineX}px, ${this.outlineY}px, 0) translate(-50%, -50%) scale(${scale})`
+            `translate3d(${this.outlineX}px, ${this.outlineY}px, 0) translate(-50%, -50%) scale(${scale})`,
         );
-
-        requestAnimationFrame(() => this.animate());
-    }
+        this.rafId = requestAnimationFrame(this.animate);
+    };
 }

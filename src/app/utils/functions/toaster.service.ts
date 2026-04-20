@@ -1,16 +1,16 @@
 import { Injectable, signal } from '@angular/core';
 
+export type ToastType = 'success' | 'error' | 'info';
+
 export interface Toast {
     id: number;
     message: string;
-    type: 'success' | 'error' | 'info';
+    type: ToastType;
 }
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ToasterService {
-    toasts = signal<Toast[]>([]);
+    readonly toasts = signal<Toast[]>([]);
     private counter = 0;
 
     success(message: string) {
@@ -21,15 +21,17 @@ export class ToasterService {
         this.add(message, 'error');
     }
 
-    private add(message: string, type: 'success' | 'error' | 'info') {
-        const id = this.counter++;
-        this.toasts.update((current) => [...current, { id, message, type }]);
-
-        // Remove automaticamente após 3 segundos
-        setTimeout(() => this.remove(id), 3000);
+    info(message: string) {
+        this.add(message, 'info');
     }
 
     remove(id: number) {
         this.toasts.update((current) => current.filter((t) => t.id !== id));
+    }
+
+    private add(message: string, type: ToastType) {
+        const id = this.counter++;
+        this.toasts.update((current) => [...current, { id, message, type }]);
+        setTimeout(() => this.remove(id), 3000);
     }
 }

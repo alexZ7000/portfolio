@@ -1,20 +1,20 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { DragonAnimationComponent } from '../dragon-animation/dragon-animation';
+import { ScrollService } from '../../utils/functions/scroll.service';
 
 @Component({
     selector: 'app-hero',
     standalone: true,
-    imports: [CommonModule, TranslateModule, DragonAnimationComponent],
+    imports: [TranslateModule, DragonAnimationComponent],
     templateUrl: './hero.html',
     styleUrl: './hero.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Hero {
+    private scroll = inject(ScrollService);
+
     scrollToContact() {
-        const contactSection = document.getElementById('contact');
-        if (contactSection) {
-            contactSection.scrollIntoView({ behavior: 'smooth' });
-        }
+        this.scroll.scrollTo('contact');
     }
 }

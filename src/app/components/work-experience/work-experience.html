@@ -28,42 +28,49 @@
                 class="tab-btn"
                 [class.active]="activeTab() === 'personal'"
                 (click)="setActiveTab('personal')">
-                <span class="icon"><i class="fa-solid fa-dragon"></i></span> <span class="text">{{ 'tabPersonal' | translate }}</span>
+                <span class="icon"><i class="fa-solid fa-dragon"></i></span>
+                <span class="text">{{ 'tabPersonal' | translate }}</span>
                 <div class="glow-bar"></div>
             </button>
         </div>
 
         <div class="cards-column">
-            <div *ngFor="let exp of filteredExperiences; let i = index"
-                 class="experience-card"
-                 [style.animation-delay]="i * 0.1 + 's'"> <div class="card-glow-border"></div>
+            @for (exp of filteredExperiences(); track exp.translationKeyIndex; let i = $index) {
+                <div
+                    #cardRef
+                    class="experience-card"
+                    [style.animation-delay]="i * 0.1 + 's'">
+                    <div class="card-glow-border"></div>
 
-                <div class="card-content">
-                    <div class="card-header">
-                        <div class="role-group">
-                            <h3 class="role-title">
-                                {{ 'exp' + exp.translationKeyIndex + 'Title' | translate }}
-                            </h3>
-                            <h4 class="company-name">
-                                {{ 'exp' + exp.translationKeyIndex + 'Company' | translate }}
-                            </h4>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="role-group">
+                                <h3 class="role-title">
+                                    {{ 'exp' + exp.translationKeyIndex + 'Title' | translate }}
+                                </h3>
+                                <h4 class="company-name">
+                                    {{ 'exp' + exp.translationKeyIndex + 'Company' | translate }}
+                                </h4>
+                            </div>
+                            <div class="period-badge">
+                                {{ 'exp' + exp.translationKeyIndex + 'Period' | translate }}
+                            </div>
                         </div>
-                        <div class="period-badge">
-                            {{ 'exp' + exp.translationKeyIndex + 'Period' | translate }}
-                        </div>
-                    </div>
 
-                    <p class="description">
-                        {{ 'exp' + exp.translationKeyIndex + 'Description' | translate }}
-                    </p>
+                        <p class="description">
+                            {{ 'exp' + exp.translationKeyIndex + 'Description' | translate }}
+                        </p>
 
-                    <div class="tech-stack" *ngIf="exp.technologies && exp.technologies.length">
-                        <span *ngFor="let tech of exp.technologies" class="tech-rune">
-                            {{ tech }}
-                        </span>
+                        @if (exp.technologies.length) {
+                            <div class="tech-stack">
+                                @for (tech of exp.technologies; track tech) {
+                                    <span class="tech-rune">{{ tech }}</span>
+                                }
+                            </div>
+                        }
                     </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
 </section>

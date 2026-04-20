@@ -1,35 +1,43 @@
 import {
-    Component,
-    ElementRef,
-    ViewChild,
     AfterViewInit,
-    ViewChildren,
-    QueryList,
-    inject,
+    ChangeDetectionStrategy,
+    Component,
+    DestroyRef,
+    ElementRef,
+    OnDestroy,
     PLATFORM_ID,
+    QueryList,
+    ViewChild,
+    ViewChildren,
+    inject,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import type { gsap } from 'gsap';
 
-gsap.registerPlugin(ScrollTrigger);
+interface Skill {
+    name: string;
+    icon: string;
+    color: string;
+}
 
 @Component({
     selector: 'app-about-me',
     standalone: true,
-    imports: [CommonModule, TranslateModule],
+    imports: [TranslateModule],
     templateUrl: './about-me.html',
     styleUrl: './about-me.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AboutMe implements AfterViewInit {
-    @ViewChild('sectionRef') sectionRef!: ElementRef;
-    @ViewChildren('skillRef') skillsRef!: QueryList<ElementRef>;
-    @ViewChildren('skillRef') skillRefs!: QueryList<ElementRef>;
+export class AboutMe implements AfterViewInit, OnDestroy {
+    @ViewChild('sectionRef') sectionRef!: ElementRef<HTMLElement>;
+    @ViewChildren('skillRef') skillRefs!: QueryList<ElementRef<HTMLElement>>;
 
-    platformId = inject(PLATFORM_ID);
+    private platformId = inject(PLATFORM_ID);
+    private destroyRef = inject(DestroyRef);
+    private gsapCtx: gsap.Context | undefined;
 
-    skills = [
+    readonly skills: readonly Skill[] = [
         { name: 'Angular', icon: 'fa-brands fa-angular', color: '#dd0031' },
         { name: 'React', icon: 'fa-brands fa-react', color: '#61dafb' },
         { name: 'Flutter', icon: 'fa-brands fa-flutter', color: '#02569b' },
@@ -44,60 +52,53 @@ export class AboutMe implements AfterViewInit {
         { name: 'SQL', icon: 'fa-solid fa-database', color: '#003b57' },
         { name: 'MongoDB', icon: 'fa-solid fa-leaf', color: '#47a248' },
         { name: 'Git', icon: 'fa-brands fa-git-alt', color: '#f05032' },
-        { name: 'Docker', icon: 'fa-brands fa-docker', color: '#2496ed' }
+        { name: 'Docker', icon: 'fa-brands fa-docker', color: '#2496ed' },
     ];
 
-    ngAfterViewInit() {
-        if (isPlatformBrowser(this.platformId)) {
-            gsap.registerPlugin(ScrollTrigger);
-            this.initAnimations();
-        }
-        if (this.skillRefs && this.skillRefs.length > 0) {
-            gsap.from(this.skillRefs.map(r => r.nativeElement), {
-                scrollTrigger: {
-                    trigger: '#about-me',
-                    start: 'top 80%',
+    async ngAfterViewInit() {
+        if (!isPlatformBrowser(this.platformId)) return;
+
+        const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+            import('gsap'),
+            import('gsap/ScrollTrigger'),
+        ]);
+        gsap.registerPlugin(ScrollTrigger);
+
+        this.gsapCtx = gsap.context(() => {
+            const section = this.sectionRef.nativeElement;
+            const skillsElements = this.skillRefs.map((el) => el.nativeElement);
+
+            gsap.fromTo(
+                section,
+                { opacity: 0, y: 50 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    scrollTrigger: { trigger: section, start: 'top 80%' },
                 },
-                y: 50,
-                opacity: 0,
-                duration: 0.8,
-                stagger: 0.1,
-                ease: 'back.out(1.7)'
-            });
-        }
+            );
+
+            if (skillsElements.length) {
+                gsap.fromTo(
+                    skillsElements,
+                    { opacity: 0, y: 20 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.5,
+                        stagger: 0.08,
+                        ease: 'back.out(1.7)',
+                        scrollTrigger: { trigger: section, start: 'top 70%' },
+                    },
+                );
+            }
+        });
+
+        this.destroyRef.onDestroy(() => this.gsapCtx?.revert());
     }
 
-    private initAnimations() {
-        const section = this.sectionRef.nativeElement;
-        const skillsElements = this.skillsRef.map((el) => el.nativeElement);
-
-        gsap.fromTo(
-            section,
-            { opacity: 0, y: 50 },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                scrollTrigger: {
-                    trigger: section,
-                    start: 'top 80%',
-                },
-            },
-        );
-
-        gsap.fromTo(
-            skillsElements,
-            { opacity: 0, y: 20 },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 0.5,
-                stagger: 0.1,
-                scrollTrigger: {
-                    trigger: section,
-                    start: 'top 70%',
-                },
-            },
-        );
+    ngOnDestroy() {
+        this.gsapCtx?.revert();
     }
 }

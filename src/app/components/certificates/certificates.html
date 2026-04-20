@@ -8,37 +8,38 @@
     </div>
 
     <div class="certificates-grid">
-        <div
-            *ngFor="let cert of certificates; let i = index"
-            class="cert-card-wrapper"
-            (mousemove)="onMouseMove($event, i)"
-            (mouseleave)="onMouseLeave(i)"
-        >
+        @for (cert of certificates; track cert.name; let i = $index) {
             <div
-                class="holographic-card"
-                [id]="'cert-card-' + i"
-                (click)="openCertificate(cert.link)"
+                class="cert-card-wrapper"
+                (mousemove)="onMouseMove($event, i)"
+                (mouseleave)="onMouseLeave(i)"
             >
-                <div class="glare" [id]="'cert-glare-' + i"></div>
+                <div
+                    #cardRef
+                    class="holographic-card"
+                    (click)="openCertificate(cert.link)"
+                >
+                    <div #glareRef class="glare"></div>
 
-                <div class="card-content">
-                    <div class="icon-badge">
-                        <i class="fa-solid fa-scroll"></i>
+                    <div class="card-content">
+                        <div class="icon-badge">
+                            <i class="fa-solid fa-scroll"></i>
+                        </div>
+
+                        <h3 class="cert-title">{{ cert.name }}</h3>
+                        <p class="cert-issuer">{{ cert.issuer }}</p>
+                        <span class="cert-date">{{ cert.date }}</span>
+
+                        <div class="view-btn">
+                            <span>{{ 'viewCertificate' | translate }}</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </div>
                     </div>
 
-                    <h3 class="cert-title">{{ cert.name }}</h3>
-                    <p class="cert-issuer">{{ cert.issuer }}</p>
-                    <span class="cert-date">{{ cert.date }}</span>
-
-                    <div class="view-btn">
-                        <span>{{ 'viewCertificate' | translate }}</span>
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </div>
+                    <div class="corner top-left"></div>
+                    <div class="corner bottom-right"></div>
                 </div>
-
-                <div class="corner top-left"></div>
-                <div class="corner bottom-right"></div>
             </div>
-        </div>
+        }
     </div>
 </section>

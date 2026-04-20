@@ -1,42 +1,55 @@
-import { Component, inject, signal, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    DestroyRef,
+    HostListener,
+    PLATFORM_ID,
+    inject,
+    signal,
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { ThemeService } from '../../utils/functions/theme';
+import { ScrollService } from '../../utils/functions/scroll.service';
 import { LanguageSwitcher } from '../language-switcher/language-switcher';
 
 @Component({
     selector: 'app-navbar',
     standalone: true,
-    imports: [CommonModule, TranslateModule, LanguageSwitcher],
+    imports: [TranslateModule, LanguageSwitcher],
     templateUrl: './navbar.html',
     styleUrl: './navbar.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Navbar {
-    themeService = inject(ThemeService);
+    readonly themeService = inject(ThemeService);
+    private scroll = inject(ScrollService);
+    private platformId = inject(PLATFORM_ID);
+    private destroyRef = inject(DestroyRef);
 
     isScrolled = signal(false);
     isMobileMenuOpen = signal(false);
 
-    @HostListener('window:scroll', [])
+    private scrollFrame = 0;
+
+    constructor() {
+        if (isPlatformBrowser(this.platformId)) {
+            this.destroyRef.onDestroy(() => cancelAnimationFrame(this.scrollFrame));
+        }
+    }
+
+    @HostListener('window:scroll')
     onWindowScroll() {
-        this.isScrolled.set(window.scrollY > 50);
+        if (!isPlatformBrowser(this.platformId)) return;
+        cancelAnimationFrame(this.scrollFrame);
+        this.scrollFrame = requestAnimationFrame(() => {
+            this.isScrolled.set(window.scrollY > 50);
+        });
     }
 
     scrollTo(sectionId: string) {
-        const element = document.getElementById(sectionId);
-        if (element) {
-            const offset = 80;
-            const bodyRect = document.body.getBoundingClientRect().top;
-            const elementRect = element.getBoundingClientRect().top;
-            const elementPosition = elementRect - bodyRect;
-            const offsetPosition = elementPosition - offset;
-
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth',
-            });
-            this.isMobileMenuOpen.set(false);
-        }
+        this.scroll.scrollTo(sectionId);
+        this.isMobileMenuOpen.set(false);
     }
 
     toggleMobileMenu() {

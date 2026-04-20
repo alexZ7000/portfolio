@@ -1,6 +1,4 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Hero } from '../../components/hero/hero';
 import { AboutMe } from '../../components/about-me/about-me';
 import { WorkExperience } from '../../components/work-experience/work-experience';
@@ -13,8 +11,6 @@ import { EmbersBackgroundComponent } from '../../components/embers-background/em
     selector: 'app-home',
     standalone: true,
     imports: [
-        CommonModule,
-        TranslateModule,
         Hero,
         AboutMe,
         WorkExperience,
@@ -25,5 +21,6 @@ import { EmbersBackgroundComponent } from '../../components/embers-background/em
     ],
     templateUrl: './home.html',
     styleUrl: './home.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Home {}

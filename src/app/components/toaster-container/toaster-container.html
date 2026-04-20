@@ -1,24 +1,10 @@
 <div class="toaster-wrapper">
-    <div
-        *ngFor="let toast of toaster.toasts()"
-        class="toast"
-        [class]="toast.type"
-        (click)="toaster.remove(toast.id)"
-    >
-        <div class="icon">
-            <lucide-icon
-                *ngIf="toast.type === 'success'"
-                [name]="CheckIcon"
-                [size]="20"
-            ></lucide-icon>
-            <lucide-icon
-                *ngIf="toast.type === 'error'"
-                [name]="ErrorIcon"
-                [size]="20"
-            ></lucide-icon>
-            <lucide-icon *ngIf="toast.type === 'info'" [name]="InfoIcon" [size]="20"></lucide-icon>
+    @for (toast of toaster.toasts(); track toast.id) {
+        <div class="toast" [class]="toast.type" (click)="toaster.remove(toast.id)">
+            <div class="icon">
+                <lucide-icon [name]="icons[toast.type]" [size]="20"></lucide-icon>
+            </div>
+            <span class="message">{{ toast.message }}</span>
         </div>
-
-        <span class="message">{{ toast.message }}</span>
-    </div>
+    }
 </div>

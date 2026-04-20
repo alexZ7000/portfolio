@@ -1,19 +1,21 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ToasterService } from '../../utils/functions/toaster.service';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { LucideAngularModule, CheckCircle, XCircle, Info } from 'lucide-angular';
+import { ToasterService } from '../../utils/functions/toaster.service';
 
 @Component({
     selector: 'app-toaster-container',
     standalone: true,
-    imports: [CommonModule, LucideAngularModule],
+    imports: [LucideAngularModule],
     templateUrl: './toaster-container.html',
     styleUrl: './toaster-container.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToasterContainer {
-    toaster = inject(ToasterService);
+    readonly toaster = inject(ToasterService);
 
-    readonly CheckIcon = CheckCircle;
-    readonly ErrorIcon = XCircle;
-    readonly InfoIcon = Info;
+    readonly icons = {
+        success: CheckCircle,
+        error: XCircle,
+        info: Info,
+    } as const;
 }

@@ -1,43 +1,48 @@
-import { Component, inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, PLATFORM_ID, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { ThemeService } from '../../utils/functions/theme';
+
+type Lang = 'pt' | 'en';
+const SUPPORTED: Lang[] = ['pt', 'en'];
+const STORAGE_KEY = 'language';
 
 @Component({
     selector: 'app-language-switcher',
     standalone: true,
-    imports: [CommonModule],
     templateUrl: './language-switcher.html',
     styleUrl: './language-switcher.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LanguageSwitcher {
-    translate = inject(TranslateService);
-    themeService = inject(ThemeService);
-    platformId = inject(PLATFORM_ID);
+    private translate = inject(TranslateService);
+    private platformId = inject(PLATFORM_ID);
 
-    currentLang = 'en';
+    currentLang = signal<Lang>('pt');
 
     constructor() {
-        this.translate.addLangs(['en', 'pt']);
-        this.translate.setDefaultLang('en');
+        this.translate.addLangs(SUPPORTED);
+        this.translate.setDefaultLang('pt');
 
-        let savedLang = null;
-        const browserLang = this.translate.getBrowserLang();
-
-        if (isPlatformBrowser(this.platformId)) {
-            savedLang = localStorage.getItem('language');
-        }
-
-        this.currentLang = savedLang || (browserLang?.match(/en|pt/) ? browserLang : 'en');
-        this.translate.use(this.currentLang);
+        const initial = this.resolveInitialLang();
+        this.currentLang.set(initial);
+        this.translate.use(initial);
     }
 
-    switchLanguage(lang: string) {
+    switchLanguage(lang: Lang) {
+        if (this.currentLang() === lang) return;
+        this.currentLang.set(lang);
         this.translate.use(lang);
-        this.currentLang = lang;
-
         if (isPlatformBrowser(this.platformId)) {
-            localStorage.setItem('language', lang);
+            localStorage.setItem(STORAGE_KEY, lang);
         }
+    }
+
+    private resolveInitialLang(): Lang {
+        if (isPlatformBrowser(this.platformId)) {
+            const saved = localStorage.getItem(STORAGE_KEY) as Lang | null;
+            if (saved && SUPPORTED.includes(saved)) return saved;
+        }
+        const browser = this.translate.getBrowserLang();
+        return browser && SUPPORTED.includes(browser as Lang) ? (browser as Lang) : 'pt';
     }
 }

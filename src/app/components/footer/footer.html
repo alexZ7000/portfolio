@@ -1,8 +1,11 @@
 <footer class="main-footer">
-
     <div class="dragon-body-layer layer-back">
         <svg class="dragon-svg" preserveAspectRatio="none" viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg">
-            <path class="dragon-spine" d="M0,120 C150,120 200,60 400,60 C600,60 700,100 900,100 C1100,100 1150,80 1200,120 L1200,150 L0,150 Z" fill="rgba(0,0,0,0.6)" />
+            <path
+                class="dragon-spine"
+                d="M0,120 C150,120 200,60 400,60 C600,60 700,100 900,100 C1100,100 1150,80 1200,120 L1200,150 L0,150 Z"
+                fill="rgba(0,0,0,0.6)"
+            />
         </svg>
     </div>
 
@@ -26,12 +29,7 @@
                 class="dragon-shape"
                 fill="url(#bodyGradient)"
                 filter="url(#neonGlow)"
-                d="M0,150
-                   C100,150 150,90 300,90
-                   C450,90 500,130 650,130
-                   C800,130 850,70 1000,70
-                   C1100,70 1150,100 1200,150
-                   L1200,200 L0,200 Z"
+                d="M0,150 C100,150 150,90 300,90 C450,90 500,130 650,130 C800,130 850,70 1000,70 C1100,70 1150,100 1200,150 L1200,200 L0,200 Z"
             />
 
             <path
@@ -56,9 +54,11 @@
 
         <div class="text-group">
             <div class="social-links">
-                <a href="#" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
-                <a href="#" target="_blank"><i class="fa-brands fa-github"></i></a>
-                <a href="#" target="_blank"><i class="fa-solid fa-dragon"></i></a>
+                @for (social of socials; track social.url) {
+                    <a [href]="social.url" target="_blank" rel="noopener noreferrer" [attr.aria-label]="social.label">
+                        <i [class]="social.icon"></i>
+                    </a>
+                }
             </div>
 
             <div class="copyright">

@@ -1,9 +1,9 @@
 <div class="lang-switch-container">
-    <div class="switch-glider" [class.right]="currentLang === 'en'"></div>
+    <div class="switch-glider" [class.right]="currentLang() === 'en'"></div>
 
     <button
         class="lang-btn"
-        [class.active]="currentLang === 'pt'"
+        [class.active]="currentLang() === 'pt'"
         (click)="switchLanguage('pt')"
         aria-label="Português">
         PT
@@ -11,7 +11,7 @@
 
     <button
         class="lang-btn"
-        [class.active]="currentLang === 'en'"
+        [class.active]="currentLang() === 'en'"
         (click)="switchLanguage('en')"
         aria-label="English">
         EN

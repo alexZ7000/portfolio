@@ -1,61 +1,70 @@
 import {
-    Component,
-    ElementRef,
-    ViewChild,
     AfterViewInit,
-    ViewChildren,
-    QueryList,
-    inject,
+    ChangeDetectionStrategy,
+    Component,
+    DestroyRef,
+    ElementRef,
     PLATFORM_ID,
+    QueryList,
+    ViewChild,
+    ViewChildren,
+    computed,
+    inject,
     signal,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import type { gsap } from 'gsap';
 
 type ExperienceType = 'professional' | 'academic' | 'personal';
+
+interface Experience {
+    type: ExperienceType;
+    translationKeyIndex: number;
+    technologies: string[];
+}
 
 @Component({
     selector: 'app-work-experience',
     standalone: true,
-    imports: [CommonModule, TranslateModule],
+    imports: [TranslateModule],
     templateUrl: './work-experience.html',
     styleUrl: './work-experience.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkExperience implements AfterViewInit {
-    @ViewChild('sectionRef') sectionRef!: ElementRef;
-    @ViewChildren('cardRef') cardsRef!: QueryList<ElementRef>;
+    @ViewChild('sectionRef') sectionRef!: ElementRef<HTMLElement>;
+    @ViewChildren('cardRef') cardsRef!: QueryList<ElementRef<HTMLElement>>;
 
-    platformId = inject(PLATFORM_ID);
+    private platformId = inject(PLATFORM_ID);
+    private destroyRef = inject(DestroyRef);
+    private gsapApi: typeof gsap | undefined;
+    private gsapCtx: gsap.Context | undefined;
+    private pendingAnimationTimer: ReturnType<typeof setTimeout> | undefined;
+
     activeTab = signal<ExperienceType>('professional');
 
-    experiences = [
-        {
-            type: 'professional',
-            translationKeyIndex: 1,
-            technologies: ['React', 'TypeScript', 'Redux', 'Jest'],
-        },
-        {
-            type: 'academic',
-            translationKeyIndex: 2,
-            technologies: ['Java', 'Spring Boot', 'MySQL', 'Thymeleaf'],
-        },
-        {
-            type: 'personal',
-            translationKeyIndex: 3,
-            technologies: ['Vite', 'React', 'TypeScript', 'TailwindCSS'],
-        },
+    readonly experiences: readonly Experience[] = [
+        { type: 'professional', translationKeyIndex: 1, technologies: ['React', 'TypeScript', 'Redux', 'Jest'] },
+        { type: 'academic', translationKeyIndex: 2, technologies: ['Java', 'Spring Boot', 'MySQL', 'Thymeleaf'] },
+        { type: 'personal', translationKeyIndex: 3, technologies: ['Angular', 'TypeScript', 'GSAP', 'SCSS'] },
     ];
 
-    get filteredExperiences() {
-        return this.experiences.filter((exp) => exp.type === this.activeTab());
-    }
+    filteredExperiences = computed(() =>
+        this.experiences.filter((exp) => exp.type === this.activeTab()),
+    );
 
-    ngAfterViewInit() {
-        if (isPlatformBrowser(this.platformId)) {
-            gsap.registerPlugin(ScrollTrigger);
+    async ngAfterViewInit() {
+        if (!isPlatformBrowser(this.platformId)) return;
 
+        const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+            import('gsap'),
+            import('gsap/ScrollTrigger'),
+        ]);
+        gsap.registerPlugin(ScrollTrigger);
+        this.gsapApi = gsap;
+
+        this.gsapCtx = gsap.context(() => {
             gsap.fromTo(
                 this.sectionRef.nativeElement,
                 { opacity: 0, y: 50 },
@@ -63,45 +72,46 @@ export class WorkExperience implements AfterViewInit {
                     opacity: 1,
                     y: 0,
                     duration: 1,
-                    scrollTrigger: {
-                        trigger: this.sectionRef.nativeElement,
-                        start: 'top 80%',
-                    },
+                    scrollTrigger: { trigger: this.sectionRef.nativeElement, start: 'top 80%' },
                 },
             );
-
             this.animateCardsIn();
-        }
+        });
+
+        this.destroyRef.onDestroy(() => {
+            clearTimeout(this.pendingAnimationTimer);
+            this.gsapCtx?.revert();
+        });
     }
 
     setActiveTab(tab: ExperienceType) {
         if (this.activeTab() === tab) return;
 
-        if (isPlatformBrowser(this.platformId)) {
-            const cards = this.cardsRef.map((el) => el.nativeElement);
-            gsap.to(cards, {
-                opacity: 0,
-                y: -20,
-                duration: 0.2,
-                stagger: 0.1,
-                onComplete: () => {
-                    this.activeTab.set(tab);
-                    setTimeout(() => this.animateCardsIn(), 50);
-                },
-            });
-        } else {
+        const gsap = this.gsapApi;
+        if (!gsap) {
             this.activeTab.set(tab);
+            return;
         }
+
+        const cards = this.cardsRef.map((el) => el.nativeElement);
+        gsap.to(cards, {
+            opacity: 0,
+            y: -20,
+            duration: 0.2,
+            stagger: 0.05,
+            onComplete: () => {
+                this.activeTab.set(tab);
+                this.pendingAnimationTimer = setTimeout(() => this.animateCardsIn(), 50);
+            },
+        });
     }
 
     private animateCardsIn() {
-        setTimeout(() => {
+        const gsap = this.gsapApi;
+        if (!gsap) return;
+        this.pendingAnimationTimer = setTimeout(() => {
             const cards = this.cardsRef.map((el) => el.nativeElement);
-            gsap.fromTo(
-                cards,
-                { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.5, stagger: 0.2 },
-            );
-        }, 100);
+            gsap.fromTo(cards, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.15 });
+        }, 50);
     }
 }
