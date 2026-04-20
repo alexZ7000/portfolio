@@ -1,75 +1,83 @@
-<section id="work-experience" #sectionRef class="experience-section">
-    <div class="section-header">
-        <h2 class="section-title">{{ 'workExperienceTitle' | translate }}</h2>
-        <div class="decorative-line"></div>
-    </div>
+<section id="work-experience" #sectionRef class="xp" aria-labelledby="xp-title">
+    <header class="xp__header">
+        <h2 id="xp-title" class="section-title">{{ 'workExperienceTitle' | translate }}</h2>
+    </header>
 
-    <div class="layout-container">
-        <div class="tabs-sidebar">
+    <div class="xp__layout">
+        <aside class="xp__tabs" role="tablist" aria-label="Experience categories">
             <button
-                class="tab-btn"
-                [class.active]="activeTab() === 'professional'"
+                role="tab"
+                [attr.aria-selected]="activeTab() === 'professional'"
+                [attr.aria-controls]="'xp-panel-professional'"
+                class="xp__tab"
+                [class.is-active]="activeTab() === 'professional'"
                 (click)="setActiveTab('professional')">
-                <span class="icon"><i class="fa-solid fa-briefcase"></i></span>
-                <span class="text">{{ 'tabProfessional' | translate }}</span>
-                <div class="glow-bar"></div>
+                <i class="fa-solid fa-briefcase xp__tab-icon" aria-hidden="true"></i>
+                <span>{{ 'tabProfessional' | translate }}</span>
+                <span class="xp__tab-bar" aria-hidden="true"></span>
             </button>
 
             <button
-                class="tab-btn"
-                [class.active]="activeTab() === 'academic'"
+                role="tab"
+                [attr.aria-selected]="activeTab() === 'academic'"
+                [attr.aria-controls]="'xp-panel-academic'"
+                class="xp__tab"
+                [class.is-active]="activeTab() === 'academic'"
                 (click)="setActiveTab('academic')">
-                <span class="icon"><i class="fa-solid fa-graduation-cap"></i></span>
-                <span class="text">{{ 'tabAcademic' | translate }}</span>
-                <div class="glow-bar"></div>
+                <i class="fa-solid fa-graduation-cap xp__tab-icon" aria-hidden="true"></i>
+                <span>{{ 'tabAcademic' | translate }}</span>
+                <span class="xp__tab-bar" aria-hidden="true"></span>
             </button>
 
             <button
-                class="tab-btn"
-                [class.active]="activeTab() === 'personal'"
+                role="tab"
+                [attr.aria-selected]="activeTab() === 'personal'"
+                [attr.aria-controls]="'xp-panel-personal'"
+                class="xp__tab"
+                [class.is-active]="activeTab() === 'personal'"
                 (click)="setActiveTab('personal')">
-                <span class="icon"><i class="fa-solid fa-dragon"></i></span>
-                <span class="text">{{ 'tabPersonal' | translate }}</span>
-                <div class="glow-bar"></div>
+                <i class="fa-solid fa-dragon xp__tab-icon" aria-hidden="true"></i>
+                <span>{{ 'tabPersonal' | translate }}</span>
+                <span class="xp__tab-bar" aria-hidden="true"></span>
             </button>
-        </div>
+        </aside>
 
-        <div class="cards-column">
+        <div
+            role="tabpanel"
+            [attr.id]="'xp-panel-' + activeTab()"
+            [attr.aria-labelledby]="'xp-tab-' + activeTab()"
+            class="xp__panel">
             @for (exp of filteredExperiences(); track exp.translationKeyIndex; let i = $index) {
-                <div
-                    #cardRef
-                    class="experience-card"
-                    [style.animation-delay]="i * 0.1 + 's'">
-                    <div class="card-glow-border"></div>
-
-                    <div class="card-content">
-                        <div class="card-header">
-                            <div class="role-group">
-                                <h3 class="role-title">
+                <article #cardRef class="xp-card" [style.animation-delay]="i * 0.1 + 's'">
+                    <span class="xp-card__glow" aria-hidden="true"></span>
+                    <div class="xp-card__body">
+                        <header class="xp-card__header">
+                            <div>
+                                <h3 class="xp-card__role">
                                     {{ 'exp' + exp.translationKeyIndex + 'Title' | translate }}
                                 </h3>
-                                <h4 class="company-name">
+                                <p class="xp-card__company">
                                     {{ 'exp' + exp.translationKeyIndex + 'Company' | translate }}
-                                </h4>
+                                </p>
                             </div>
-                            <div class="period-badge">
+                            <time class="xp-card__period">
                                 {{ 'exp' + exp.translationKeyIndex + 'Period' | translate }}
-                            </div>
-                        </div>
+                            </time>
+                        </header>
 
-                        <p class="description">
+                        <p class="xp-card__description">
                             {{ 'exp' + exp.translationKeyIndex + 'Description' | translate }}
                         </p>
 
                         @if (exp.technologies.length) {
-                            <div class="tech-stack">
+                            <ul class="xp-card__tech" aria-label="Technologies used">
                                 @for (tech of exp.technologies; track tech) {
-                                    <span class="tech-rune">{{ tech }}</span>
+                                    <li class="xp-card__tech-item">{{ tech }}</li>
                                 }
-                            </div>
+                            </ul>
                         }
                     </div>
-                </div>
+                </article>
             }
         </div>
     </div>

@@ -3,7 +3,10 @@
     "allow": [
       "Bash(npx ng *)",
       "Bash(npx --prefix C:/Users/aless/WebstormProjects/portfolio ng build --configuration development)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl *)"
     ]
   }
 }

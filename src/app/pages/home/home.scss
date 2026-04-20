@@ -1,15 +1,19 @@
-.main-container {
+.home {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     width: 100%;
     overflow-x: hidden;
-    gap: 6rem;
+    gap: var(--space-9);
 
     @media (min-width: 768px) {
-        gap: 8rem;
+        gap: var(--space-10);
     }
     @media (min-width: 1024px) {
-        gap: 12rem;
+        gap: calc(var(--space-10) * 1.4);
+    }
+
+    > * {
+        width: 100%;
     }
 }

@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, PLATFORM_ID, inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
 interface ContactInfo {
@@ -19,8 +18,6 @@ interface ContactInfo {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactComponent {
-    private platformId = inject(PLATFORM_ID);
-
     readonly contacts: readonly ContactInfo[] = [
         {
             icon: 'fa-brands fa-linkedin-in',
@@ -51,9 +48,4 @@ export class ContactComponent {
             color: '#25d366',
         },
     ];
-
-    openLink(link: string) {
-        if (!isPlatformBrowser(this.platformId)) return;
-        window.open(link, '_blank', 'noopener,noreferrer');
-    }
 }

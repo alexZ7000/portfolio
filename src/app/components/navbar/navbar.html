@@ -1,42 +1,49 @@
-<nav class="navbar" [class.scrolled]="isScrolled()" [class.menu-open]="isMobileMenuOpen()">
-    <div class="navbar-content">
-        <div class="logo">
+<header class="navbar" [class.is-scrolled]="isScrolled()" [class.is-menu-open]="isMobileMenuOpen()">
+    <div class="navbar__inner">
+        <button
+            class="navbar__logo"
+            type="button"
+            (click)="scrollTo('home')"
+            aria-label="Home">
             <img
                 [src]="themeService.isDarkTheme() ? 'assets/logoWhite.svg' : 'assets/logoBlack.svg'"
-                alt="Logo"
-                (click)="scrollTo('home')"
+                alt=""
+                width="200"
+                height="48"
             />
-        </div>
+        </button>
 
-        <div class="desktop-menu">
-            <ul class="nav-links">
-                <li><button (click)="scrollTo('about-me')">{{ 'navAbout' | translate }}</button></li>
-                <li><button (click)="scrollTo('work-experience')">{{ 'navWork' | translate }}</button></li>
-                <li><button (click)="scrollTo('certificates')">{{ 'navCertificates' | translate }}</button></li>
-                <li><button (click)="scrollTo('contact')">{{ 'navContact' | translate }}</button></li>
+        <nav class="navbar__nav navbar__nav--desktop" aria-label="Primary">
+            <ul class="navbar__links">
+                <li><button type="button" (click)="scrollTo('about-me')">{{ 'navAbout' | translate }}</button></li>
+                <li><button type="button" (click)="scrollTo('work-experience')">{{ 'navWork' | translate }}</button></li>
+                <li><button type="button" (click)="scrollTo('certificates')">{{ 'navCertificates' | translate }}</button></li>
+                <li><button type="button" (click)="scrollTo('contact')">{{ 'navContact' | translate }}</button></li>
             </ul>
-
             <app-language-switcher></app-language-switcher>
-        </div>
+        </nav>
 
-        <div class="mobile-toggle">
-            <button (click)="toggleMobileMenu()" [attr.aria-label]="isMobileMenuOpen() ? 'Close menu' : 'Open menu'">
-                <i class="fas" [class.fa-bars]="!isMobileMenuOpen()" [class.fa-times]="isMobileMenuOpen()"></i>
-            </button>
-        </div>
+        <button
+            class="navbar__toggle"
+            type="button"
+            (click)="toggleMobileMenu()"
+            [attr.aria-expanded]="isMobileMenuOpen()"
+            [attr.aria-label]="isMobileMenuOpen() ? 'Close menu' : 'Open menu'">
+            <i class="fas" [class.fa-bars]="!isMobileMenuOpen()" [class.fa-times]="isMobileMenuOpen()" aria-hidden="true"></i>
+        </button>
     </div>
 
     @if (isMobileMenuOpen()) {
-        <div class="mobile-menu">
-            <ul class="mobile-nav-links">
-                <li><button (click)="scrollTo('about-me')">{{ 'navAbout' | translate }}</button></li>
-                <li><button (click)="scrollTo('work-experience')">{{ 'navWork' | translate }}</button></li>
-                <li><button (click)="scrollTo('certificates')">{{ 'navCertificates' | translate }}</button></li>
-                <li><button (click)="scrollTo('contact')">{{ 'navContact' | translate }}</button></li>
+        <nav class="navbar__mobile" aria-label="Mobile">
+            <ul class="navbar__links navbar__links--mobile">
+                <li><button type="button" (click)="scrollTo('about-me')">{{ 'navAbout' | translate }}</button></li>
+                <li><button type="button" (click)="scrollTo('work-experience')">{{ 'navWork' | translate }}</button></li>
+                <li><button type="button" (click)="scrollTo('certificates')">{{ 'navCertificates' | translate }}</button></li>
+                <li><button type="button" (click)="scrollTo('contact')">{{ 'navContact' | translate }}</button></li>
             </ul>
-            <div class="mobile-switcher">
+            <div class="navbar__mobile-switcher">
                 <app-language-switcher></app-language-switcher>
             </div>
-        </div>
+        </nav>
     }
-</nav>
+</header>

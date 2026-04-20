@@ -1,45 +1,48 @@
-<section id="certificates" class="certificates-section">
-    <div class="header-container">
-        <h2 class="section-title">
-            <i class="fa-solid fa-dragon section-icon"></i>
+<section id="certificates" class="certs" aria-labelledby="certs-title">
+    <header class="certs__header">
+        <h2 id="certs-title" class="section-title">
+            <i class="fa-solid fa-dragon certs__title-icon" aria-hidden="true"></i>
             {{ 'certificatesTitle' | translate }}
         </h2>
-        <p class="subtitle">{{ 'certificatesSubtitle' | translate }}</p>
-    </div>
+        <p class="certs__subtitle">{{ 'certificatesSubtitle' | translate }}</p>
+    </header>
 
-    <div class="certificates-grid">
+    <ul class="certs__grid" role="list">
         @for (cert of certificates; track cert.name; let i = $index) {
-            <div
+            <li
                 class="cert-card-wrapper"
                 (mousemove)="onMouseMove($event, i)"
-                (mouseleave)="onMouseLeave(i)"
-            >
-                <div
+                (mouseleave)="onMouseLeave(i)">
+                <article
                     #cardRef
-                    class="holographic-card"
+                    class="cert-card"
+                    tabindex="0"
+                    role="button"
+                    [attr.aria-label]="cert.name + ' — ' + cert.issuer"
                     (click)="openCertificate(cert.link)"
-                >
-                    <div #glareRef class="glare"></div>
+                    (keydown.enter)="openCertificate(cert.link)"
+                    (keydown.space)="openCertificate(cert.link)">
+                    <span #glareRef class="cert-card__glare" aria-hidden="true"></span>
 
-                    <div class="card-content">
-                        <div class="icon-badge">
+                    <div class="cert-card__body">
+                        <div class="cert-card__badge" aria-hidden="true">
                             <i class="fa-solid fa-scroll"></i>
                         </div>
 
-                        <h3 class="cert-title">{{ cert.name }}</h3>
-                        <p class="cert-issuer">{{ cert.issuer }}</p>
-                        <span class="cert-date">{{ cert.date }}</span>
+                        <h3 class="cert-card__title">{{ cert.name }}</h3>
+                        <p class="cert-card__issuer">{{ cert.issuer }}</p>
+                        <time class="cert-card__date">{{ cert.date }}</time>
 
-                        <div class="view-btn">
+                        <span class="cert-card__cta">
                             <span>{{ 'viewCertificate' | translate }}</span>
-                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                        </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                        </span>
                     </div>
 
-                    <div class="corner top-left"></div>
-                    <div class="corner bottom-right"></div>
-                </div>
-            </div>
+                    <span class="cert-card__corner cert-card__corner--tl" aria-hidden="true"></span>
+                    <span class="cert-card__corner cert-card__corner--br" aria-hidden="true"></span>
+                </article>
+            </li>
         }
-    </div>
+    </ul>
 </section>

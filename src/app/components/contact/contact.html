@@ -1,26 +1,34 @@
-<section id="contact" class="contact-section">
-    <div class="background-glow"></div>
+<section id="contact" class="contact" aria-labelledby="contact-title">
+    <div class="contact__glow" aria-hidden="true"></div>
 
-    <h2 class="section-title">{{ 'contactTitle' | translate }}</h2>
+    <header class="contact__header">
+        <h2 id="contact-title" class="section-title">{{ 'contactTitle' | translate }}</h2>
+    </header>
 
-    <div class="contact-grid">
+    <ul class="contact__grid" role="list">
         @for (contact of contacts; track contact.title) {
-            <div class="contact-card" (click)="openLink(contact.link)">
-                <div class="icon-wrapper" [style.border-color]="contact.color">
-                    <i [class]="contact.icon" [style.color]="contact.color"></i>
-                </div>
-
-                <div class="info">
-                    <h3>{{ contact.title }}</h3>
-                    <p>{{ contact.value }}</p>
-                </div>
-
-                <div class="hover-effect"></div>
-            </div>
+            <li>
+                <a
+                    class="contact-card"
+                    [href]="contact.link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    [style.--contact-color]="contact.color"
+                    [attr.aria-label]="contact.title + ': ' + contact.value">
+                    <span class="contact-card__icon-wrap" aria-hidden="true">
+                        <i [class]="contact.icon"></i>
+                    </span>
+                    <span class="contact-card__body">
+                        <span class="contact-card__title">{{ contact.title }}</span>
+                        <span class="contact-card__value">{{ contact.value }}</span>
+                    </span>
+                    <span class="contact-card__hover" aria-hidden="true"></span>
+                </a>
+            </li>
         }
-    </div>
+    </ul>
 
-    <div class="footer-message">
+    <footer class="contact__footer">
         <p>{{ 'contactFooter' | translate }}</p>
-    </div>
+    </footer>
 </section>

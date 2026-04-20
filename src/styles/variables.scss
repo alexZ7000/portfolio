@@ -1,36 +1,115 @@
 :root {
-    /* Dark Theme Pallet */
-    --gray-dark-theme: #1a1a1a; /* Dark Gray */
-    --blue-dark-theme: #3b4c6b; /* Dark Blue */
-    --darkblue-dark-theme: #2c3e50; /* Deep Blue */
-    --grayblue-dark-theme: #34495e; /* Dark Gray-Blue */
-    --lightblue-dark-theme: #53637d; /* Light Dark Blue */
-    --gray-medium-dark-theme: #7f8c8d; /* Medium Dark Gray */
-    --lightgray-dark-theme: #a1b2c1; /* Light Dark Gray */
-    --offwhite-dark-theme: #d6d9e1; /* Off White (Dark) */
-    --palegray-dark-theme: #f0f2f5; /* Pale Gray (Dark) */
-    --almostwhite-dark-theme: #ecf0f1; /* Almost White (Dark) */
-    --yellow-dark-theme: #f1c40f; /* Dark Yellow */
-    --orange: #f57c00; /* Orange */
-    --bluebright-dark-theme: #2980b9; /* Bright Dark Blue */
-    --green-dark-theme: #00f2a1; /* Dark Green */
-    --purple-dark-theme: #9b59b6; /* Dark Purple */
-    --orangebright-dark-theme: #d35400; /* Bright Dark Orange */
+    --accent: #00f2a1;
+    --accent-bright: #00ffac;
+    --accent-muted: rgba(0, 242, 161, 0.5);
+    --accent-glow: rgba(0, 242, 161, 0.25);
+    --accent-contrast: #001a10;
 
-    /* Light Theme Pallet */
-    --palegray-light-theme: #ecf0f1; /* Pale Gray (Light) */
-    --almostwhite-light-theme: #ecf0f1; /* Almost White (Light) */
-    --offwhite-light-theme: #d6d9e1; /* Off White (Light) */
-    --lightgray-light-theme: #a1b2c1; /* Light Gray */
-    --gray-medium-light-theme: #7f8c8d; /* Medium Light Gray */
-    --lightblue-light-theme: #53637d; /* Light Blue */
-    --blue-dark-light-theme: #3b4c6b; /* Dark Blue (Light) */
-    --grayblue-light-theme: #34495e; /* Light Gray-Blue */
-    --darkblue-light-theme: #2c3e50; /* Dark Light Blue */
-    --gray-light-theme: #1a1a1a; /* Light Gray (Main) */
-    --yellow-light-theme: #f1c40f; /* Light Yellow */
-    --bluebright-light-theme: #2980b9; /* Bright Light Blue */
-    --green-light-theme: #008a5c; /* Light Green */
-    --purple-light-theme: #9b59b6; /* Light Purple */
-    --orangebright-light-theme: #d35400; /* Bright Light Orange */
+    --bg: #0a0a0a;
+    --bg-elevated: #121212;
+    --bg-overlay: rgba(10, 10, 10, 0.85);
+    --surface: rgba(20, 20, 20, 0.6);
+    --surface-strong: rgba(30, 30, 30, 0.85);
+    --surface-border: rgba(255, 255, 255, 0.08);
+    --surface-border-strong: rgba(255, 255, 255, 0.16);
+
+    --text: #f5f6f8;
+    --text-muted: #a1a9b4;
+    --text-dim: #6e7783;
+
+    --danger: #ff5470;
+    --warning: #ffb547;
+
+    --radius-xs: 4px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-xl: 32px;
+    --radius-full: 9999px;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 32px rgba(0, 242, 161, 0.28);
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --space-7: 3rem;
+    --space-8: 4rem;
+    --space-9: 6rem;
+    --space-10: 8rem;
+
+    --font-display: 'Cinzel', 'Playfair Display', serif;
+    --font-body: 'Lato', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'Fira Code', Consolas, monospace;
+
+    --text-xs: clamp(0.72rem, 0.68rem + 0.15vw, 0.8rem);
+    --text-sm: clamp(0.82rem, 0.78rem + 0.2vw, 0.92rem);
+    --text-base: clamp(0.95rem, 0.9rem + 0.25vw, 1.05rem);
+    --text-lg: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
+    --text-xl: clamp(1.3rem, 1.15rem + 0.6vw, 1.6rem);
+    --text-2xl: clamp(1.6rem, 1.4rem + 0.9vw, 2.1rem);
+    --text-3xl: clamp(2rem, 1.7rem + 1.4vw, 2.8rem);
+    --text-4xl: clamp(2.6rem, 2rem + 2.2vw, 3.8rem);
+    --text-5xl: clamp(3rem, 2.2rem + 3vw, 5rem);
+    --text-6xl: clamp(3.5rem, 2.5rem + 4vw, 6.5rem);
+
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --duration-fast: 160ms;
+    --duration-normal: 280ms;
+    --duration-slow: 520ms;
+
+    --container: min(90rem, 100% - 2rem);
+    --container-narrow: min(60rem, 100% - 2rem);
+
+    --z-base: 1;
+    --z-raised: 10;
+    --z-sticky: 40;
+    --z-navbar: 50;
+    --z-overlay: 90;
+    --z-modal: 100;
+    --z-cursor: 9999;
+
+    color-scheme: dark;
+}
+
+body.light-theme {
+    --bg: #f4f5f7;
+    --bg-elevated: #ffffff;
+    --bg-overlay: rgba(244, 245, 247, 0.85);
+    --surface: rgba(255, 255, 255, 0.7);
+    --surface-strong: rgba(255, 255, 255, 0.92);
+    --surface-border: rgba(0, 0, 0, 0.08);
+    --surface-border-strong: rgba(0, 0, 0, 0.16);
+    --text: #0f1115;
+    --text-muted: #4a525f;
+    --text-dim: #8a929c;
+    --accent: #008a5c;
+    --accent-bright: #00a86b;
+    --accent-muted: rgba(0, 138, 92, 0.5);
+    --accent-glow: rgba(0, 138, 92, 0.25);
+    --accent-contrast: #ffffff;
+    --shadow-glow: 0 0 32px rgba(0, 138, 92, 0.22);
+    color-scheme: light;
+}
+
+/* Legacy aliases — kept for SCSS files not yet migrated */
+:root {
+    --gray-dark-theme: #1a1a1a;
+    --green-dark-theme: var(--accent);
+    --green-light-theme: #008a5c;
+    --green-l: #008a5c;
+    --green-d: var(--accent);
+    --palegray-light-theme: #ecf0f1;
+    --palegray-dark-theme: #f0f2f5;
+    --gray-medium-dark-theme: #7f8c8d;
+    --lightgray-dark-theme: #a1b2c1;
+    --offwhite-light-theme: #d6d9e1;
+    --orange: #f57c00;
 }
