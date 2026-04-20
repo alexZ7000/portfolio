@@ -1,0 +1,50 @@
+{
+    "subText": "Desenvolvedor de Software | Especialista em React | Soluções Criativas",
+    "heroEyebrow": "Full-stack forjado no fogo",
+    "contactButton": "Entre em Contato",
+    "breatheFire": "Cuspir Fogo",
+
+    "navHome": "Início",
+    "navAbout": "Sobre Mim",
+    "navWork": "Experiência",
+    "navCertificates": "Certificados",
+    "navContact": "Contato",
+
+    "heroTitle": "Liberando soluções poderosas com precisão e maestria.",
+
+    "aboutTitle": "Sobre Mim",
+    "aboutText": "Sou um desenvolvedor de software apaixonado por criar soluções inovadoras e eficientes. Com experiência em desenvolvimento web, busco sempre aprender novas tecnologias e aprimorar minhas habilidades para entregar produtos de alta qualidade que resolvem problemas reais.",
+    "skillsTitle": "Minhas Habilidades",
+
+    "workExperienceTitle": "Experiência Profissional",
+    "tabProfessional": "Profissional",
+    "tabAcademic": "Acadêmicos",
+    "tabPersonal": "Pessoais",
+
+    "exp1Title": "Desenvolvedor Front-end Pleno",
+    "exp1Company": "Empresa Incrível",
+    "exp1Period": "JAN 2022 - Presente",
+    "exp1Description": "Desenvolvimento e manutenção de aplicações web de larga escala utilizando React e TypeScript, focado em performance e experiência do usuário.",
+
+    "exp2Title": "Sistema de Gerenciamento Acadêmico",
+    "exp2Company": "Universidade Exemplo",
+    "exp2Period": "2021",
+    "exp2Description": "Projeto de conclusão de curso para um sistema de gerenciamento de notas e matrículas, desenvolvido em equipe utilizando metodologias ágeis.",
+
+    "exp3Title": "Este Portfólio",
+    "exp3Company": "Projeto Pessoal",
+    "exp3Period": "2024",
+    "exp3Description": "Meu portfólio pessoal construído com as tecnologias mais modernas do ecossistema React para demonstrar minhas habilidades.",
+
+    "contactTitle": "Contato",
+    "jobTitle": "Desenvolvedor de Software",
+    "copySuccess": "Email copiado para a área de transferência!",
+    "copyButton": "Copiar e-mail para a área de transferência",
+
+    "errorText": "Este endpoint não corresponde a nenhum outro em nosso servidor. Por favor, insira um endpoint válido para continuar",
+    "errorButton": "Clique aqui para voltar à página inicial",
+    "contactFooter": "Projetado & Forjado em Código por alexZ7000 © 2026",
+    "certificatesTitle": "Artefatos & Certificações",
+    "certificatesSubtitle": "Conhecimento forjado no fogo da disciplina.",
+    "viewCertificate": "Inspecionar Artefato"
+}
