@@ -50,11 +50,15 @@
         cursor: pointer;
 
         img {
-            height: 3rem;
+            height: 4.5rem;
             width: auto;
 
             @media (min-width: 768px) {
-                height: 4rem;
+                height: 5.5rem;
+            }
+
+            @media (min-width: 1280px) {
+                height: 6.5rem;
             }
         }
     }

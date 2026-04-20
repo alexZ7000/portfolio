@@ -1,14 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { mockMatchMedia, MatchMediaMock } from '../../../testing/test-helpers';
+import { afterEach, describe, expect, it } from 'vitest';
 import { ThemeService } from './theme';
 
 describe('ThemeService', () => {
-    let mm: MatchMediaMock;
-
     afterEach(() => {
-        mm?.restore();
         document.body.className = '';
     });
 
@@ -19,34 +15,22 @@ describe('ThemeService', () => {
         return TestBed.inject(ThemeService);
     }
 
-    describe('initial detection', () => {
-        it('starts in dark mode when prefers-color-scheme: dark matches', () => {
-            mm = mockMatchMedia(true);
+    describe('initial state', () => {
+        it('boots in dark mode and applies the dark-theme body class', () => {
             const svc = provide('browser');
             expect(svc.isDarkTheme()).toBe(true);
             expect(document.body.classList.contains('dark-theme')).toBe(true);
             expect(document.body.classList.contains('light-theme')).toBe(false);
         });
-
-        it('starts in light mode when prefers-color-scheme: dark does not match', () => {
-            mm = mockMatchMedia(false);
-            const svc = provide('browser');
-            expect(svc.isDarkTheme()).toBe(false);
-            expect(document.body.classList.contains('light-theme')).toBe(true);
-            expect(document.body.classList.contains('dark-theme')).toBe(false);
-        });
     });
 
     describe('toggle()', () => {
-        beforeEach(() => {
-            mm = mockMatchMedia(true);
-        });
-
         it('flips the theme and updates body classes', () => {
             const svc = provide('browser');
             svc.toggle();
             expect(svc.isDarkTheme()).toBe(false);
             expect(document.body.classList.contains('light-theme')).toBe(true);
+            expect(document.body.classList.contains('dark-theme')).toBe(false);
 
             svc.toggle();
             expect(svc.isDarkTheme()).toBe(true);
@@ -54,21 +38,8 @@ describe('ThemeService', () => {
         });
     });
 
-    describe('OS preference change', () => {
-        it('updates the signal when the media query emits a change', () => {
-            mm = mockMatchMedia(true);
-            const svc = provide('browser');
-            expect(svc.isDarkTheme()).toBe(true);
-
-            mm.setMatches(false);
-            expect(svc.isDarkTheme()).toBe(false);
-            expect(document.body.classList.contains('light-theme')).toBe(true);
-        });
-    });
-
     describe('SSR safety', () => {
-        it('does not touch matchMedia or document.body when on the server', () => {
-            mm = mockMatchMedia(true);
+        it('does not touch document.body when on the server', () => {
             const svc = provide('server');
             expect(svc.isDarkTheme()).toBe(true);
             expect(document.body.classList.contains('dark-theme')).toBe(false);

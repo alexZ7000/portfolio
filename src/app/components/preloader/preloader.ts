@@ -73,8 +73,10 @@ export class PreloaderComponent implements AfterViewInit {
 
         svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
         const paths = Array.from(svg.querySelectorAll('path'));
-        const color = this.theme.isDarkTheme() ? '#00f2a1' : '#006400';
-        const fillColor = this.theme.isDarkTheme() ? '#00f2a1' : '#006400';
+        const accent = getComputedStyle(document.body).getPropertyValue('--accent').trim();
+        const fallback = this.theme.isDarkTheme() ? '#00f2a1' : '#006400';
+        const color = accent || fallback;
+        const fillColor = color;
 
         gsap.set(paths, {
             strokeDasharray: (_, t) => (t as SVGPathElement).getTotalLength(),

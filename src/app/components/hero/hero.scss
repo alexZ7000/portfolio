@@ -88,17 +88,21 @@
         margin: 0;
 
         background: linear-gradient(
-            135deg,
+            90deg,
             var(--text) 0%,
-            var(--text-muted) 25%,
-            var(--accent) 55%,
+            var(--text-muted) 20%,
+            var(--accent) 50%,
+            var(--text-muted) 80%,
             var(--text) 100%
         );
-        background-size: 200% auto;
+        background-size: 200% 100%;
+        background-repeat: repeat-x;
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
-        animation: hero-shine 6s linear infinite;
+        color: transparent;
+        animation: hero-shine 8s linear infinite;
+        will-change: background-position;
     }
 
     &__subtitle {
@@ -208,8 +212,8 @@
 }
 
 @keyframes hero-shine {
-    0% { background-position: 0 center; }
-    100% { background-position: 200% center; }
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
 }
 
 @keyframes scroll-pulse {

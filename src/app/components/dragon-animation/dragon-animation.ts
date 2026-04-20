@@ -34,63 +34,71 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
 
     private gsapApi: GsapApi | undefined;
     private ctx: gsap.Context | undefined;
+    private scrollTriggerApi: { kill: () => void }[] = [];
     private isBreathingFire = false;
-    private blinkTimer: ReturnType<typeof setTimeout> | undefined;
-    private idleTimer: ReturnType<typeof setTimeout> | undefined;
 
     async ngAfterViewInit() {
         if (!isPlatformBrowser(this.platformId)) return;
 
-        const { gsap } = await import('gsap');
+        const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+            import('gsap'),
+            import('gsap/ScrollTrigger'),
+        ]);
+        gsap.registerPlugin(ScrollTrigger);
         this.gsapApi = gsap;
 
         effect(
             () => {
                 const isDark = this.themeService.isDarkTheme();
-                if (this.dragonSvg) this.initAnimation(isDark);
+                if (this.dragonSvg) this.initAnimation(isDark, ScrollTrigger);
             },
             { injector: this.injector },
         );
 
-        this.destroyRef.onDestroy(() => {
-            this.ctx?.revert();
-            clearTimeout(this.blinkTimer);
-            clearTimeout(this.idleTimer);
-            window.removeEventListener('mousemove', this.handleMouseMove);
-        });
+        this.destroyRef.onDestroy(() => this.cleanup());
     }
 
     ngOnDestroy() {
+        this.cleanup();
+    }
+
+    private cleanup() {
         this.ctx?.revert();
-        clearTimeout(this.blinkTimer);
-        clearTimeout(this.idleTimer);
+        this.scrollTriggerApi.forEach((t) => t.kill());
+        this.scrollTriggerApi = [];
         if (isPlatformBrowser(this.platformId)) {
             window.removeEventListener('mousemove', this.handleMouseMove);
         }
     }
 
-    private initAnimation(isDarkTheme: boolean) {
+    private initAnimation(isDarkTheme: boolean, ScrollTrigger: typeof import('gsap/ScrollTrigger').ScrollTrigger) {
         const gsap = this.gsapApi;
         if (!gsap) return;
 
         this.ctx?.revert();
-        clearTimeout(this.blinkTimer);
+        this.scrollTriggerApi.forEach((t) => t.kill());
+        this.scrollTriggerApi = [];
 
         this.ctx = gsap.context(() => {
             const svg = this.dragonSvg.nativeElement;
-            const wrapper = svg.querySelector('#dragon-wrapper');
-            const geometryGroup = svg.querySelector('#dragon-geometry');
+            const wrapper = svg.querySelector('#dragon-wrapper') as SVGGElement | null;
+            const geometryGroup = svg.querySelector('#dragon-geometry') as SVGGElement | null;
             const paths = svg.querySelectorAll('path');
-            const chestParts = svg.querySelectorAll('.dragon-chest');
-            const bellyParts = svg.querySelectorAll('.dragon-belly');
-            const torsoMain = svg.querySelector('#dragon-main-torso');
-            const pupil = svg.querySelector('#dragon-pupil');
-            const eyeWrapper = svg.querySelector('#eye-wrapper');
+            const fillablePaths = svg.querySelectorAll('path:not(#dragon-eye-outline)');
+            const eyeOutline = svg.querySelector('#dragon-eye-outline') as SVGPathElement | null;
+            const pupil = svg.querySelector('#dragon-pupil') as SVGCircleElement | null;
+            const eyeWrapper = svg.querySelector('#eye-wrapper') as SVGGElement | null;
 
             gsap.set(eyeWrapper, { scaleY: 1 });
-            gsap.set(pupil, { fill: isDarkTheme ? '#affff0' : '#000000' });
+            gsap.set(pupil, { fill: isDarkTheme ? '#affff0' : '#001a10' });
 
-            const mainColor = isDarkTheme ? '#00f2a1' : '#006400';
+            const bodyStyle = getComputedStyle(document.body);
+            const accent = bodyStyle.getPropertyValue('--accent').trim();
+            const bg = bodyStyle.getPropertyValue('--bg').trim();
+            const mainColor = accent || (isDarkTheme ? '#00f2a1' : '#006400');
+            const eyeFillColor = bg || (isDarkTheme ? '#0a0e14' : '#f3f4f6');
+            const fillColor = mainColor;
+            const glow = `drop-shadow(0 0 10px ${mainColor})`;
 
             gsap.set(paths, {
                 strokeDasharray: (_, target) => (target as SVGPathElement).getTotalLength(),
@@ -99,7 +107,7 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
                 strokeWidth: 35,
                 fill: 'transparent',
                 opacity: 1,
-                filter: 'drop-shadow(0px 0px 8px rgba(0, 242, 161, 0.5))',
+                filter: glow,
             });
             gsap.set(wrapper, { opacity: 1, scale: 0.8, y: 50 });
             gsap.set(geometryGroup, { fill: 'transparent' });
@@ -113,51 +121,48 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
                     stagger: 0.01,
                 })
                 .to(wrapper, { scale: 1, y: 0, duration: 2, ease: 'power2.out' }, '-=2.0')
-                .to(geometryGroup, { fill: mainColor, duration: 1, ease: 'power2.in' }, '-=0.5');
+                .to(
+                    fillablePaths,
+                    { fill: fillColor, duration: 1, ease: 'power2.inOut' },
+                    '-=1.2',
+                )
+                .to(
+                    paths,
+                    { strokeWidth: 8, duration: 0.8, ease: 'power2.out' },
+                    '<',
+                )
+                .to(geometryGroup, { fill: fillColor, duration: 0.5, ease: 'power2.out' }, '<')
+                .to(eyeOutline, { fill: eyeFillColor, duration: 0.6, ease: 'power2.out' }, '<');
 
-            const breathParts = [...Array.from(chestParts), ...Array.from(bellyParts), torsoMain];
-            if (breathParts.length) {
-                gsap.set(breathParts, { transformOrigin: '50% 60%' });
-                gsap.to(breathParts, {
-                    scale: 1.04,
-                    duration: 3,
-                    repeat: -1,
-                    yoyo: true,
-                    ease: 'sine.inOut',
-                });
-            }
-
-            gsap.to(wrapper, {
-                y: '-=15',
-                duration: 4,
-                repeat: -1,
-                yoyo: true,
-                ease: 'sine.inOut',
+            const scrollTween = gsap.to(wrapper, {
+                rotation: -10,
+                y: -60,
+                scale: 0.92,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: this.dragonSvg.nativeElement,
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 0.6,
+                    invalidateOnRefresh: true,
+                },
             });
+            if (scrollTween.scrollTrigger) this.scrollTriggerApi.push(scrollTween.scrollTrigger);
 
-            this.startBlinkingLoop();
+            const parallax = gsap.to(wrapper, {
+                yPercent: 12,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: this.dragonSvg.nativeElement,
+                    start: 'top 80%',
+                    end: 'bottom top',
+                    scrub: 1,
+                },
+            });
+            if (parallax.scrollTrigger) this.scrollTriggerApi.push(parallax.scrollTrigger);
+
             window.addEventListener('mousemove', this.handleMouseMove, { passive: true });
         }, this.dragonSvg);
-    }
-
-    private startBlinkingLoop() {
-        const gsap = this.gsapApi;
-        if (!gsap) return;
-
-        const blink = () => {
-            const eyeWrapper = this.dragonSvg?.nativeElement.querySelector('#eye-wrapper');
-            if (eyeWrapper) {
-                gsap.to(eyeWrapper, {
-                    scaleY: 0.1,
-                    duration: 0.15,
-                    yoyo: true,
-                    repeat: 1,
-                    onComplete: () => { gsap.set(eyeWrapper, { scaleY: 1 }); },
-                });
-            }
-            this.blinkTimer = setTimeout(blink, Math.random() * 4000 + 4000);
-        };
-        this.blinkTimer = setTimeout(blink, 2000);
     }
 
     private handleMouseMove = (event: MouseEvent) => {
@@ -179,6 +184,7 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             y: yPos * 25,
             duration: 1.5,
             ease: 'power2.out',
+            overwrite: 'auto',
         });
 
         if (!pupil || !eyeOutline) return;
@@ -195,11 +201,6 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
         const pupilY = Math.sin(angle) * moveDistance * 1.2;
 
         gsap.to(pupil, { x: -pupilX, y: -pupilY, duration: 0.1, overwrite: 'auto' });
-
-        clearTimeout(this.idleTimer);
-        this.idleTimer = setTimeout(() => {
-            gsap.to(pupil, { x: 0, y: 0, duration: 1, ease: 'power2.inOut' });
-        }, 2000);
     };
 
     onDragonClick() {

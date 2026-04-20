@@ -25,11 +25,12 @@ describe('AppComponent', () => {
         expect(fixture.componentInstance).toBeTruthy();
     });
 
-    it('renders the preloader, navbar, custom cursor and toaster shell', () => {
+    it('renders the preloader, navbar, custom cursor, storage gate and toaster shell', () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
 
         const root = fixture.nativeElement as HTMLElement;
+        expect(root.querySelector('app-storage-gate')).toBeTruthy();
         expect(root.querySelector('app-preloader')).toBeTruthy();
         expect(root.querySelector('app-custom-cursor')).toBeTruthy();
         expect(root.querySelector('app-navbar')).toBeTruthy();

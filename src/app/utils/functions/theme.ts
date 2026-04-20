@@ -1,22 +1,15 @@
-import { DestroyRef, Injectable, inject, PLATFORM_ID, signal } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
     private platformId = inject(PLATFORM_ID);
-    private destroyRef = inject(DestroyRef);
 
     isDarkTheme = signal<boolean>(true);
 
     constructor() {
         if (!isPlatformBrowser(this.platformId)) return;
-
-        const media = window.matchMedia('(prefers-color-scheme: dark)');
-        this.setTheme(media.matches);
-
-        const onChange = (e: MediaQueryListEvent) => this.setTheme(e.matches);
-        media.addEventListener('change', onChange);
-        this.destroyRef.onDestroy(() => media.removeEventListener('change', onChange));
+        this.setTheme(true);
     }
 
     toggle() {
@@ -28,5 +21,8 @@ export class ThemeService {
         const { classList } = document.body;
         classList.toggle('dark-theme', isDark);
         classList.toggle('light-theme', !isDark);
+
+        const favicon = document.getElementById('favicon') as HTMLLinkElement | null;
+        if (favicon) favicon.href = isDark ? 'dragonWhite.svg' : 'dragonBlack.svg';
     }
 }

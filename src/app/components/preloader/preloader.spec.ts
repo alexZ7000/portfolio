@@ -55,6 +55,7 @@ describe('PreloaderComponent', () => {
             fetchMock = mockFetch(() => ({ status: 500, statusText: 'Server Error' }));
             const { fixture, component } = setup('browser');
             await fixture.whenStable();
+            for (let i = 0; i < 10; i++) await Promise.resolve();
             expect(component.done()).toBe(true);
             expect(component.hidden()).toBe(true);
         });
