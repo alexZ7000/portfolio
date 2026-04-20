@@ -7,13 +7,23 @@
     background: radial-gradient(circle at 50% 30%, rgba(0, 242, 161, 0.18), rgba(10, 10, 10, 0.96));
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    padding: 2rem;
+    padding: 1rem;
+
+    @media (min-width: 640px) {
+        padding: 2rem;
+    }
 
     &__panel {
         max-width: 32rem;
-        padding: 2.5rem 2rem;
+        width: 100%;
+        padding: 1.75rem 1.5rem;
         text-align: center;
-        border-radius: 1.5rem;
+        border-radius: 1.25rem;
+
+        @media (min-width: 640px) {
+            padding: 2.5rem 2rem;
+            border-radius: 1.5rem;
+        }
         border: 1px solid rgba(0, 242, 161, 0.35);
         background: rgba(15, 17, 21, 0.92);
         box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
@@ -32,10 +42,11 @@
 
     &__title {
         font-family: 'Cinzel', serif;
-        font-size: 1.75rem;
+        font-size: clamp(1.25rem, 1rem + 1.2vw, 1.75rem);
         letter-spacing: 0.08em;
         text-transform: uppercase;
         margin: 0;
+        word-break: break-word;
     }
 
     &__body {
@@ -47,7 +58,8 @@
 
     &__retry {
         margin-top: 0.5rem;
-        padding: 0.75rem 1.75rem;
+        padding: 0.75rem 1.5rem;
+        min-height: 2.75rem;
         border-radius: 0.5rem;
         border: 1px solid #00f2a1;
         background: transparent;

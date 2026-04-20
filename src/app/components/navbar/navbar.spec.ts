@@ -116,7 +116,7 @@ describe('Navbar', () => {
             const theme = TestBed.inject(ThemeService);
             const logo = (fixture.nativeElement as HTMLElement).querySelector('img') as HTMLImageElement;
             expect(logo.getAttribute('src')).toBe(
-                theme.isDarkTheme() ? 'assets/logoWhite.svg' : 'assets/logoBlack.svg',
+                theme.isDarkTheme() ? 'assets/logoWhite.png' : 'assets/logoBlack.png',
             );
         });
     });

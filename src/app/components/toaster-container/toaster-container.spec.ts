@@ -62,14 +62,18 @@ describe('ToasterContainer', () => {
         });
     });
 
-    describe('icon mapping', () => {
-        it('exposes lucide icon symbols keyed by toast type', () => {
-            const { component } = setup();
-            expect(component.icons.success).toBeDefined();
-            expect(component.icons.error).toBeDefined();
-            expect(component.icons.info).toBeDefined();
-            expect(component.icons.success).not.toBe(component.icons.error);
-            expect(component.icons.error).not.toBe(component.icons.info);
+    describe('icon rendering', () => {
+        it('renders a distinct inline svg icon for each toast type', () => {
+            const { fixture, toaster } = setup();
+            toaster.success('a');
+            toaster.error('b');
+            toaster.info('c');
+            fixture.detectChanges();
+
+            const toasts = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>('.toast');
+            for (const toast of Array.from(toasts)) {
+                expect(toast.querySelector('.icon svg')).toBeTruthy();
+            }
         });
     });
 });

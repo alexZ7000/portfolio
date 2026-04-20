@@ -4,11 +4,19 @@
 
 .contact {
     position: relative;
-    padding: var(--space-9) var(--space-4);
+    padding: var(--space-7) var(--space-4);
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow: hidden;
+
+    @media (min-width: 768px) {
+        padding: var(--space-8) var(--space-5);
+    }
+
+    @media (min-width: 1024px) {
+        padding: var(--space-9) var(--space-5);
+    }
 
     &__glow {
         position: absolute;
@@ -56,9 +64,15 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: var(--space-5);
-    padding: var(--space-6);
+    gap: var(--space-4);
+    padding: var(--space-5);
     border-radius: var(--radius-md);
+    min-height: 4.5rem;
+
+    @media (min-width: 640px) {
+        gap: var(--space-5);
+        padding: var(--space-6);
+    }
     background: var(--surface);
     border: 1px solid var(--surface-border);
     backdrop-filter: blur(10px);
@@ -72,14 +86,20 @@
 
     &__icon-wrap {
         flex-shrink: 0;
-        width: 3.25rem;
-        height: 3.25rem;
+        width: 2.75rem;
+        height: 2.75rem;
         border-radius: 50%;
         border: 2px solid var(--contact-color);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: var(--text-xl);
+        font-size: var(--text-lg);
+
+        @media (min-width: 640px) {
+            width: 3.25rem;
+            height: 3.25rem;
+            font-size: var(--text-xl);
+        }
         color: var(--contact-color);
         background: color-mix(in srgb, var(--contact-color) 8%, transparent);
         transition: transform var(--duration-normal) var(--ease-bounce),

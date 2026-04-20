@@ -170,7 +170,7 @@ ul, ol {
     color: var(--accent-contrast);
 }
 
-@media (hover: hover) and (pointer: fine) {
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
     html, body, a, button, input, textarea, select, [role='button'], .pointer {
         cursor: none;
     }
@@ -195,14 +195,24 @@ ul, ol {
     font-family: var(--font-display);
     font-size: var(--text-4xl);
     font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: 0.25em;
+    line-height: 1.15;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: var(--space-7);
+    margin-bottom: var(--space-6);
     text-align: center;
     color: var(--text);
     position: relative;
     display: inline-block;
+    word-break: break-word;
+
+    @media (min-width: 640px) {
+        letter-spacing: 0.2em;
+        margin-bottom: var(--space-7);
+    }
+
+    @media (min-width: 1024px) {
+        letter-spacing: 0.25em;
+    }
 
     &::after {
         content: '';

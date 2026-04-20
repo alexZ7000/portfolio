@@ -5,12 +5,24 @@
 .certs {
     width: var(--container);
     margin-inline: auto;
-    padding: var(--space-9) var(--space-4);
+    padding: var(--space-7) var(--space-4);
     perspective: 1200px;
+
+    @media (min-width: 768px) {
+        padding: var(--space-8) var(--space-5);
+    }
+
+    @media (min-width: 1024px) {
+        padding: var(--space-9) var(--space-5);
+    }
 
     &__header {
         text-align: center;
-        margin-bottom: var(--space-8);
+        margin-bottom: var(--space-7);
+
+        @media (min-width: 768px) {
+            margin-bottom: var(--space-8);
+        }
     }
 
     &__title-icon {
@@ -44,18 +56,27 @@
 
 .cert-card-wrapper {
     perspective: 1200px;
-    min-height: 22rem;
+    min-height: 18rem;
     list-style: none;
+
+    @media (min-width: 768px) {
+        min-height: 22rem;
+    }
 }
 
 .cert-card {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: var(--space-4);
+    gap: var(--space-3);
     width: 100%;
     height: 100%;
-    padding: var(--space-6);
+    padding: var(--space-5);
+
+    @media (min-width: 640px) {
+        gap: var(--space-4);
+        padding: var(--space-6);
+    }
     position: relative;
     background: var(--surface-strong);
     border: 1px solid var(--surface-border);
