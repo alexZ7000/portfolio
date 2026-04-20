@@ -46,10 +46,17 @@ export class CertificatesComponent implements AfterViewInit {
     async ngAfterViewInit() {
         if (!isPlatformBrowser(this.platformId)) return;
 
+        let destroyed = false;
+        this.destroyRef.onDestroy(() => {
+            destroyed = true;
+            this.gsapCtx?.revert();
+        });
+
         const [{ gsap }, { ScrollTrigger }] = await Promise.all([
             import('gsap'),
             import('gsap/ScrollTrigger'),
         ]);
+        if (destroyed) return;
         gsap.registerPlugin(ScrollTrigger);
         this.gsapApi = gsap;
 
@@ -63,8 +70,6 @@ export class CertificatesComponent implements AfterViewInit {
                 ease: 'power3.out',
             });
         });
-
-        this.destroyRef.onDestroy(() => this.gsapCtx?.revert());
     }
 
     onMouseMove(e: MouseEvent, index: number) {

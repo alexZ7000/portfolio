@@ -57,10 +57,18 @@ export class WorkExperience implements AfterViewInit {
     async ngAfterViewInit() {
         if (!isPlatformBrowser(this.platformId)) return;
 
+        let destroyed = false;
+        this.destroyRef.onDestroy(() => {
+            destroyed = true;
+            clearTimeout(this.pendingAnimationTimer);
+            this.gsapCtx?.revert();
+        });
+
         const [{ gsap }, { ScrollTrigger }] = await Promise.all([
             import('gsap'),
             import('gsap/ScrollTrigger'),
         ]);
+        if (destroyed) return;
         gsap.registerPlugin(ScrollTrigger);
         this.gsapApi = gsap;
 
@@ -76,11 +84,6 @@ export class WorkExperience implements AfterViewInit {
                 },
             );
             this.animateCardsIn();
-        });
-
-        this.destroyRef.onDestroy(() => {
-            clearTimeout(this.pendingAnimationTimer);
-            this.gsapCtx?.revert();
         });
     }
 

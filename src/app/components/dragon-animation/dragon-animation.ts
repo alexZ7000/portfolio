@@ -40,10 +40,17 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
     async ngAfterViewInit() {
         if (!isPlatformBrowser(this.platformId)) return;
 
+        let destroyed = false;
+        this.destroyRef.onDestroy(() => {
+            destroyed = true;
+            this.cleanup();
+        });
+
         const [{ gsap }, { ScrollTrigger }] = await Promise.all([
             import('gsap'),
             import('gsap/ScrollTrigger'),
         ]);
+        if (destroyed) return;
         gsap.registerPlugin(ScrollTrigger);
         this.gsapApi = gsap;
 
@@ -54,8 +61,6 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             },
             { injector: this.injector },
         );
-
-        this.destroyRef.onDestroy(() => this.cleanup());
     }
 
     ngOnDestroy() {
