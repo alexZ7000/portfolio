@@ -20,7 +20,11 @@ export class FooterComponent {
     private scroll = inject(ScrollService);
 
     readonly socials: readonly SocialLink[] = [
-        { icon: 'fa-brands fa-linkedin-in', url: 'https://linkedin.com/in/alelimafilho', label: 'LinkedIn' },
+        {
+            icon: 'fa-brands fa-linkedin-in',
+            url: 'https://linkedin.com/in/alelimafilho',
+            label: 'LinkedIn',
+        },
         { icon: 'fa-brands fa-github', url: 'https://github.com/alexZ7000', label: 'GitHub' },
         { icon: 'fa-brands fa-whatsapp', url: 'https://wa.me/5511955501739', label: 'WhatsApp' },
     ];

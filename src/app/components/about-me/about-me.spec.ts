@@ -45,7 +45,9 @@ describe('AboutMe', () => {
 
         it('threads the per-skill brand colour into a CSS custom property', () => {
             const { fixture, component } = setup();
-            const card = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>('.skill-card');
+            const card = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(
+                '.skill-card',
+            );
             expect(card?.style.getPropertyValue('--skill-color')).toBe(component.skills[0].color);
         });
 

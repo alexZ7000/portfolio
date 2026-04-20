@@ -18,6 +18,10 @@ if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {
 
 if (typeof window !== 'undefined' && typeof window.requestAnimationFrame !== 'function') {
     window.requestAnimationFrame = ((cb: FrameRequestCallback) =>
-        setTimeout(() => cb(performance.now()), 16) as unknown as number) as typeof window.requestAnimationFrame;
-    window.cancelAnimationFrame = ((id: number) => clearTimeout(id)) as typeof window.cancelAnimationFrame;
+        setTimeout(
+            () => cb(performance.now()),
+            16,
+        ) as unknown as number) as typeof window.requestAnimationFrame;
+    window.cancelAnimationFrame = ((id: number) =>
+        clearTimeout(id)) as typeof window.cancelAnimationFrame;
 }

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    OnInit,
+    PLATFORM_ID,
+    inject,
+    signal,
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 interface Ember {
@@ -50,14 +57,34 @@ interface Ember {
                 will-change: transform, opacity;
             }
 
-            .ember.near { filter: blur(0); opacity: 0.8; z-index: 2; }
-            .ember.far { filter: blur(4px); opacity: 0.4; z-index: 0; }
+            .ember.near {
+                filter: blur(0);
+                opacity: 0.8;
+                z-index: 2;
+            }
+            .ember.far {
+                filter: blur(4px);
+                opacity: 0.4;
+                z-index: 0;
+            }
 
             @keyframes rise {
-                0% { bottom: -10px; transform: translateX(0); opacity: 0; }
-                20% { opacity: 1; }
-                50% { transform: translateX(-20px); }
-                100% { bottom: 110vh; transform: translateX(20px); opacity: 0; }
+                0% {
+                    bottom: -10px;
+                    transform: translateX(0);
+                    opacity: 0;
+                }
+                20% {
+                    opacity: 1;
+                }
+                50% {
+                    transform: translateX(-20px);
+                }
+                100% {
+                    bottom: 110vh;
+                    transform: translateX(20px);
+                    opacity: 0;
+                }
             }
         `,
     ],

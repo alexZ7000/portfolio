@@ -1,10 +1,6 @@
 <header class="navbar" [class.is-scrolled]="isScrolled()" [class.is-menu-open]="isMobileMenuOpen()">
     <div class="navbar__inner">
-        <button
-            class="navbar__logo"
-            type="button"
-            (click)="scrollTo('home')"
-            aria-label="Home">
+        <button class="navbar__logo" type="button" (click)="scrollTo('home')" aria-label="Home">
             <img
                 [src]="themeService.isDarkTheme() ? 'assets/logoWhite.png' : 'assets/logoBlack.png'"
                 alt="Alessandro Lima"
@@ -13,10 +9,26 @@
 
         <nav class="navbar__nav navbar__nav--desktop" aria-label="Primary">
             <ul class="navbar__links">
-                <li><button type="button" (click)="scrollTo('about-me')">{{ 'navAbout' | translate }}</button></li>
-                <li><button type="button" (click)="scrollTo('work-experience')">{{ 'navWork' | translate }}</button></li>
-                <li><button type="button" (click)="scrollTo('certificates')">{{ 'navCertificates' | translate }}</button></li>
-                <li><button type="button" (click)="scrollTo('contact')">{{ 'navContact' | translate }}</button></li>
+                <li>
+                    <button type="button" (click)="scrollTo('about-me')">
+                        {{ 'navAbout' | translate }}
+                    </button>
+                </li>
+                <li>
+                    <button type="button" (click)="scrollTo('work-experience')">
+                        {{ 'navWork' | translate }}
+                    </button>
+                </li>
+                <li>
+                    <button type="button" (click)="scrollTo('certificates')">
+                        {{ 'navCertificates' | translate }}
+                    </button>
+                </li>
+                <li>
+                    <button type="button" (click)="scrollTo('contact')">
+                        {{ 'navContact' | translate }}
+                    </button>
+                </li>
             </ul>
             <app-language-switcher></app-language-switcher>
         </nav>
@@ -26,18 +38,40 @@
             type="button"
             (click)="toggleMobileMenu()"
             [attr.aria-expanded]="isMobileMenuOpen()"
-            [attr.aria-label]="isMobileMenuOpen() ? 'Close menu' : 'Open menu'">
-            <i class="fas" [class.fa-bars]="!isMobileMenuOpen()" [class.fa-times]="isMobileMenuOpen()" aria-hidden="true"></i>
+            [attr.aria-label]="isMobileMenuOpen() ? 'Close menu' : 'Open menu'"
+        >
+            <i
+                class="fas"
+                [class.fa-bars]="!isMobileMenuOpen()"
+                [class.fa-times]="isMobileMenuOpen()"
+                aria-hidden="true"
+            ></i>
         </button>
     </div>
 
     @if (isMobileMenuOpen()) {
         <nav class="navbar__mobile" aria-label="Mobile">
             <ul class="navbar__links navbar__links--mobile">
-                <li><button type="button" (click)="scrollTo('about-me')">{{ 'navAbout' | translate }}</button></li>
-                <li><button type="button" (click)="scrollTo('work-experience')">{{ 'navWork' | translate }}</button></li>
-                <li><button type="button" (click)="scrollTo('certificates')">{{ 'navCertificates' | translate }}</button></li>
-                <li><button type="button" (click)="scrollTo('contact')">{{ 'navContact' | translate }}</button></li>
+                <li>
+                    <button type="button" (click)="scrollTo('about-me')">
+                        {{ 'navAbout' | translate }}
+                    </button>
+                </li>
+                <li>
+                    <button type="button" (click)="scrollTo('work-experience')">
+                        {{ 'navWork' | translate }}
+                    </button>
+                </li>
+                <li>
+                    <button type="button" (click)="scrollTo('certificates')">
+                        {{ 'navCertificates' | translate }}
+                    </button>
+                </li>
+                <li>
+                    <button type="button" (click)="scrollTo('contact')">
+                        {{ 'navContact' | translate }}
+                    </button>
+                </li>
             </ul>
             <div class="navbar__mobile-switcher">
                 <app-language-switcher></app-language-switcher>

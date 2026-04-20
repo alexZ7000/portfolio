@@ -10,7 +10,10 @@ describe('StorageGateComponent', () => {
 
     beforeEach(() => {
         originalLocalStorage = Object.getOwnPropertyDescriptor(window, 'localStorage');
-        originalCookieEnabled = Object.getOwnPropertyDescriptor(Navigator.prototype, 'cookieEnabled');
+        originalCookieEnabled = Object.getOwnPropertyDescriptor(
+            Navigator.prototype,
+            'cookieEnabled',
+        );
     });
 
     afterEach(() => {

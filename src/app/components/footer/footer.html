@@ -1,6 +1,11 @@
 <footer class="main-footer">
     <div class="dragon-body-layer layer-back">
-        <svg class="dragon-svg" preserveAspectRatio="none" viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg">
+        <svg
+            class="dragon-svg"
+            preserveAspectRatio="none"
+            viewBox="0 0 1200 120"
+            xmlns="http://www.w3.org/2000/svg"
+        >
             <path
                 class="dragon-spine"
                 d="M0,120 C150,120 200,60 400,60 C600,60 700,100 900,100 C1100,100 1150,80 1200,120 L1200,150 L0,150 Z"
@@ -10,7 +15,12 @@
     </div>
 
     <div class="dragon-body-layer layer-front">
-        <svg class="dragon-svg" preserveAspectRatio="none" viewBox="0 0 1200 150" xmlns="http://www.w3.org/2000/svg">
+        <svg
+            class="dragon-svg"
+            preserveAspectRatio="none"
+            viewBox="0 0 1200 150"
+            xmlns="http://www.w3.org/2000/svg"
+        >
             <defs>
                 <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%" stop-color="#0a0a0a" stop-opacity="1" />
@@ -55,7 +65,12 @@
         <div class="text-group">
             <div class="social-links">
                 @for (social of socials; track social.url) {
-                    <a [href]="social.url" target="_blank" rel="noopener noreferrer" [attr.aria-label]="social.label">
+                    <a
+                        [href]="social.url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        [attr.aria-label]="social.label"
+                    >
                         <i [class]="social.icon"></i>
                     </a>
                 }

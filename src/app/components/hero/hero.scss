@@ -61,7 +61,6 @@
         }
     }
 
-
     &__content {
         width: 100%;
         max-width: 36rem;
@@ -104,9 +103,9 @@
     }
 
     &__title {
-        font-family: var(--font-display);
+        font-family: var(--font-display), serif;
         font-weight: 900;
-        font-size: var(--text-6xl);
+        font-size: var(--text-5xl);
         line-height: 1.05;
         letter-spacing: -0.02em;
         text-transform: uppercase;
@@ -200,10 +199,11 @@
     text-transform: uppercase;
     border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: transform var(--duration-normal) var(--ease-out),
-                box-shadow var(--duration-normal) var(--ease-out),
-                background var(--duration-normal) var(--ease-out),
-                color var(--duration-normal) var(--ease-out);
+    transition:
+        transform var(--duration-normal) var(--ease-out),
+        box-shadow var(--duration-normal) var(--ease-out),
+        background var(--duration-normal) var(--ease-out),
+        color var(--duration-normal) var(--ease-out);
     position: relative;
     overflow: hidden;
     border: 1px solid transparent;
@@ -212,7 +212,9 @@
         background: transparent;
         color: var(--accent);
         border-color: var(--accent);
-        box-shadow: 0 0 0 rgba(0, 242, 161, 0), inset 0 0 0 rgba(0, 242, 161, 0);
+        box-shadow:
+            0 0 0 rgba(0, 242, 161, 0),
+            inset 0 0 0 rgba(0, 242, 161, 0);
 
         &::before {
             content: '';
@@ -225,7 +227,9 @@
 
         &:hover {
             background: var(--accent-glow);
-            box-shadow: var(--shadow-glow), inset 0 0 24px var(--accent-glow);
+            box-shadow:
+                var(--shadow-glow),
+                inset 0 0 24px var(--accent-glow);
             transform: translateY(-2px);
             color: var(--accent-bright);
 
@@ -249,12 +253,22 @@
 }
 
 @keyframes hero-shine {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 200% 50%; }
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 200% 50%;
+    }
 }
 
 @keyframes scroll-pulse {
-    0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
-    50% { opacity: 1; transform: scaleY(1); }
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: scaleY(0.6);
+    }
+    50% {
+        opacity: 1;
+        transform: scaleY(1);
+    }
 }
-

@@ -11,7 +11,8 @@
                 [attr.aria-controls]="'xp-panel-professional'"
                 class="xp__tab"
                 [class.is-active]="activeTab() === 'professional'"
-                (click)="setActiveTab('professional')">
+                (click)="setActiveTab('professional')"
+            >
                 <i class="fa-solid fa-briefcase xp__tab-icon" aria-hidden="true"></i>
                 <span>{{ 'tabProfessional' | translate }}</span>
                 <span class="xp__tab-bar" aria-hidden="true"></span>
@@ -23,7 +24,8 @@
                 [attr.aria-controls]="'xp-panel-academic'"
                 class="xp__tab"
                 [class.is-active]="activeTab() === 'academic'"
-                (click)="setActiveTab('academic')">
+                (click)="setActiveTab('academic')"
+            >
                 <i class="fa-solid fa-graduation-cap xp__tab-icon" aria-hidden="true"></i>
                 <span>{{ 'tabAcademic' | translate }}</span>
                 <span class="xp__tab-bar" aria-hidden="true"></span>
@@ -35,7 +37,8 @@
                 [attr.aria-controls]="'xp-panel-personal'"
                 class="xp__tab"
                 [class.is-active]="activeTab() === 'personal'"
-                (click)="setActiveTab('personal')">
+                (click)="setActiveTab('personal')"
+            >
                 <i class="fa-solid fa-dragon xp__tab-icon" aria-hidden="true"></i>
                 <span>{{ 'tabPersonal' | translate }}</span>
                 <span class="xp__tab-bar" aria-hidden="true"></span>
@@ -46,7 +49,8 @@
             role="tabpanel"
             [attr.id]="'xp-panel-' + activeTab()"
             [attr.aria-labelledby]="'xp-tab-' + activeTab()"
-            class="xp__panel">
+            class="xp__panel"
+        >
             @for (exp of filteredExperiences(); track exp.translationKeyIndex; let i = $index) {
                 <article #cardRef class="xp-card" [style.animation-delay]="i * 0.1 + 's'">
                     <span class="xp-card__glow" aria-hidden="true"></span>

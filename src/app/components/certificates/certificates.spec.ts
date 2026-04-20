@@ -54,7 +54,9 @@ describe('CertificatesComponent', () => {
 
         it('marks cards as keyboard-reachable with role=button and tabindex=0', () => {
             const { fixture } = setup();
-            const card = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>('.cert-card');
+            const card = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(
+                '.cert-card',
+            );
             expect(card?.getAttribute('role')).toBe('button');
             expect(card?.getAttribute('tabindex')).toBe('0');
         });
@@ -64,7 +66,11 @@ describe('CertificatesComponent', () => {
         it('opens valid URLs in a new window with safe rel options', () => {
             const { component } = setup();
             component.openCertificate('https://example.com/cert');
-            expect(openSpy).toHaveBeenCalledWith('https://example.com/cert', '_blank', 'noopener,noreferrer');
+            expect(openSpy).toHaveBeenCalledWith(
+                'https://example.com/cert',
+                '_blank',
+                'noopener,noreferrer',
+            );
         });
 
         it('ignores placeholder "#" links to avoid opening blank tabs', () => {
@@ -85,10 +91,7 @@ describe('CertificatesComponent', () => {
         it('onMouseMove is a no-op when GSAP has not loaded (SSR fallback)', () => {
             const { component } = setup('server');
             expect(() =>
-                component.onMouseMove(
-                    new MouseEvent('mousemove', { clientX: 50, clientY: 50 }),
-                    0,
-                ),
+                component.onMouseMove(new MouseEvent('mousemove', { clientX: 50, clientY: 50 }), 0),
             ).not.toThrow();
         });
 

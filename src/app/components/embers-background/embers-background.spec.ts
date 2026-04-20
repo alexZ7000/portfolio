@@ -75,7 +75,9 @@ describe('EmbersBackgroundComponent', () => {
         it('skips the random generation so SSR markup stays empty', () => {
             const { fixture, component } = setup('server');
             expect(component.embers().length).toBe(0);
-            expect((fixture.nativeElement as HTMLElement).querySelectorAll('.ember').length).toBe(0);
+            expect((fixture.nativeElement as HTMLElement).querySelectorAll('.ember').length).toBe(
+                0,
+            );
         });
     });
 });

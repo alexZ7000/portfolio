@@ -10,7 +10,15 @@ import * as path from 'path';
 export class TranslateServerLoader implements TranslateLoader {
     getTranslation(lang: string): Observable<Record<string, string>> {
         const candidates = [
-            path.join(process.cwd(), 'dist', 'portfolio', 'browser', 'assets', 'i18n', `${lang}.json`),
+            path.join(
+                process.cwd(),
+                'dist',
+                'portfolio',
+                'browser',
+                'assets',
+                'i18n',
+                `${lang}.json`,
+            ),
             path.join(process.cwd(), 'src', 'assets', 'i18n', `${lang}.json`),
         ];
 

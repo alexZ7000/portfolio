@@ -72,7 +72,10 @@
         display: inline-flex;
         align-items: center;
         gap: 0.6rem;
-        transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+        transition:
+            background 180ms ease,
+            color 180ms ease,
+            transform 180ms ease;
 
         &:hover {
             background: rgba(0, 242, 161, 0.15);

@@ -107,7 +107,13 @@ export class CertificatesComponent implements AfterViewInit {
 
         const card = this.cardRefs.get(index)?.nativeElement;
         const glare = this.glareRefs.get(index)?.nativeElement;
-        if (card) gsap.to(card, { rotationX: 0, rotationY: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
+        if (card)
+            gsap.to(card, {
+                rotationX: 0,
+                rotationY: 0,
+                duration: 0.5,
+                ease: 'elastic.out(1, 0.5)',
+            });
         if (glare) gsap.to(glare, { opacity: 0, duration: 0.5 });
     }
 

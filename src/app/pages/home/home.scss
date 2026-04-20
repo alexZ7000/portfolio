@@ -4,13 +4,13 @@
     align-items: stretch;
     width: 100%;
     overflow-x: hidden;
-    gap: var(--space-9);
+    gap: var(--space-7);
 
     @media (min-width: 768px) {
-        gap: var(--space-10);
+        gap: var(--space-8);
     }
     @media (min-width: 1024px) {
-        gap: calc(var(--space-10) * 1.4);
+        gap: calc(var(--space-8) * 1.4);
     }
 
     > * {

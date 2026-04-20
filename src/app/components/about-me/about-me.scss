@@ -104,7 +104,9 @@
         font-size: 1.9rem;
         color: var(--skill-color);
         transform: rotate(-45deg);
-        transition: transform var(--duration-normal), filter var(--duration-normal);
+        transition:
+            transform var(--duration-normal),
+            filter var(--duration-normal);
         z-index: 2;
 
         @media (min-width: 640px) {

@@ -76,7 +76,10 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
         }
     }
 
-    private initAnimation(isDarkTheme: boolean, ScrollTrigger: typeof import('gsap/ScrollTrigger').ScrollTrigger) {
+    private initAnimation(
+        isDarkTheme: boolean,
+        ScrollTrigger: typeof import('gsap/ScrollTrigger').ScrollTrigger,
+    ) {
         const gsap = this.gsapApi;
         if (!gsap) return;
 
@@ -126,16 +129,8 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
                     stagger: 0.01,
                 })
                 .to(wrapper, { scale: 1, y: 0, duration: 2, ease: 'power2.out' }, '-=2.0')
-                .to(
-                    fillablePaths,
-                    { fill: fillColor, duration: 1, ease: 'power2.inOut' },
-                    '-=1.2',
-                )
-                .to(
-                    paths,
-                    { strokeWidth: 8, duration: 0.8, ease: 'power2.out' },
-                    '<',
-                )
+                .to(fillablePaths, { fill: fillColor, duration: 1, ease: 'power2.inOut' }, '-=1.2')
+                .to(paths, { strokeWidth: 8, duration: 0.8, ease: 'power2.out' }, '<')
                 .to(geometryGroup, { fill: fillColor, duration: 0.5, ease: 'power2.out' }, '<')
                 .to(eyeOutline, { fill: eyeFillColor, duration: 0.6, ease: 'power2.out' }, '<');
 
@@ -262,7 +257,14 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             gsap.to(jaw, { rotation: -25, duration: 0.15, ease: 'back.out(2)' });
             gsap.to(jaw, { rotation: 0, duration: 0.4, ease: 'power2.inOut', delay: 0.3 });
         }
-        gsap.to(wrapper, { x: -15, rotation: 5, duration: 0.1, yoyo: true, repeat: 1, ease: 'power2.out' });
+        gsap.to(wrapper, {
+            x: -15,
+            rotation: 5,
+            duration: 0.1,
+            yoyo: true,
+            repeat: 1,
+            ease: 'power2.out',
+        });
 
         const flash = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         flash.setAttribute('cx', startX.toString());
@@ -272,7 +274,13 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
         flash.style.opacity = '1';
         flash.style.filter = 'blur(4px)';
         fireContainer.appendChild(flash);
-        gsap.to(flash, { r: 180, opacity: 0, duration: 0.25, ease: 'power3.out', onComplete: () => flash.remove() });
+        gsap.to(flash, {
+            r: 180,
+            opacity: 0,
+            duration: 0.25,
+            ease: 'power3.out',
+            onComplete: () => flash.remove(),
+        });
 
         const particleCount = 60;
         for (let i = 0; i < particleCount; i++) {

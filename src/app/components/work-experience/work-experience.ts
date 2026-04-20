@@ -45,9 +45,21 @@ export class WorkExperience implements AfterViewInit {
     activeTab = signal<ExperienceType>('professional');
 
     readonly experiences: readonly Experience[] = [
-        { type: 'professional', translationKeyIndex: 1, technologies: ['React', 'TypeScript', 'Redux', 'Jest'] },
-        { type: 'academic', translationKeyIndex: 2, technologies: ['Java', 'Spring Boot', 'MySQL', 'Thymeleaf'] },
-        { type: 'personal', translationKeyIndex: 3, technologies: ['Angular', 'TypeScript', 'GSAP', 'SCSS'] },
+        {
+            type: 'professional',
+            translationKeyIndex: 1,
+            technologies: ['React', 'TypeScript', 'Redux', 'Jest'],
+        },
+        {
+            type: 'academic',
+            translationKeyIndex: 2,
+            technologies: ['Java', 'Spring Boot', 'MySQL', 'Thymeleaf'],
+        },
+        {
+            type: 'personal',
+            translationKeyIndex: 3,
+            technologies: ['Angular', 'TypeScript', 'GSAP', 'SCSS'],
+        },
     ];
 
     filteredExperiences = computed(() =>
@@ -114,7 +126,11 @@ export class WorkExperience implements AfterViewInit {
         if (!gsap) return;
         this.pendingAnimationTimer = setTimeout(() => {
             const cards = this.cardsRef.map((el) => el.nativeElement);
-            gsap.fromTo(cards, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.15 });
+            gsap.fromTo(
+                cards,
+                { opacity: 0, y: 20 },
+                { opacity: 1, y: 0, duration: 0.5, stagger: 0.15 },
+            );
         }, 50);
     }
 }

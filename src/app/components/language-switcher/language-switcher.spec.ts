@@ -10,7 +10,9 @@ describe('LanguageSwitcher', () => {
         localStorage.clear();
     });
 
-    function setup(opts: { platform?: 'browser' | 'server'; saved?: string; browserLang?: string } = {}) {
+    function setup(
+        opts: { platform?: 'browser' | 'server'; saved?: string; browserLang?: string } = {},
+    ) {
         if (opts.saved) localStorage.setItem('language', opts.saved);
 
         TestBed.configureTestingModule({

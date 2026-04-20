@@ -48,21 +48,24 @@
     font-style: normal;
     font-weight: 400;
     font-display: swap;
-    src: url('./assets/fonts/playfair-display-v39-latin/playfair-display-v39-latin-regular.woff2') format('woff2');
+    src: url('./assets/fonts/playfair-display-v39-latin/playfair-display-v39-latin-regular.woff2')
+        format('woff2');
 }
 @font-face {
     font-family: 'Playfair Display';
     font-style: normal;
     font-weight: 700;
     font-display: swap;
-    src: url('./assets/fonts/playfair-display-v39-latin/playfair-display-v39-latin-700.woff2') format('woff2');
+    src: url('./assets/fonts/playfair-display-v39-latin/playfair-display-v39-latin-700.woff2')
+        format('woff2');
 }
 @font-face {
     font-family: 'Playfair Display';
     font-style: normal;
     font-weight: 900;
     font-display: swap;
-    src: url('./assets/fonts/playfair-display-v39-latin/playfair-display-v39-latin-900.woff2') format('woff2');
+    src: url('./assets/fonts/playfair-display-v39-latin/playfair-display-v39-latin-900.woff2')
+        format('woff2');
 }
 
 *,
@@ -93,12 +96,18 @@ body {
     line-height: 1.6;
     background-color: var(--bg);
     color: var(--text);
-    transition: background-color var(--duration-normal) var(--ease-out),
-                color var(--duration-normal) var(--ease-out);
+    transition:
+        background-color var(--duration-normal) var(--ease-out),
+        color var(--duration-normal) var(--ease-out);
     overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: var(--font-display);
     font-weight: 700;
     line-height: 1.15;
@@ -106,12 +115,24 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--text);
 }
 
-h1 { font-size: var(--text-5xl); }
-h2 { font-size: var(--text-4xl); }
-h3 { font-size: var(--text-2xl); }
-h4 { font-size: var(--text-xl); }
-h5 { font-size: var(--text-lg); }
-h6 { font-size: var(--text-base); }
+h1 {
+    font-size: var(--text-5xl);
+}
+h2 {
+    font-size: var(--text-4xl);
+}
+h3 {
+    font-size: var(--text-2xl);
+}
+h4 {
+    font-size: var(--text-xl);
+}
+h5 {
+    font-size: var(--text-lg);
+}
+h6 {
+    font-size: var(--text-base);
+}
 
 p {
     margin: 0;
@@ -148,12 +169,15 @@ button {
     }
 }
 
-img, svg, video {
+img,
+svg,
+video {
     display: block;
     max-width: 100%;
 }
 
-ul, ol {
+ul,
+ol {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -171,7 +195,15 @@ ul, ol {
 }
 
 @media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
-    html, body, a, button, input, textarea, select, [role='button'], .pointer {
+    html,
+    body,
+    a,
+    button,
+    input,
+    textarea,
+    select,
+    [role='button'],
+    .pointer {
         cursor: none;
     }
 }
@@ -236,9 +268,10 @@ ul, ol {
     box-shadow: var(--shadow-md);
     position: relative;
     overflow: hidden;
-    transition: transform var(--duration-slow) var(--ease-out),
-                box-shadow var(--duration-slow) var(--ease-out),
-                border-color var(--duration-slow) var(--ease-out);
+    transition:
+        transform var(--duration-slow) var(--ease-out),
+        box-shadow var(--duration-slow) var(--ease-out),
+        border-color var(--duration-slow) var(--ease-out);
 
     &::after {
         content: '';

@@ -46,7 +46,9 @@ describe('Home', () => {
 
     it('marks the decorative embers layer as aria-hidden', () => {
         const { fixture } = setup();
-        const embers = (fixture.nativeElement as HTMLElement).querySelector('app-embers-background');
+        const embers = (fixture.nativeElement as HTMLElement).querySelector(
+            'app-embers-background',
+        );
         expect(embers?.getAttribute('aria-hidden')).toBe('true');
     });
 

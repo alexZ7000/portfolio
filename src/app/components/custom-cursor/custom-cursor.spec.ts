@@ -44,8 +44,12 @@ describe('CustomCursorComponent', () => {
             mm.setMatches(false);
             const { component, fixture } = setup();
             expect(component.enabled()).toBe(true);
-            expect((fixture.nativeElement as HTMLElement).querySelector('.cursor-dot')).toBeTruthy();
-            expect((fixture.nativeElement as HTMLElement).querySelector('.cursor-outline')).toBeTruthy();
+            expect(
+                (fixture.nativeElement as HTMLElement).querySelector('.cursor-dot'),
+            ).toBeTruthy();
+            expect(
+                (fixture.nativeElement as HTMLElement).querySelector('.cursor-outline'),
+            ).toBeTruthy();
         });
 
         it('stays disabled on touch-only (hover: none) devices', () => {

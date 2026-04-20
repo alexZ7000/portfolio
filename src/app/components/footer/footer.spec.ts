@@ -33,9 +33,9 @@ describe('FooterComponent', () => {
     describe('rendering', () => {
         it('renders one anchor per social with aria-label and safe rel', () => {
             const { fixture, component } = setup();
-            const anchors = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLAnchorElement>(
-                '.social-links a',
-            );
+            const anchors = (
+                fixture.nativeElement as HTMLElement
+            ).querySelectorAll<HTMLAnchorElement>('.social-links a');
             expect(anchors.length).toBe(component.socials.length);
             for (const [i, a] of Array.from(anchors).entries()) {
                 expect(a.getAttribute('aria-label')).toBe(component.socials[i].label);

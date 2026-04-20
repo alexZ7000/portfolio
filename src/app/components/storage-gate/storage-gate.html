@@ -1,11 +1,16 @@
 @if (blocked()) {
-    <div class="storage-gate" role="alertdialog" aria-labelledby="storage-gate-title" aria-describedby="storage-gate-body">
+    <div
+        class="storage-gate"
+        role="alertdialog"
+        aria-labelledby="storage-gate-title"
+        aria-describedby="storage-gate-body"
+    >
         <div class="storage-gate__panel">
             <i class="fa-solid fa-shield-halved storage-gate__icon" aria-hidden="true"></i>
             <h1 id="storage-gate-title" class="storage-gate__title">Cookies & storage required</h1>
             <p id="storage-gate-body" class="storage-gate__body">
-                This portfolio needs browser storage to remember your language and theme preferences.
-                Please enable cookies and site data for this page, then retry.
+                This portfolio needs browser storage to remember your language and theme
+                preferences. Please enable cookies and site data for this page, then retry.
             </p>
             <button type="button" class="storage-gate__retry" (click)="retry()">
                 <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>

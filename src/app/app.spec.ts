@@ -11,10 +11,7 @@ describe('AppComponent', () => {
         mm = mockMatchMedia(true);
         await TestBed.configureTestingModule({
             imports: [AppComponent],
-            providers: [
-                ...provideTesting(),
-                { provide: PLATFORM_ID, useValue: 'browser' },
-            ],
+            providers: [...provideTesting(), { provide: PLATFORM_ID, useValue: 'browser' }],
         }).compileComponents();
     });
 

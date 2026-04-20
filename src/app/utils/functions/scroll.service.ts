@@ -10,8 +10,7 @@ export class ScrollService {
         if (!isPlatformBrowser(this.platformId)) return;
         const element = document.getElementById(sectionId);
         if (!element) return;
-        const top =
-            element.getBoundingClientRect().top + window.scrollY - this.navbarOffset;
+        const top = element.getBoundingClientRect().top + window.scrollY - this.navbarOffset;
         window.scrollTo({ top, behavior: 'smooth' });
     }
 

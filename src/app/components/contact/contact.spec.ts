@@ -23,7 +23,9 @@ describe('ContactComponent', () => {
         it('covers LinkedIn, GitHub, Email and WhatsApp', () => {
             const { component } = setup();
             const titles = component.contacts.map((c) => c.title);
-            expect(titles).toEqual(expect.arrayContaining(['LinkedIn', 'GitHub', 'Email', 'WhatsApp']));
+            expect(titles).toEqual(
+                expect.arrayContaining(['LinkedIn', 'GitHub', 'Email', 'WhatsApp']),
+            );
         });
 
         it('uses a mailto: URL for the email contact', () => {
@@ -50,9 +52,9 @@ describe('ContactComponent', () => {
 
         it('opens external links in a new tab with noopener/noreferrer', () => {
             const { fixture } = setup();
-            const cards = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLAnchorElement>(
-                '.contact-card',
-            );
+            const cards = (
+                fixture.nativeElement as HTMLElement
+            ).querySelectorAll<HTMLAnchorElement>('.contact-card');
             for (const card of Array.from(cards)) {
                 expect(card.getAttribute('target')).toBe('_blank');
                 expect(card.getAttribute('rel')).toContain('noopener');
@@ -71,8 +73,12 @@ describe('ContactComponent', () => {
 
         it('threads the per-contact brand colour into a CSS custom property', () => {
             const { fixture, component } = setup();
-            const card = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>('.contact-card');
-            expect(card?.style.getPropertyValue('--contact-color')).toBe(component.contacts[0].color);
+            const card = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(
+                '.contact-card',
+            );
+            expect(card?.style.getPropertyValue('--contact-color')).toBe(
+                component.contacts[0].color,
+            );
         });
     });
 });

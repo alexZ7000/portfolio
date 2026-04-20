@@ -19,7 +19,9 @@ describe('ToasterContainer', () => {
     describe('rendering', () => {
         it('renders no toasts when the service is empty', () => {
             const { fixture } = setup();
-            expect((fixture.nativeElement as HTMLElement).querySelectorAll('.toast').length).toBe(0);
+            expect((fixture.nativeElement as HTMLElement).querySelectorAll('.toast').length).toBe(
+                0,
+            );
         });
 
         it('renders one .toast per active toast and tags it with its type', () => {
@@ -29,7 +31,9 @@ describe('ToasterContainer', () => {
             toaster.info('FYI');
             fixture.detectChanges();
 
-            const nodes = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>('.toast');
+            const nodes = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>(
+                '.toast',
+            );
             expect(nodes.length).toBe(3);
             const classes = Array.from(nodes).map((n) => n.className);
             expect(classes.some((c) => c.includes('success'))).toBe(true);
@@ -53,12 +57,16 @@ describe('ToasterContainer', () => {
             toaster.success('Removable');
             fixture.detectChanges();
 
-            const toast = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>('.toast');
+            const toast = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(
+                '.toast',
+            );
             toast!.click();
             fixture.detectChanges();
 
             expect(toaster.toasts().length).toBe(0);
-            expect((fixture.nativeElement as HTMLElement).querySelectorAll('.toast').length).toBe(0);
+            expect((fixture.nativeElement as HTMLElement).querySelectorAll('.toast').length).toBe(
+                0,
+            );
         });
     });
 
@@ -70,7 +78,9 @@ describe('ToasterContainer', () => {
             toaster.info('c');
             fixture.detectChanges();
 
-            const toasts = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>('.toast');
+            const toasts = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>(
+                '.toast',
+            );
             for (const toast of Array.from(toasts)) {
                 expect(toast.querySelector('.icon svg')).toBeTruthy();
             }

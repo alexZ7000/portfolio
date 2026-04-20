@@ -52,7 +52,9 @@ describe('Navbar', () => {
 
         it('does not render the mobile menu by default', () => {
             const { fixture } = setup();
-            expect((fixture.nativeElement as HTMLElement).querySelector('.navbar__mobile')).toBeNull();
+            expect(
+                (fixture.nativeElement as HTMLElement).querySelector('.navbar__mobile'),
+            ).toBeNull();
         });
     });
 
@@ -67,7 +69,9 @@ describe('Navbar', () => {
             fixture.detectChanges();
             expect(component.isMobileMenuOpen()).toBe(true);
             expect(toggle.getAttribute('aria-expanded')).toBe('true');
-            expect((fixture.nativeElement as HTMLElement).querySelector('.navbar__mobile')).toBeTruthy();
+            expect(
+                (fixture.nativeElement as HTMLElement).querySelector('.navbar__mobile'),
+            ).toBeTruthy();
 
             toggle.click();
             fixture.detectChanges();
@@ -114,7 +118,9 @@ describe('Navbar', () => {
         it('reads from ThemeService for the logo source', () => {
             const { fixture } = setup();
             const theme = TestBed.inject(ThemeService);
-            const logo = (fixture.nativeElement as HTMLElement).querySelector('img') as HTMLImageElement;
+            const logo = (fixture.nativeElement as HTMLElement).querySelector(
+                'img',
+            ) as HTMLImageElement;
             expect(logo.getAttribute('src')).toBe(
                 theme.isDarkTheme() ? 'assets/logoWhite.png' : 'assets/logoBlack.png',
             );

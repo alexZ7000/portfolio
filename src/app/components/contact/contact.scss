@@ -80,9 +80,10 @@
     overflow: hidden;
     color: var(--text);
     text-decoration: none;
-    transition: transform var(--duration-normal) var(--ease-out),
-                border-color var(--duration-normal) var(--ease-out),
-                box-shadow var(--duration-normal) var(--ease-out);
+    transition:
+        transform var(--duration-normal) var(--ease-out),
+        border-color var(--duration-normal) var(--ease-out),
+        box-shadow var(--duration-normal) var(--ease-out);
 
     &__icon-wrap {
         flex-shrink: 0;
@@ -102,8 +103,9 @@
         }
         color: var(--contact-color);
         background: color-mix(in srgb, var(--contact-color) 8%, transparent);
-        transition: transform var(--duration-normal) var(--ease-bounce),
-                    box-shadow var(--duration-normal);
+        transition:
+            transform var(--duration-normal) var(--ease-bounce),
+            box-shadow var(--duration-normal);
     }
 
     &__body {
@@ -132,7 +134,11 @@
     &__hover {
         position: absolute;
         inset: 0;
-        background: linear-gradient(135deg, transparent, color-mix(in srgb, var(--contact-color) 12%, transparent));
+        background: linear-gradient(
+            135deg,
+            transparent,
+            color-mix(in srgb, var(--contact-color) 12%, transparent)
+        );
         opacity: 0;
         transition: opacity var(--duration-normal);
         pointer-events: none;

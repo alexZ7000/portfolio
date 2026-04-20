@@ -16,8 +16,16 @@ import { isPlatformBrowser } from '@angular/common';
     standalone: true,
     template: `
         @if (enabled()) {
-            <div class="cursor-dot" [class.hovering]="isHovering()" [style.transform]="dotTransform()"></div>
-            <div class="cursor-outline" [class.hovering]="isHovering()" [style.transform]="outlineTransform()"></div>
+            <div
+                class="cursor-dot"
+                [class.hovering]="isHovering()"
+                [style.transform]="dotTransform()"
+            ></div>
+            <div
+                class="cursor-outline"
+                [class.hovering]="isHovering()"
+                [style.transform]="outlineTransform()"
+            ></div>
         }
     `,
     styles: [
@@ -42,7 +50,9 @@ import { isPlatformBrowser } from '@angular/common';
                 width: 8px;
                 height: 8px;
                 background-color: #00f2a1;
-                transition: background-color 0.2s, box-shadow 0.2s;
+                transition:
+                    background-color 0.2s,
+                    box-shadow 0.2s;
                 box-shadow: 0 0 10px rgba(0, 242, 161, 0.8);
             }
 
@@ -55,7 +65,9 @@ import { isPlatformBrowser } from '@angular/common';
                 width: 40px;
                 height: 40px;
                 border: 1px solid #00f2a1;
-                transition: border-color 0.2s, background-color 0.2s;
+                transition:
+                    border-color 0.2s,
+                    background-color 0.2s;
                 opacity: 0.6;
             }
 

@@ -5,13 +5,17 @@
     display: block;
     pointer-events: all;
     opacity: 1;
-    transition: opacity 0.8s ease-in-out, visibility 0s linear 0s;
+    transition:
+        opacity 0.8s ease-in-out,
+        visibility 0s linear 0s;
 }
 
 :host.is-done {
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.8s ease-in-out, visibility 0s linear 0.8s;
+    transition:
+        opacity 0.8s ease-in-out,
+        visibility 0s linear 0.8s;
 }
 
 :host.is-hidden {

@@ -37,9 +37,9 @@ describe('Hero', () => {
 
         it('exposes two call-to-action buttons for contact and fire breath', () => {
             const { fixture } = setup();
-            const buttons = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(
-                '.hero__actions button',
-            );
+            const buttons = (
+                fixture.nativeElement as HTMLElement
+            ).querySelectorAll<HTMLButtonElement>('.hero__actions button');
             expect(buttons.length).toBe(2);
         });
     });

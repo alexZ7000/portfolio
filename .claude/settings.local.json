@@ -1,13 +1,13 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(npx ng *)",
-      "Bash(npx --prefix C:/Users/aless/WebstormProjects/portfolio ng build --configuration development)",
-      "Bash(npm install *)",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)",
-      "Bash(curl *)",
-      "Bash(npm run *)"
-    ]
-  }
+    "permissions": {
+        "allow": [
+            "Bash(npx ng *)",
+            "Bash(npx --prefix C:/Users/aless/WebstormProjects/portfolio ng build --configuration development)",
+            "Bash(npm install *)",
+            "WebFetch(domain:github.com)",
+            "WebFetch(domain:raw.githubusercontent.com)",
+            "Bash(curl *)",
+            "Bash(npm run *)"
+        ]
+    }
 }
