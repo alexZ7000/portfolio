@@ -1,0 +1,25 @@
+<section id="about-me" class="about-section">
+    <div class="content-wrapper">
+        <div class="text-column">
+            <h2 class="section-title">{{ 'aboutTitle' | translate }}</h2>
+            <p class="about-text">
+                {{ 'aboutText' | translate }}
+            </p>
+        </div>
+
+        <div class="skills-column">
+            <h3 class="skills-title">{{ 'skillsTitle' | translate }}</h3>
+            <div class="skills-grid">
+                <div
+                    *ngFor="let skill of skills"
+                    #skillRef
+                    class="skill-card"
+                >
+                    <i [class]="skill.icon" class="skill-icon" [style.color]="skill.color"></i>
+
+                    <span class="skill-name">{{ skill.name }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

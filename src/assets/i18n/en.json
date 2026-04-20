@@ -1,0 +1,48 @@
+{
+    "subText": "Software Developer | React Specialist | Creative Solutions",
+    "contactButton": "Contact Me",
+
+    "navHome": "Home",
+    "navAbout": "About Me",
+    "navWork": "Experience",
+    "navCertificates": "Certificates",
+    "navContact": "Contact",
+
+    "heroTitle": "Unleashing powerful solutions with precision and mastery.",
+
+    "aboutTitle": "About Me",
+    "aboutText": "I am a passionate software developer dedicated to creating innovative and efficient solutions. With experience in web development, I always seek to learn new technologies and improve my skills to deliver high-quality products that solve real problems.",
+    "skillsTitle": "My Skills",
+
+    "workExperienceTitle": "Work Experience",
+    "tabProfessional": "Professional",
+    "tabAcademic": "Academic",
+    "tabPersonal": "Personal",
+
+    "exp1Title": "Senior Front-end Developer",
+    "exp1Company": "Awesome Inc.",
+    "exp1Period": "JAN 2022 - Present",
+    "exp1Description": "Development and maintenance of large-scale web applications using React and TypeScript, focusing on performance and user experience.",
+
+    "exp2Title": "Academic Management System",
+    "exp2Company": "Example University",
+    "exp2Period": "2021",
+    "exp2Description": "Final course project for a grade and enrollment management system, developed in a team using agile methodologies.",
+
+    "exp3Title": "This Portfolio",
+    "exp3Company": "Personal Project",
+    "exp3Period": "2024",
+    "exp3Description": "My personal portfolio built with the most modern technologies in the React ecosystem to showcase my skills.",
+
+    "contactTitle": "Contact",
+    "jobTitle": "Software Developer",
+    "copySuccess": "Email copied to clipboard!",
+    "copyButton": "Copy email to clipboard",
+
+    "errorText": "This endpoint doesn't match any other in our server. Please enter a valid endpoint to continue",
+    "errorButton": "Click here to go back to the home page",
+    "contactFooter": "Designed & Forged in Code by alexZ7000 © 2026",
+    "certificatesTitle": "Artifacts & Certifications",
+    "certificatesSubtitle": "Knowledge forged in the fires of discipline.",
+    "viewCertificate": "Inspect Artifact"
+}

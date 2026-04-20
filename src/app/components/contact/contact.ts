@@ -1,0 +1,47 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+
+@Component({
+    selector: 'app-contact',
+    standalone: true,
+    imports: [CommonModule, TranslateModule],
+    templateUrl: './contact.html',
+    styleUrl: './contact.scss'
+})
+export class ContactComponent {
+    contacts = [
+        {
+            icon: 'fa-brands fa-linkedin-in',
+            title: 'LinkedIn',
+            value: 'linkedin.com/in/alelimafilho',
+            link: 'https://linkedin.com/in/alelimafilho',
+            color: '#0077b5'
+        },
+        {
+            icon: 'fa-brands fa-github',
+            title: 'GitHub',
+            value: 'github.com/alexZ7000',
+            link: 'https://github.com/alexZ7000',
+            color: '#ffffff'
+        },
+        {
+            icon: 'fa-regular fa-envelope',
+            title: 'Email',
+            value: 'alessandrolimafilho@gmail.com',
+            link: 'mailto:alessandrolimafilho@gmail.com',
+            color: '#e34f26'
+        },
+        {
+            icon: 'fa-brands fa-whatsapp',
+            title: 'WhatsApp',
+            value: '+55 (11) 95550-1739',
+            link: 'https://wa.me/5511955501739',
+            color: '#25d366'
+        }
+    ];
+
+    openLink(link: string) {
+        window.open(link, '_blank');
+    }
+}

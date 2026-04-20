@@ -1,0 +1,165 @@
+.about-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 4rem 1rem;
+
+    .content-wrapper {
+        width: 100%;
+        max-width: 80rem;
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+        align-items: center;
+
+        @media (min-width: 1024px) {
+            flex-direction: row;
+            gap: 4rem;
+            align-items: flex-start;
+        }
+    }
+
+    .text-column {
+        width: 100%;
+        text-align: center;
+        @media (min-width: 1024px) {
+            width: 50%;
+            text-align: left;
+        }
+
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text {
+            font-size: 1.125rem;
+            line-height: 1.625;
+            color: var(--gray-medium-dark-theme);
+
+            :host-context(body.dark-theme) & {
+                color: var(--gray-medium-light-theme);
+            }
+        }
+    }
+
+    .skills-column {
+        width: 100%;
+        @media (min-width: 1024px) {
+            width: 50%;
+        }
+
+        .skills-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            @media (min-width: 1024px) {
+                text-align: left;
+            }
+        }
+
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            padding: 1rem;
+
+            @media (min-width: 1024px) {
+                justify-content: flex-start;
+            }
+        }
+
+        .skill-card {
+            position: relative;
+            width: 5rem;
+            height: 5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(45deg);
+
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+
+            .skill-icon {
+                color: #333;
+            }
+
+            :host-context(body.dark-theme) & {
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+
+                .skill-icon {
+                    color: #fff;
+                }
+            }
+
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            .skill-icon, .skill-name {
+                transform: rotate(-45deg);
+            }
+
+            skill-icon {
+                font-size: 2.5rem;
+                z-index: 2;
+                transition: transform 0.3s;
+                transform: rotate(-45deg);
+            }
+
+            &:hover {
+                background: var(--green-dark-theme);
+                border-color: var(--green-dark-theme);
+
+                .skill-icon {
+                    color: #fff;
+                }
+            }
+
+            &:hover .skill-icon {
+                transform: rotate(-45deg) scale(1.2);
+                filter: drop-shadow(0 0 5px currentColor);
+            }
+
+            .skill-name {
+                position: absolute;
+                bottom: -2.5rem;
+                left: 50%;
+                width: 150%;
+                text-align: center;
+                margin-left: -75%;
+
+                font-size: 0.85rem;
+                font-weight: 700;
+                opacity: 0;
+                transform: rotate(-45deg) translateY(-10px);
+                transition: all 0.3s ease;
+                pointer-events: none;
+
+                background: var(--gray-dark-theme);
+                padding: 0.25rem 0.5rem;
+                border-radius: 4px;
+                border: 1px solid var(--green-dark-theme);
+                z-index: 10;
+            }
+
+            &:hover {
+                background: var(--green-dark-theme);
+                border-color: #fff;
+                box-shadow: 0 0 20px rgba(0, 242, 161, 0.6);
+                z-index: 5;
+                transform: rotate(45deg) scale(1.15);
+
+                .skill-name {
+                    opacity: 1;
+                    transform: rotate(-45deg) translateY(0);
+                }
+            }
+        }
+    }
+}

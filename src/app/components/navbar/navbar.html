@@ -1,0 +1,46 @@
+<nav class="navbar" [class.scrolled]="isScrolled()">
+    <div class="navbar-content">
+        <div class="logo">
+            <img
+                [src]="themeService.isDarkTheme() ? 'assets/logoWhite.svg' : 'assets/logoBlack.svg'"
+                alt="Logo"
+                (click)="scrollTo('home')"
+            />
+        </div>
+
+        <div class="desktop-menu">
+            <ul class="nav-links">
+                <li>
+                    <button (click)="scrollTo('about')">{{ 'navAbout' | translate }}</button>
+                </li>
+                <li>
+                    <button (click)="scrollTo('work-experience')">
+                        {{ 'navWork' | translate }}
+                    </button>
+                </li>
+                <li>
+                    <button (click)="scrollTo('certificates')">
+                        {{ 'navCertificates' | translate }}
+                    </button>
+                </li>
+                <li>
+                    <button (click)="scrollTo('contact')">{{ 'navContact' | translate }}</button>
+                </li>
+            </ul>
+
+            <app-language-switcher></app-language-switcher>
+        </div>
+
+        <div class="mobile-toggle">
+            <button (click)="toggleMobileMenu()">
+                <i
+                    class="fas"
+                    [class.fa-bars]="!isMobileMenuOpen()"
+                    [class.fa-times]="isMobileMenuOpen()"
+                ></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<div class="mobile-menu-overlay" [class.open]="isMobileMenuOpen()"></div>

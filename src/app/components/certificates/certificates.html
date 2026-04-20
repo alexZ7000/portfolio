@@ -1,0 +1,44 @@
+<section id="certificates" class="certificates-section">
+    <div class="header-container">
+        <h2 class="section-title">
+            <i class="fa-solid fa-dragon section-icon"></i>
+            {{ 'certificatesTitle' | translate }}
+        </h2>
+        <p class="subtitle">{{ 'certificatesSubtitle' | translate }}</p>
+    </div>
+
+    <div class="certificates-grid">
+        <div
+            *ngFor="let cert of certificates; let i = index"
+            class="cert-card-wrapper"
+            (mousemove)="onMouseMove($event, i)"
+            (mouseleave)="onMouseLeave(i)"
+        >
+            <div
+                class="holographic-card"
+                [id]="'cert-card-' + i"
+                (click)="openCertificate(cert.link)"
+            >
+                <div class="glare" [id]="'cert-glare-' + i"></div>
+
+                <div class="card-content">
+                    <div class="icon-badge">
+                        <i class="fa-solid fa-scroll"></i>
+                    </div>
+
+                    <h3 class="cert-title">{{ cert.name }}</h3>
+                    <p class="cert-issuer">{{ cert.issuer }}</p>
+                    <span class="cert-date">{{ cert.date }}</span>
+
+                    <div class="view-btn">
+                        <span>{{ 'viewCertificate' | translate }}</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </div>
+                </div>
+
+                <div class="corner top-left"></div>
+                <div class="corner bottom-right"></div>
+            </div>
+        </div>
+    </div>
+</section>

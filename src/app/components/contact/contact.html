@@ -1,0 +1,28 @@
+<section id="contact" class="contact-section">
+    <div class="background-glow"></div>
+
+    <h2 class="section-title">{{ 'contactTitle' | translate }}</h2>
+
+    <div class="contact-grid">
+        <div
+            *ngFor="let contact of contacts"
+            class="contact-card"
+            (click)="openLink(contact.link)"
+        >
+            <div class="icon-wrapper" [style.border-color]="contact.color">
+                <i [class]="contact.icon" [style.color]="contact.color"></i>
+            </div>
+
+            <div class="info">
+                <h3>{{ contact.title }}</h3>
+                <p>{{ contact.value }}</p>
+            </div>
+
+            <div class="hover-effect"></div>
+        </div>
+    </div>
+
+    <div class="footer-message">
+        <p>{{ 'contactFooter' | translate }}</p>
+    </div>
+</section>

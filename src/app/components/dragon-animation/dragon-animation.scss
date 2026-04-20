@@ -1,0 +1,40 @@
+:host {
+    display: block;
+    position: relative;
+}
+
+.dragon-svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+
+    @media (min-width: 1024px) {
+        width: 600px;
+        height: 600px;
+    }
+}
+
+.screen-fire-light {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    --light-x: 50vw;
+    --light-y: 50vh;
+    --light-size: 60vmax;
+
+    background: radial-gradient(
+            circle at var(--light-x) var(--light-y),
+            rgba(255, 220, 150, 0.8) 0%,
+            rgba(255, 80, 0, 0.4) 20%,
+            rgba(50, 0, 0, 0.1) 50%,
+            transparent 70%
+    );
+    mix-blend-mode: hard-light;
+    transition: opacity 0.05s linear;
+    overflow: hidden;
+}

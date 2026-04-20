@@ -1,0 +1,19 @@
+<section id="home" class="hero-section">
+    <div class="dragon-container">
+        <div class="dragon-wrapper">
+            <app-dragon-animation></app-dragon-animation>
+        </div>
+    </div>
+
+    <div class="text-container">
+        <h1 class="hero-title background-animate">
+            {{ 'heroTitle' | translate }}
+        </h1>
+        <p class="hero-subtitle">
+            {{ 'subText' | translate }}
+        </p>
+        <button (click)="scrollToContact()" class="contact-btn">
+            {{ 'contactButton' | translate }}
+        </button>
+    </div>
+</section>

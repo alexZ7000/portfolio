@@ -1,9 +1,9 @@
-name: CD
+name: Deploy to GitHub Pages
 
 on:
     push:
         branches:
-            - dev
+            - prod
 
 jobs:
     build-deploy:
@@ -15,21 +15,24 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v3
 
             - name: Set up Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v3
               with:
-                  node-version: "22.17.0"
+                  node-version: '22.17.0'
 
             - name: Install dependencies
               run: npm install
 
             - name: Build the project
-              run: npm run build
+              run: npm run build -- --base-href /
+
+            -   name: Create CNAME file
+                run: echo "alexZ7000.com.br" > ./dist/portfolio/browser/CNAME
 
             - name: Deploy to GitHub Pages
               uses: peaceiris/actions-gh-pages@v4
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
-                  publish_dir: ./dist
+                  publish_dir: ./dist/portfolio/browser
