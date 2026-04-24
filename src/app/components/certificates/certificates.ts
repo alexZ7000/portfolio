@@ -41,9 +41,36 @@ export class CertificatesComponent implements AfterViewInit {
     private gsapApi: typeof gsap | undefined;
 
     readonly certificates: readonly Certificate[] = [
-        { name: 'Angular - The Complete Guide', issuer: 'Udemy', date: '2023', link: '#' },
-        { name: 'AWS Cloud Practitioner', issuer: 'Amazon Web Services', date: '2024', link: '#' },
-        { name: 'Full Stack Development', issuer: 'Digital House', date: '2022', link: '#' },
+        {
+            name: 'AWS Generative AI Foundations',
+            issuer: 'Amazon Web Services',
+            date: '2026',
+            link: '#',
+        },
+        {
+            name: 'AWS Cloud Foundations',
+            issuer: 'Amazon Web Services',
+            date: '2024',
+            link: '#',
+        },
+        {
+            name: 'Introdução ao Arduino',
+            issuer: 'Instituto Mauá de Tecnologia',
+            date: '2024',
+            link: '#',
+        },
+        {
+            name: 'Programação Funcional com Clojure',
+            issuer: 'Instituto Mauá de Tecnologia',
+            date: '2024',
+            link: '#',
+        },
+        {
+            name: 'Desafios de Cibersegurança',
+            issuer: 'Instituto Mauá de Tecnologia',
+            date: '2024',
+            link: '#',
+        },
     ];
 
     async ngAfterViewInit() {

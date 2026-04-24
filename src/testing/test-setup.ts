@@ -42,6 +42,7 @@ if (typeof globalThis.IntersectionObserver === 'undefined') {
             return [];
         }
     }
-    (globalThis as unknown as { IntersectionObserver: typeof IntersectionObserver }).IntersectionObserver =
-        IntersectionObserverStub as unknown as typeof IntersectionObserver;
+    (
+        globalThis as unknown as { IntersectionObserver: typeof IntersectionObserver }
+    ).IntersectionObserver = IntersectionObserverStub as unknown as typeof IntersectionObserver;
 }

@@ -1,0 +1,74 @@
+<section
+    id="projects"
+    [appReveal]="'up'"
+    class="projects section-pad"
+    aria-labelledby="projects-title"
+>
+    <header class="projects__header">
+        <h2 id="projects-title" class="section-title">
+            <fa-icon
+                [icon]="['fas', 'dragon']"
+                class="projects__title-icon"
+                aria-hidden="true"
+            ></fa-icon>
+            {{ 'projectsTitle' | translate }}
+        </h2>
+        <p class="projects__subtitle">{{ 'projectsSubtitle' | translate }}</p>
+    </header>
+
+    <ul class="projects__grid" role="list">
+        @for (project of projects; track project.id; let i = $index) {
+            <li
+                class="project-card panel"
+                [class.is-featured]="project.featured"
+                [appReveal]="'up'"
+                [revealDelay]="i * 100"
+            >
+                @if (project.featured) {
+                    <span class="project-card__badge pill pill--accent">
+                        <fa-icon [icon]="['fas', 'trophy']" aria-hidden="true"></fa-icon>
+                        {{ 'projectFeaturedLabel' | translate }}
+                    </span>
+                }
+
+                <header class="project-card__header">
+                    <h3 class="project-card__title">
+                        {{ 'project' + project.id + 'Title' | translate }}
+                    </h3>
+                    <p class="project-card__subtitle">
+                        {{ 'project' + project.id + 'Subtitle' | translate }}
+                    </p>
+                </header>
+
+                <p class="project-card__description">
+                    {{ 'project' + project.id + 'Description' | translate }}
+                </p>
+
+                <ul class="project-card__tech" aria-label="Technologies used">
+                    @for (tech of project.technologies; track tech) {
+                        <li class="pill">{{ tech }}</li>
+                    }
+                </ul>
+
+                <footer class="project-card__footer">
+                    <time class="project-card__period">
+                        {{ 'project' + project.id + 'Period' | translate }}
+                    </time>
+                    <div class="project-card__links">
+                        @for (link of project.links; track link.url) {
+                            <a
+                                class="project-card__link"
+                                [href]="link.url"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <fa-icon [icon]="['fab', 'github']" aria-hidden="true"></fa-icon>
+                                <span>{{ link.labelKey | translate }}</span>
+                            </a>
+                        }
+                    </div>
+                </footer>
+            </li>
+        }
+    </ul>
+</section>

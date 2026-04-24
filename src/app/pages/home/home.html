@@ -11,6 +11,12 @@
     }
 
     @defer (on viewport; prefetch on idle) {
+        <app-projects></app-projects>
+    } @placeholder {
+        <div class="home__section-placeholder" aria-hidden="true"></div>
+    }
+
+    @defer (on viewport; prefetch on idle) {
         <app-certificates></app-certificates>
     } @placeholder {
         <div class="home__section-placeholder" aria-hidden="true"></div>

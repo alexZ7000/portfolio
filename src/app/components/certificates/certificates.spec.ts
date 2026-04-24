@@ -26,9 +26,9 @@ describe('CertificatesComponent', () => {
     }
 
     describe('data model', () => {
-        it('declares the three portfolio certificates', () => {
+        it('declares at least three portfolio certificates', () => {
             const { component } = setup();
-            expect(component.certificates.length).toBe(3);
+            expect(component.certificates.length).toBeGreaterThanOrEqual(3);
         });
 
         it('gives each certificate a name, issuer and year', () => {

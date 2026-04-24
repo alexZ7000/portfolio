@@ -5,8 +5,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const BROWSER_DIR = join(__dirname, '..', 'dist', 'portfolio', 'browser');
 
-const STYLE_LINK_RE =
-    /<link[^>]*\brel=["']stylesheet["'][^>]*\bhref=["']([^"']+\.css)["'][^>]*>/gi;
+const STYLE_LINK_RE = /<link[^>]*\brel=["']stylesheet["'][^>]*\bhref=["']([^"']+\.css)["'][^>]*>/gi;
 
 async function inlineFor(htmlPath) {
     let html;

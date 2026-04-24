@@ -16,10 +16,12 @@ describe('WorkExperience', () => {
     }
 
     describe('data model', () => {
-        it('ships one experience per tab category', () => {
+        it('covers all three tab categories', () => {
             const { component } = setup();
-            const types = component.experiences.map((e) => e.type);
-            expect(types).toEqual(['professional', 'academic', 'personal']);
+            const types = new Set(component.experiences.map((e) => e.type));
+            expect(types.has('professional')).toBe(true);
+            expect(types.has('academic')).toBe(true);
+            expect(types.has('personal')).toBe(true);
         });
 
         it('pairs each experience with a unique translation key index', () => {
@@ -45,8 +47,8 @@ describe('WorkExperience', () => {
         it('filters experiences to the active tab', () => {
             const { component } = setup();
             const filtered = component.filteredExperiences();
-            expect(filtered.length).toBe(1);
-            expect(filtered[0].type).toBe('professional');
+            expect(filtered.length).toBeGreaterThan(0);
+            expect(filtered.every((e) => e.type === 'professional')).toBe(true);
         });
 
         it('marks the professional tab button as active and aria-selected', () => {
@@ -97,12 +99,13 @@ describe('WorkExperience', () => {
             expect(panel?.getAttribute('id')).toBe('xp-panel-academic');
         });
 
-        it('renders exactly one card — the one matching the active tab', () => {
+        it('renders only cards matching the active tab', () => {
             const { fixture, component } = setup('server');
             component.setActiveTab('personal');
             fixture.detectChanges();
             const cards = (fixture.nativeElement as HTMLElement).querySelectorAll('.xp-card');
-            expect(cards.length).toBe(1);
+            const personalCount = component.experiences.filter((e) => e.type === 'personal').length;
+            expect(cards.length).toBe(personalCount);
         });
     });
 });

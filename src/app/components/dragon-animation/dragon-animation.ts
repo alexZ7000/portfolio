@@ -187,7 +187,8 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
                 gsap.set(eyeOutline, { fill: eyeFillColor });
                 gsap.set(wrapper, { opacity: 1, scale: 1, y: 0 });
             } else {
-                const lengthOf = (target: Element) => pathLengths.get(target as SVGPathElement) ?? 0;
+                const lengthOf = (target: Element) =>
+                    pathLengths.get(target as SVGPathElement) ?? 0;
                 gsap.set(paths, {
                     strokeDasharray: (_, target) => lengthOf(target),
                     strokeDashoffset: (_, target) => lengthOf(target),

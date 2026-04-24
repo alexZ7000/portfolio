@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Hero } from '../../components/hero/hero';
 import { AboutMe } from '../../components/about-me/about-me';
 import { WorkExperience } from '../../components/work-experience/work-experience';
+import { ProjectsComponent } from '../../components/projects/projects';
 import { CertificatesComponent } from '../../components/certificates/certificates';
 import { ContactComponent } from '../../components/contact/contact';
 import { FooterComponent } from '../../components/footer/footer';
@@ -14,6 +15,7 @@ import { EmbersBackgroundComponent } from '../../components/embers-background/em
         Hero,
         AboutMe,
         WorkExperience,
+        ProjectsComponent,
         CertificatesComponent,
         ContactComponent,
         FooterComponent,

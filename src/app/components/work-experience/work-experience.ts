@@ -26,17 +26,32 @@ export class WorkExperience {
         {
             type: 'professional',
             translationKeyIndex: 1,
-            technologies: ['React', 'TypeScript', 'Redux', 'Jest'],
+            technologies: ['Windows Server', 'Linux', 'Hardware', 'Redes', 'Suporte'],
+        },
+        {
+            type: 'professional',
+            translationKeyIndex: 2,
+            technologies: ['Java 6/8', 'JBoss', 'WildFly', 'JSF', 'AWS', 'Docker'],
         },
         {
             type: 'academic',
-            translationKeyIndex: 2,
-            technologies: ['Java', 'Spring Boot', 'MySQL', 'Thymeleaf'],
+            translationKeyIndex: 3,
+            technologies: ['Java', 'Python', 'C', 'Clojure', 'Algoritmos'],
+        },
+        {
+            type: 'academic',
+            translationKeyIndex: 4,
+            technologies: ['Python', 'Game AI', 'Heurísticas'],
         },
         {
             type: 'personal',
-            translationKeyIndex: 3,
-            technologies: ['Angular', 'TypeScript', 'GSAP', 'SCSS'],
+            translationKeyIndex: 5,
+            technologies: ['Unity', 'C#', 'Game Design', 'Liderança'],
+        },
+        {
+            type: 'personal',
+            translationKeyIndex: 6,
+            technologies: ['React', 'Next.js', 'Angular', 'Node.js', 'Mentoria'],
         },
     ];
 
