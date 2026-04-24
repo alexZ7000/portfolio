@@ -130,27 +130,75 @@ describe('CustomCursorComponent', () => {
     });
 
     describe('mousedown/mouseup', () => {
-        it('scales the dot down to 0.8 while the mouse is held', () => {
+        it('flips isClicked while the mouse is held', () => {
             const { component } = setup();
             component.onMouseDown();
             expect(component.isClicked()).toBe(true);
-            expect(component.dotTransform()).toContain('scale(0.8)');
-        });
-
-        it('restores scale(1) on mouseup', () => {
-            const { component } = setup();
-            component.onMouseDown();
             component.onMouseUp();
             expect(component.isClicked()).toBe(false);
-            expect(component.dotTransform()).toContain('scale(1)');
+        });
+
+        it('applies the is-clicked class to the inner scaler so CSS can transition the scale smoothly', () => {
+            const { component, fixture } = setup();
+            component.onMouseDown();
+            fixture.detectChanges();
+            const scaler = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(
+                '.cursor-dot__scale',
+            );
+            expect(scaler?.classList.contains('is-clicked')).toBe(true);
+
+            component.onMouseUp();
+            fixture.detectChanges();
+            expect(scaler?.classList.contains('is-clicked')).toBe(false);
         });
     });
 
     describe('dot transform', () => {
-        it('places the dot at the tracked pointer position', () => {
+        it('places the dot at the tracked pointer position without touching scale', () => {
             const { component } = setup();
             component.onMouseMove(new MouseEvent('mousemove', { clientX: 42, clientY: 84 }));
             expect(component.dotTransform()).toContain('translate3d(42px, 84px, 0)');
+            expect(component.dotTransform()).not.toContain('scale(');
+        });
+    });
+
+    describe('text selection mode', () => {
+        it('stays in default mode while hovering over a plain paragraph (no text vibe on hover)', () => {
+            const { component } = setup();
+            const p = document.createElement('p');
+            document.body.appendChild(p);
+            const move = new MouseEvent('mousemove', { clientX: 0, clientY: 0 });
+            Object.defineProperty(move, 'target', { value: p });
+            component.onMouseMove(move);
+            expect(component.cursorMode()).toBe('default');
+            p.remove();
+        });
+
+        it('switches to text mode only after mousedown on a text element and reverts on mouseup', () => {
+            const { component } = setup();
+            const p = document.createElement('p');
+            p.textContent = 'selectable copy';
+            document.body.appendChild(p);
+
+            const down = new MouseEvent('mousedown');
+            Object.defineProperty(down, 'target', { value: p });
+            component.onMouseDown(down);
+            expect(component.cursorMode()).toBe('text');
+
+            component.onMouseUp();
+            expect(component.cursorMode()).toBe('default');
+            p.remove();
+        });
+
+        it('never enters text mode when the mousedown started on a clickable', () => {
+            const { component } = setup();
+            const button = document.createElement('button');
+            document.body.appendChild(button);
+            const down = new MouseEvent('mousedown');
+            Object.defineProperty(down, 'target', { value: button });
+            component.onMouseDown(down);
+            expect(component.cursorMode()).not.toBe('text');
+            button.remove();
         });
     });
 });
