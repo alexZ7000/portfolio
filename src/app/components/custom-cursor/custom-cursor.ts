@@ -10,6 +10,7 @@ import {
     signal,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { DeviceCapabilityService } from '../../utils/functions/device-capability';
 
 @Component({
     selector: 'app-custom-cursor',
@@ -83,6 +84,7 @@ import { isPlatformBrowser } from '@angular/common';
 export class CustomCursorComponent implements AfterViewInit {
     private platformId = inject(PLATFORM_ID);
     private destroyRef = inject(DestroyRef);
+    private capability = inject(DeviceCapabilityService);
 
     enabled = signal(false);
     mouseX = signal(0);
@@ -102,7 +104,8 @@ export class CustomCursorComponent implements AfterViewInit {
 
     ngAfterViewInit() {
         if (!isPlatformBrowser(this.platformId)) return;
-        if (window.matchMedia('(hover: none)').matches) return;
+        if (this.capability.isTouch() || this.capability.isLowEnd()) return;
+        if (this.capability.prefersReducedMotion()) return;
 
         this.enabled.set(true);
         this.animate();

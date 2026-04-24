@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ThemeService } from '../../utils/functions/theme';
+import { DeviceCapabilityService } from '../../utils/functions/device-capability';
 import type { gsap } from 'gsap';
 
 type GsapApi = typeof gsap;
@@ -31,11 +32,13 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
     private platformId = inject(PLATFORM_ID);
     private injector = inject(Injector);
     private destroyRef = inject(DestroyRef);
+    private capability = inject(DeviceCapabilityService);
 
     private gsapApi: GsapApi | undefined;
     private ctx: gsap.Context | undefined;
     private scrollTriggerApi: { kill: () => void }[] = [];
     private isBreathingFire = false;
+    private staticFallbackApplied = false;
 
     async ngAfterViewInit() {
         if (!isPlatformBrowser(this.platformId)) return;
@@ -46,21 +49,48 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             this.cleanup();
         });
 
-        const [{ gsap }, { ScrollTrigger }] = await Promise.all([
-            import('gsap'),
-            import('gsap/ScrollTrigger'),
-        ]);
-        if (destroyed) return;
-        gsap.registerPlugin(ScrollTrigger);
-        this.gsapApi = gsap;
+        if (this.capability.shouldReduceEffects()) {
+            return;
+        }
 
-        effect(
-            () => {
-                const isDark = this.themeService.isDarkTheme();
-                if (this.dragonSvg) this.initAnimation(isDark, ScrollTrigger);
-            },
-            { injector: this.injector },
-        );
+        this.dragonSvg.nativeElement.classList.add('animating');
+
+        const fallbackTimer = window.setTimeout(() => {
+            if (!this.gsapApi) this.revealWithoutAnimation();
+        }, 4000);
+
+        try {
+            const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+                import('gsap'),
+                import('gsap/ScrollTrigger'),
+            ]);
+            if (destroyed) {
+                window.clearTimeout(fallbackTimer);
+                return;
+            }
+            gsap.registerPlugin(ScrollTrigger);
+            this.gsapApi = gsap;
+            window.clearTimeout(fallbackTimer);
+
+            this.dragonSvg.nativeElement.classList.remove('animating');
+
+            effect(
+                () => {
+                    const isDark = this.themeService.isDarkTheme();
+                    if (this.dragonSvg) this.initAnimation(isDark, ScrollTrigger);
+                },
+                { injector: this.injector },
+            );
+        } catch {
+            window.clearTimeout(fallbackTimer);
+            this.revealWithoutAnimation();
+        }
+    }
+
+    private revealWithoutAnimation() {
+        if (!this.dragonSvg) return;
+        this.dragonSvg.nativeElement.classList.remove('animating');
+        this.applyStaticFallback();
     }
 
     ngOnDestroy() {
@@ -74,6 +104,38 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
         if (isPlatformBrowser(this.platformId)) {
             window.removeEventListener('mousemove', this.handleMouseMove);
         }
+    }
+
+    private applyStaticFallback() {
+        if (this.staticFallbackApplied || !this.dragonSvg) return;
+        this.staticFallbackApplied = true;
+
+        const svg = this.dragonSvg.nativeElement;
+        const wrapper = svg.querySelector('#dragon-wrapper') as SVGGElement | null;
+        const bodyStyle = getComputedStyle(document.body);
+        const accent = bodyStyle.getPropertyValue('--accent').trim();
+        const bg = bodyStyle.getPropertyValue('--bg').trim();
+        const isDark = this.themeService.isDarkTheme();
+        const mainColor = accent || (isDark ? '#00f2a1' : '#006400');
+        const eyeFill = bg || (isDark ? '#0a0e14' : '#f3f4f6');
+
+        if (wrapper) {
+            wrapper.style.opacity = '1';
+            wrapper.style.transform = '';
+        }
+
+        const fillablePaths = svg.querySelectorAll('path:not(#dragon-eye-outline)');
+        fillablePaths.forEach((p) => {
+            const el = p as SVGPathElement;
+            if (!el.getAttribute('fill') || el.getAttribute('fill') === 'transparent') {
+                el.setAttribute('fill', mainColor);
+            }
+        });
+        const eyeOutline = svg.querySelector('#dragon-eye-outline') as SVGPathElement | null;
+        if (eyeOutline) eyeOutline.setAttribute('fill', eyeFill);
+
+        const geometryGroup = svg.querySelector('#dragon-geometry') as SVGGElement | null;
+        if (geometryGroup) geometryGroup.setAttribute('fill', mainColor);
     }
 
     private initAnimation(
@@ -108,31 +170,49 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             const fillColor = mainColor;
             const glow = `drop-shadow(0 0 10px ${mainColor})`;
 
-            gsap.set(paths, {
-                strokeDasharray: (_, target) => (target as SVGPathElement).getTotalLength(),
-                strokeDashoffset: (_, target) => (target as SVGPathElement).getTotalLength(),
-                stroke: mainColor,
-                strokeWidth: 35,
-                fill: 'transparent',
-                opacity: 1,
-                filter: glow,
-            });
-            gsap.set(wrapper, { opacity: 1, scale: 0.8, y: 50 });
-            gsap.set(geometryGroup, { fill: 'transparent' });
+            let pathsDrawable = true;
+            try {
+                paths.forEach((p) => (p as SVGPathElement).getTotalLength());
+            } catch {
+                pathsDrawable = false;
+            }
 
-            gsap.timeline()
-                .to(wrapper, { opacity: 1, duration: 0.5 })
-                .to(paths, {
-                    strokeDashoffset: 0,
-                    duration: 2.5,
-                    ease: 'power2.inOut',
-                    stagger: 0.01,
-                })
-                .to(wrapper, { scale: 1, y: 0, duration: 2, ease: 'power2.out' }, '-=2.0')
-                .to(fillablePaths, { fill: fillColor, duration: 1, ease: 'power2.inOut' }, '-=1.2')
-                .to(paths, { strokeWidth: 8, duration: 0.8, ease: 'power2.out' }, '<')
-                .to(geometryGroup, { fill: fillColor, duration: 0.5, ease: 'power2.out' }, '<')
-                .to(eyeOutline, { fill: eyeFillColor, duration: 0.6, ease: 'power2.out' }, '<');
+            if (!pathsDrawable) {
+                gsap.set(fillablePaths, { fill: fillColor, opacity: 1 });
+                gsap.set(geometryGroup, { fill: fillColor });
+                gsap.set(eyeOutline, { fill: eyeFillColor });
+                gsap.set(wrapper, { opacity: 1, scale: 1, y: 0 });
+            } else {
+                gsap.set(paths, {
+                    strokeDasharray: (_, target) => (target as SVGPathElement).getTotalLength(),
+                    strokeDashoffset: (_, target) => (target as SVGPathElement).getTotalLength(),
+                    stroke: mainColor,
+                    strokeWidth: 35,
+                    fill: 'transparent',
+                    opacity: 1,
+                    filter: glow,
+                });
+                gsap.set(wrapper, { opacity: 1, scale: 0.8, y: 50 });
+                gsap.set(geometryGroup, { fill: 'transparent' });
+
+                gsap.timeline()
+                    .to(wrapper, { opacity: 1, duration: 0.5 })
+                    .to(paths, {
+                        strokeDashoffset: 0,
+                        duration: 2.5,
+                        ease: 'power2.inOut',
+                        stagger: 0.01,
+                    })
+                    .to(wrapper, { scale: 1, y: 0, duration: 2, ease: 'power2.out' }, '-=2.0')
+                    .to(
+                        fillablePaths,
+                        { fill: fillColor, duration: 1, ease: 'power2.inOut' },
+                        '-=1.2',
+                    )
+                    .to(paths, { strokeWidth: 8, duration: 0.8, ease: 'power2.out' }, '<')
+                    .to(geometryGroup, { fill: fillColor, duration: 0.5, ease: 'power2.out' }, '<')
+                    .to(eyeOutline, { fill: eyeFillColor, duration: 0.6, ease: 'power2.out' }, '<');
+            }
 
             const scrollTween = gsap.to(wrapper, {
                 rotation: -10,
@@ -282,7 +362,7 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             onComplete: () => flash.remove(),
         });
 
-        const particleCount = 60;
+        const particleCount = this.capability.isLowEnd() ? 20 : 60;
         for (let i = 0; i < particleCount; i++) {
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             const startR = Math.random() * 20 + 15;
@@ -290,7 +370,9 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             circle.setAttribute('cx', startX.toString());
             circle.setAttribute('cy', startY.toString());
             circle.setAttribute('fill', 'url(#fireGradient)');
-            circle.setAttribute('filter', 'url(#magmaFire)');
+            if (!this.capability.isLowEnd()) {
+                circle.setAttribute('filter', 'url(#magmaFire)');
+            }
             circle.style.opacity = '0';
             fireContainer.appendChild(circle);
 

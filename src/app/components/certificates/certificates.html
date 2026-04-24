@@ -11,6 +11,8 @@
         @for (cert of certificates; track cert.name; let i = $index) {
             <li
                 class="cert-card-wrapper"
+                [appReveal]="'up'"
+                [revealDelay]="i * 120"
                 (mousemove)="onMouseMove($event, i)"
                 (mouseleave)="onMouseLeave(i)"
             >

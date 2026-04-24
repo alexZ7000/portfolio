@@ -36,8 +36,8 @@ export class ContactComponent {
         {
             icon: 'fa-regular fa-envelope',
             title: 'Email',
-            value: 'alessandrolimafilho@gmail.com',
-            link: 'mailto:alessandrolimafilho@gmail.com',
+            value: 'aledeveloper@pm.me',
+            link: 'mailto:aledeveloper@pm.me',
             color: '#e34f26',
         },
         {

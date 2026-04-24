@@ -1,19 +1,6 @@
-import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    Component,
-    DestroyRef,
-    ElementRef,
-    OnDestroy,
-    PLATFORM_ID,
-    QueryList,
-    ViewChild,
-    ViewChildren,
-    inject,
-} from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import type { gsap } from 'gsap';
+import { RevealOnScrollDirective } from '../../utils/directives/reveal-on-scroll';
 
 interface Skill {
     name: string;
@@ -24,19 +11,12 @@ interface Skill {
 @Component({
     selector: 'app-about-me',
     standalone: true,
-    imports: [TranslateModule],
+    imports: [TranslateModule, RevealOnScrollDirective],
     templateUrl: './about-me.html',
     styleUrl: './about-me.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AboutMe implements AfterViewInit, OnDestroy {
-    @ViewChild('sectionRef') sectionRef!: ElementRef<HTMLElement>;
-    @ViewChildren('skillRef') skillRefs!: QueryList<ElementRef<HTMLElement>>;
-
-    private platformId = inject(PLATFORM_ID);
-    private destroyRef = inject(DestroyRef);
-    private gsapCtx: gsap.Context | undefined;
-
+export class AboutMe {
     readonly skills: readonly Skill[] = [
         { name: 'Angular', icon: 'fa-brands fa-angular', color: '#dd0031' },
         { name: 'React', icon: 'fa-brands fa-react', color: '#61dafb' },
@@ -54,51 +34,4 @@ export class AboutMe implements AfterViewInit, OnDestroy {
         { name: 'Git', icon: 'fa-brands fa-git-alt', color: '#f05032' },
         { name: 'Docker', icon: 'fa-brands fa-docker', color: '#2496ed' },
     ];
-
-    async ngAfterViewInit() {
-        if (!isPlatformBrowser(this.platformId)) return;
-
-        const [{ gsap }, { ScrollTrigger }] = await Promise.all([
-            import('gsap'),
-            import('gsap/ScrollTrigger'),
-        ]);
-        gsap.registerPlugin(ScrollTrigger);
-
-        this.gsapCtx = gsap.context(() => {
-            const section = this.sectionRef.nativeElement;
-            const skillsElements = this.skillRefs.map((el) => el.nativeElement);
-
-            gsap.fromTo(
-                section,
-                { opacity: 0, y: 50 },
-                {
-                    opacity: 1,
-                    y: 0,
-                    duration: 1,
-                    scrollTrigger: { trigger: section, start: 'top 80%' },
-                },
-            );
-
-            if (skillsElements.length) {
-                gsap.fromTo(
-                    skillsElements,
-                    { opacity: 0, y: 20 },
-                    {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.5,
-                        stagger: 0.08,
-                        ease: 'back.out(1.7)',
-                        scrollTrigger: { trigger: section, start: 'top 70%' },
-                    },
-                );
-            }
-        });
-
-        this.destroyRef.onDestroy(() => this.gsapCtx?.revert());
-    }
-
-    ngOnDestroy() {
-        this.gsapCtx?.revert();
-    }
 }

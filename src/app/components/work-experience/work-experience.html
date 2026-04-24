@@ -1,4 +1,4 @@
-<section id="work-experience" #sectionRef class="xp" aria-labelledby="xp-title">
+<section id="work-experience" [appReveal]="'up'" class="xp" aria-labelledby="xp-title">
     <header class="xp__header">
         <h2 id="xp-title" class="section-title">{{ 'workExperienceTitle' | translate }}</h2>
     </header>
@@ -52,7 +52,12 @@
             class="xp__panel"
         >
             @for (exp of filteredExperiences(); track exp.translationKeyIndex; let i = $index) {
-                <article #cardRef class="xp-card" [style.animation-delay]="i * 0.1 + 's'">
+                <article
+                    class="xp-card"
+                    [style.animation-delay]="i * 0.1 + 's'"
+                    [appReveal]="'up'"
+                    [revealDelay]="i * 120"
+                >
                     <span class="xp-card__glow" aria-hidden="true"></span>
                     <div class="xp-card__body">
                         <header class="xp-card__header">

@@ -1,4 +1,4 @@
-<section id="about-me" #sectionRef class="about" aria-labelledby="about-title">
+<section id="about-me" [appReveal]="'up'" class="about" aria-labelledby="about-title">
     <div class="about__grid">
         <header class="about__intro">
             <h2 id="about-title" class="section-title">{{ 'aboutTitle' | translate }}</h2>
@@ -8,8 +8,13 @@
         <div class="about__skills" aria-labelledby="skills-title">
             <h3 id="skills-title" class="about__skills-title">{{ 'skillsTitle' | translate }}</h3>
             <ul class="about__skills-grid" role="list">
-                @for (skill of skills; track skill.name) {
-                    <li #skillRef class="skill-card" [style.--skill-color]="skill.color">
+                @for (skill of skills; track skill.name; let i = $index) {
+                    <li
+                        class="skill-card"
+                        [style.--skill-color]="skill.color"
+                        [appReveal]="'up'"
+                        [revealDelay]="i * 60"
+                    >
                         <i [class]="skill.icon" class="skill-card__icon" aria-hidden="true"></i>
                         <span class="skill-card__name">{{ skill.name }}</span>
                     </li>

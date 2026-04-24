@@ -88,6 +88,11 @@
     transition: border-color var(--duration-normal);
     cursor: pointer;
 
+    body.is-low-end & {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
     &__glare {
         position: absolute;
         width: 320px;

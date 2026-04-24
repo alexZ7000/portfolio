@@ -7,6 +7,7 @@ import {
     signal,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { DeviceCapabilityService } from '../../utils/functions/device-capability';
 
 interface Ember {
     left: string;
@@ -68,6 +69,13 @@ interface Ember {
                 z-index: 0;
             }
 
+            :host-context(body.is-low-end) .ember {
+                mix-blend-mode: normal;
+            }
+            :host-context(body.is-low-end) .ember.far {
+                filter: none;
+            }
+
             @keyframes rise {
                 0% {
                     bottom: -10px;
@@ -92,13 +100,18 @@ interface Ember {
 })
 export class EmbersBackgroundComponent implements OnInit {
     private platformId = inject(PLATFORM_ID);
+    private capability = inject(DeviceCapabilityService);
 
     embers = signal<Ember[]>([]);
 
     ngOnInit() {
         if (!isPlatformBrowser(this.platformId)) return;
+        if (this.capability.prefersReducedMotion()) return;
 
-        const emberCount = 25;
+        const isLowEnd = this.capability.isLowEnd();
+        const isTouch = this.capability.isTouch();
+        const emberCount = isLowEnd ? 6 : isTouch ? 12 : 25;
+
         const embersArray: Ember[] = Array.from({ length: emberCount }).map(() => {
             const size = 2 + Math.random() * 6;
             const isNear = Math.random() > 0.5;

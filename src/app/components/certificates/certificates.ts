@@ -12,6 +12,8 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import type { gsap } from 'gsap';
+import { RevealOnScrollDirective } from '../../utils/directives/reveal-on-scroll';
+import { DeviceCapabilityService } from '../../utils/functions/device-capability';
 
 interface Certificate {
     name: string;
@@ -23,7 +25,7 @@ interface Certificate {
 @Component({
     selector: 'app-certificates',
     standalone: true,
-    imports: [TranslateModule],
+    imports: [TranslateModule, RevealOnScrollDirective],
     templateUrl: './certificates.html',
     styleUrl: './certificates.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,7 +36,7 @@ export class CertificatesComponent implements AfterViewInit {
 
     private platformId = inject(PLATFORM_ID);
     private destroyRef = inject(DestroyRef);
-    private gsapCtx: gsap.Context | undefined;
+    private capability = inject(DeviceCapabilityService);
     private gsapApi: typeof gsap | undefined;
 
     readonly certificates: readonly Certificate[] = [
@@ -45,31 +47,20 @@ export class CertificatesComponent implements AfterViewInit {
 
     async ngAfterViewInit() {
         if (!isPlatformBrowser(this.platformId)) return;
+        if (this.capability.shouldReduceEffects() || this.capability.isTouch()) return;
 
         let destroyed = false;
         this.destroyRef.onDestroy(() => {
             destroyed = true;
-            this.gsapCtx?.revert();
         });
 
-        const [{ gsap }, { ScrollTrigger }] = await Promise.all([
-            import('gsap'),
-            import('gsap/ScrollTrigger'),
-        ]);
-        if (destroyed) return;
-        gsap.registerPlugin(ScrollTrigger);
-        this.gsapApi = gsap;
-
-        this.gsapCtx = gsap.context(() => {
-            gsap.from('.cert-card-wrapper', {
-                scrollTrigger: { trigger: '#certificates', start: 'top 80%' },
-                y: 100,
-                opacity: 0,
-                duration: 0.8,
-                stagger: 0.15,
-                ease: 'power3.out',
-            });
-        });
+        try {
+            const { gsap } = await import('gsap');
+            if (destroyed) return;
+            this.gsapApi = gsap;
+        } catch {
+            // Hover 3D é opcional — sem GSAP, cards continuam funcionais
+        }
     }
 
     onMouseMove(e: MouseEvent, index: number) {

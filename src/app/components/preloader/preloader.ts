@@ -13,6 +13,7 @@ import {
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { ThemeService } from '../../utils/functions/theme';
+import { DeviceCapabilityService } from '../../utils/functions/device-capability';
 
 @Component({
     selector: 'app-preloader',
@@ -28,6 +29,7 @@ export class PreloaderComponent implements AfterViewInit {
     private destroyRef = inject(DestroyRef);
     private sanitizer = inject(DomSanitizer);
     private theme = inject(ThemeService);
+    private capability = inject(DeviceCapabilityService);
 
     svgHtml = signal<SafeHtml | null>(null);
     done = signal(false);
@@ -50,6 +52,18 @@ export class PreloaderComponent implements AfterViewInit {
             return;
         }
 
+        if (this.capability.shouldReduceEffects()) {
+            this.done.set(true);
+            this.hidden.set(true);
+            return;
+        }
+
+        const safetyTimer = window.setTimeout(() => {
+            if (!this.done()) this.done.set(true);
+            setTimeout(() => this.hidden.set(true), 400);
+        }, 3500);
+        this.destroyRef.onDestroy(() => window.clearTimeout(safetyTimer));
+
         try {
             const res = await fetch('dragonWhite.svg');
             if (!res.ok) throw new Error(`preloader-svg-${res.status}`);
@@ -63,7 +77,15 @@ export class PreloaderComponent implements AfterViewInit {
 
         await new Promise((r) => requestAnimationFrame(r));
 
-        const { gsap } = await import('gsap');
+        let gsap: typeof import('gsap').gsap;
+        try {
+            gsap = (await import('gsap')).gsap;
+        } catch {
+            this.done.set(true);
+            this.hidden.set(true);
+            return;
+        }
+
         const svg = this.stageRef.nativeElement.querySelector('svg');
         if (!svg) {
             this.done.set(true);
@@ -78,6 +100,21 @@ export class PreloaderComponent implements AfterViewInit {
         const color = accent || fallback;
         const fillColor = color;
 
+        let pathsDrawable = true;
+        try {
+            paths.forEach((p) => (p as SVGPathElement).getTotalLength());
+        } catch {
+            pathsDrawable = false;
+        }
+
+        if (!pathsDrawable) {
+            gsap.set(paths, { fill: fillColor, opacity: 1 });
+            window.clearTimeout(safetyTimer);
+            this.done.set(true);
+            setTimeout(() => this.hidden.set(true), 500);
+            return;
+        }
+
         gsap.set(paths, {
             strokeDasharray: (_, t) => (t as SVGPathElement).getTotalLength(),
             strokeDashoffset: (_, t) => (t as SVGPathElement).getTotalLength(),
@@ -91,6 +128,7 @@ export class PreloaderComponent implements AfterViewInit {
         const tl = gsap
             .timeline({
                 onComplete: () => {
+                    window.clearTimeout(safetyTimer);
                     this.done.set(true);
                     setTimeout(() => this.hidden.set(true), 900);
                 },
