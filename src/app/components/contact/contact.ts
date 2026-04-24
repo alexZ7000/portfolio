@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 interface ContactInfo {
-    icon: string;
+    icon: IconProp;
     title: string;
     value: string;
     link: string;
@@ -12,7 +14,7 @@ interface ContactInfo {
 @Component({
     selector: 'app-contact',
     standalone: true,
-    imports: [TranslateModule],
+    imports: [TranslateModule, FaIconComponent],
     templateUrl: './contact.html',
     styleUrl: './contact.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,28 +22,28 @@ interface ContactInfo {
 export class ContactComponent {
     readonly contacts: readonly ContactInfo[] = [
         {
-            icon: 'fa-brands fa-linkedin-in',
+            icon: ['fab', 'linkedin-in'],
             title: 'LinkedIn',
             value: 'linkedin.com/in/alelimafilho',
             link: 'https://linkedin.com/in/alelimafilho',
             color: '#0077b5',
         },
         {
-            icon: 'fa-brands fa-github',
+            icon: ['fab', 'github'],
             title: 'GitHub',
             value: 'github.com/alexZ7000',
             link: 'https://github.com/alexZ7000',
             color: '#ffffff',
         },
         {
-            icon: 'fa-regular fa-envelope',
+            icon: ['far', 'envelope'],
             title: 'Email',
             value: 'aledeveloper@pm.me',
             link: 'mailto:aledeveloper@pm.me',
             color: '#e34f26',
         },
         {
-            icon: 'fa-brands fa-whatsapp',
+            icon: ['fab', 'whatsapp'],
             title: 'WhatsApp',
             value: '+55 (11) 95550-1739',
             link: 'https://wa.me/5511955501739',

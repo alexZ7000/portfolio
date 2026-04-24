@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { StorageGateComponent } from './storage-gate';
+import { StorageAvailabilityService } from './storage-availability.service';
 import { provideTesting } from '../../../testing/test-helpers';
 
 describe('StorageGateComponent', () => {
@@ -71,6 +72,17 @@ describe('StorageGateComponent', () => {
         expect(component.blocked()).toBe(true);
     });
 
+    it('blocks access when navigator.cookieEnabled getter throws (fingerprinting protection)', () => {
+        Object.defineProperty(Navigator.prototype, 'cookieEnabled', {
+            configurable: true,
+            get: () => {
+                throw new Error('blocked by privacy policy');
+            },
+        });
+        const { component } = setup('browser');
+        expect(component.blocked()).toBe(true);
+    });
+
     it('is always transparent on the server', () => {
         const { component } = setup('server');
         expect(component.blocked()).toBe(false);
@@ -97,5 +109,33 @@ describe('StorageGateComponent', () => {
         component.retry();
         expect(component.blocked()).toBe(true);
         expect(reloadSpy).not.toHaveBeenCalled();
+    });
+
+    it('exposes a translated gate copy based on navigator.language', () => {
+        const originalLang = Object.getOwnPropertyDescriptor(Navigator.prototype, 'language');
+        Object.defineProperty(Navigator.prototype, 'language', {
+            configurable: true,
+            get: () => 'pt-BR',
+        });
+
+        const { component } = setup('browser');
+        expect(component.copy().title).toMatch(/Cookies/i);
+        expect(component.copy().retry).toMatch(/tentar/i);
+
+        if (originalLang) Object.defineProperty(Navigator.prototype, 'language', originalLang);
+    });
+
+    describe('StorageAvailabilityService', () => {
+        it('shares the availability signal across consumers', () => {
+            Object.defineProperty(Navigator.prototype, 'cookieEnabled', {
+                configurable: true,
+                get: () => true,
+            });
+            TestBed.configureTestingModule({
+                providers: [...provideTesting(), { provide: PLATFORM_ID, useValue: 'browser' }],
+            });
+            const service = TestBed.inject(StorageAvailabilityService);
+            expect(service.available()).toBe(true);
+        });
     });
 });

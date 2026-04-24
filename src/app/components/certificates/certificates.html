@@ -1,7 +1,11 @@
 <section id="certificates" class="certs" aria-labelledby="certs-title">
     <header class="certs__header">
         <h2 id="certs-title" class="section-title">
-            <i class="fa-solid fa-dragon certs__title-icon" aria-hidden="true"></i>
+            <fa-icon
+                [icon]="['fas', 'dragon']"
+                class="certs__title-icon"
+                aria-hidden="true"
+            ></fa-icon>
             {{ 'certificatesTitle' | translate }}
         </h2>
         <p class="certs__subtitle">{{ 'certificatesSubtitle' | translate }}</p>
@@ -30,7 +34,7 @@
 
                     <div class="cert-card__body">
                         <div class="cert-card__badge" aria-hidden="true">
-                            <i class="fa-solid fa-scroll"></i>
+                            <fa-icon [icon]="['fas', 'scroll']"></fa-icon>
                         </div>
 
                         <h3 class="cert-card__title">{{ cert.name }}</h3>
@@ -39,10 +43,10 @@
 
                         <span class="cert-card__cta">
                             <span>{{ 'viewCertificate' | translate }}</span>
-                            <i
-                                class="fa-solid fa-arrow-up-right-from-square"
+                            <fa-icon
+                                [icon]="['fas', 'arrow-up-right-from-square']"
                                 aria-hidden="true"
-                            ></i>
+                            ></fa-icon>
                         </span>
                     </div>
 

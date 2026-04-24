@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { ScrollService } from '../../utils/functions/scroll.service';
 
 interface SocialLink {
-    icon: string;
+    icon: IconProp;
     url: string;
     label: string;
 }
@@ -11,7 +13,7 @@ interface SocialLink {
 @Component({
     selector: 'app-footer',
     standalone: true,
-    imports: [TranslateModule],
+    imports: [TranslateModule, FaIconComponent],
     templateUrl: './footer.html',
     styleUrl: './footer.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,12 +23,12 @@ export class FooterComponent {
 
     readonly socials: readonly SocialLink[] = [
         {
-            icon: 'fa-brands fa-linkedin-in',
+            icon: ['fab', 'linkedin-in'],
             url: 'https://linkedin.com/in/alelimafilho',
             label: 'LinkedIn',
         },
-        { icon: 'fa-brands fa-github', url: 'https://github.com/alexZ7000', label: 'GitHub' },
-        { icon: 'fa-brands fa-whatsapp', url: 'https://wa.me/5511955501739', label: 'WhatsApp' },
+        { icon: ['fab', 'github'], url: 'https://github.com/alexZ7000', label: 'GitHub' },
+        { icon: ['fab', 'whatsapp'], url: 'https://wa.me/5511955501739', label: 'WhatsApp' },
     ];
 
     scrollToTop() {

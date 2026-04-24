@@ -13,10 +13,10 @@
         <div class="hero__actions">
             <button type="button" class="btn btn--primary" (click)="scrollToContact()">
                 <span>{{ 'contactButton' | translate }}</span>
-                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                <fa-icon [icon]="['fas', 'arrow-right']" aria-hidden="true"></fa-icon>
             </button>
             <button type="button" class="btn btn--ghost" (click)="breatheFire()">
-                <i class="fa-solid fa-fire" aria-hidden="true"></i>
+                <fa-icon [icon]="['fas', 'fire']" aria-hidden="true"></fa-icon>
                 <span>{{ 'breatheFire' | translate }}</span>
             </button>
         </div>

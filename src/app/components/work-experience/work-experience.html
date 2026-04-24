@@ -13,7 +13,11 @@
                 [class.is-active]="activeTab() === 'professional'"
                 (click)="setActiveTab('professional')"
             >
-                <i class="fa-solid fa-briefcase xp__tab-icon" aria-hidden="true"></i>
+                <fa-icon
+                    [icon]="['fas', 'briefcase']"
+                    class="xp__tab-icon"
+                    aria-hidden="true"
+                ></fa-icon>
                 <span>{{ 'tabProfessional' | translate }}</span>
                 <span class="xp__tab-bar" aria-hidden="true"></span>
             </button>
@@ -26,7 +30,11 @@
                 [class.is-active]="activeTab() === 'academic'"
                 (click)="setActiveTab('academic')"
             >
-                <i class="fa-solid fa-graduation-cap xp__tab-icon" aria-hidden="true"></i>
+                <fa-icon
+                    [icon]="['fas', 'graduation-cap']"
+                    class="xp__tab-icon"
+                    aria-hidden="true"
+                ></fa-icon>
                 <span>{{ 'tabAcademic' | translate }}</span>
                 <span class="xp__tab-bar" aria-hidden="true"></span>
             </button>
@@ -39,7 +47,11 @@
                 [class.is-active]="activeTab() === 'personal'"
                 (click)="setActiveTab('personal')"
             >
-                <i class="fa-solid fa-dragon xp__tab-icon" aria-hidden="true"></i>
+                <fa-icon
+                    [icon]="['fas', 'dragon']"
+                    class="xp__tab-icon"
+                    aria-hidden="true"
+                ></fa-icon>
                 <span>{{ 'tabPersonal' | translate }}</span>
                 <span class="xp__tab-bar" aria-hidden="true"></span>
             </button>

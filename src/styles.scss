@@ -370,11 +370,8 @@ body.reduced-motion {
     }
 }
 
-body.is-low-end {
-    body::before,
-    &::before {
-        display: none !important;
-    }
+body.is-low-end::before {
+    display: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

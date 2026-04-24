@@ -15,59 +15,55 @@ describe('Home', () => {
         mm.restore();
     });
 
-    function setup(platform: 'browser' | 'server' = 'server') {
+    async function setup(platform: 'browser' | 'server' = 'server') {
         TestBed.configureTestingModule({
             imports: [Home],
             providers: [...provideTesting(), { provide: PLATFORM_ID, useValue: platform }],
         });
+        await TestBed.compileComponents();
         const fixture = TestBed.createComponent(Home);
         fixture.detectChanges();
         return { fixture, component: fixture.componentInstance };
     }
 
-    it('composes every portfolio section in order under a #main landmark', () => {
-        const { fixture } = setup();
+    it('renders above-the-fold sections eagerly under a #main landmark', async () => {
+        const { fixture } = await setup();
         const main = (fixture.nativeElement as HTMLElement).querySelector('main#main');
         expect(main).toBeTruthy();
 
-        const expected = [
-            'app-embers-background',
-            'app-hero',
-            'app-about-me',
-            'app-work-experience',
-            'app-certificates',
-            'app-contact',
-            'app-footer',
-        ];
-        for (const selector of expected) {
+        // Embers, hero and about-me render immediately (above the fold)
+        for (const selector of ['app-embers-background', 'app-hero', 'app-about-me']) {
             expect(main?.querySelector(selector)).toBeTruthy();
         }
     });
 
-    it('marks the decorative embers layer as aria-hidden', () => {
-        const { fixture } = setup();
+    it('defers below-the-fold sections behind viewport-triggered placeholders', async () => {
+        const { fixture } = await setup();
+        const main = (fixture.nativeElement as HTMLElement).querySelector('main#main');
+
+        // The deferred sections are replaced by placeholders until they enter the viewport.
+        // We assert at least one section placeholder and one footer placeholder exist.
+        expect(main?.querySelector('.home__section-placeholder')).toBeTruthy();
+        expect(main?.querySelector('.home__footer-placeholder')).toBeTruthy();
+    });
+
+    it('marks the decorative embers layer as aria-hidden', async () => {
+        const { fixture } = await setup();
         const embers = (fixture.nativeElement as HTMLElement).querySelector(
             'app-embers-background',
         );
         expect(embers?.getAttribute('aria-hidden')).toBe('true');
     });
 
-    it('keeps the sections in the right order', () => {
-        const { fixture } = setup();
+    it('keeps the eager sections in the right order', async () => {
+        const { fixture } = await setup();
         const main = (fixture.nativeElement as HTMLElement).querySelector('main#main');
         const tagOrder = Array.from(main?.children ?? []).map((el) => el.tagName.toLowerCase());
-        const firstSection = tagOrder.indexOf('app-hero');
+        const heroIndex = tagOrder.indexOf('app-hero');
         const aboutIndex = tagOrder.indexOf('app-about-me');
-        const xpIndex = tagOrder.indexOf('app-work-experience');
-        const certsIndex = tagOrder.indexOf('app-certificates');
-        const contactIndex = tagOrder.indexOf('app-contact');
-        const footerIndex = tagOrder.indexOf('app-footer');
 
-        expect(firstSection).toBeGreaterThanOrEqual(0);
-        expect(aboutIndex).toBeGreaterThan(firstSection);
-        expect(xpIndex).toBeGreaterThan(aboutIndex);
-        expect(certsIndex).toBeGreaterThan(xpIndex);
-        expect(contactIndex).toBeGreaterThan(certsIndex);
-        expect(footerIndex).toBeGreaterThan(contactIndex);
+        expect(tagOrder.indexOf('app-embers-background')).toBe(0);
+        expect(heroIndex).toBeGreaterThanOrEqual(0);
+        expect(aboutIndex).toBeGreaterThan(heroIndex);
     });
 });

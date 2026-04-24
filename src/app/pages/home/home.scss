@@ -16,4 +16,16 @@
     > * {
         width: 100%;
     }
+
+    &__section-placeholder {
+        min-height: 60vh;
+    }
+
+    &__footer-placeholder {
+        min-height: 220px;
+
+        @media (min-width: 768px) {
+            min-height: 280px;
+        }
+    }
 }

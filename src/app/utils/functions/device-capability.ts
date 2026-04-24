@@ -17,34 +17,73 @@ export class DeviceCapabilityService {
     constructor() {
         if (!isPlatformBrowser(this.platformId)) return;
 
-        const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-        this._prefersReducedMotion.set(reduceMotionQuery.matches);
-        const onReduceChange = (e: MediaQueryListEvent) =>
-            this._prefersReducedMotion.set(e.matches);
-        reduceMotionQuery.addEventListener?.('change', onReduceChange);
+        this.safeInitReducedMotion();
+        this.safeInitTouch();
+        this.safeInitLowEnd();
 
-        this._isTouch.set(window.matchMedia('(hover: none)').matches);
+        try {
+            if (this._isLowEnd()) document.body.classList.add('is-low-end');
+            if (this._prefersReducedMotion()) document.body.classList.add('reduced-motion');
+        } catch {
+            // document inacessível — segue sem classes auxiliares
+        }
+    }
 
-        this._isLowEnd.set(this.detectLowEnd());
+    private safeInitReducedMotion() {
+        try {
+            if (typeof window.matchMedia !== 'function') return;
+            const q = window.matchMedia('(prefers-reduced-motion: reduce)');
+            this._prefersReducedMotion.set(!!q.matches);
+            const onChange = (e: MediaQueryListEvent) => this._prefersReducedMotion.set(e.matches);
+            q.addEventListener?.('change', onChange);
+        } catch {
+            // matchMedia bloqueado — assume motion habilitado
+        }
+    }
 
-        if (this._isLowEnd()) document.body.classList.add('is-low-end');
-        if (this._prefersReducedMotion()) document.body.classList.add('reduced-motion');
+    private safeInitTouch() {
+        try {
+            if (typeof window.matchMedia !== 'function') return;
+            this._isTouch.set(!!window.matchMedia('(hover: none)').matches);
+        } catch {
+            // ignore
+        }
+    }
+
+    private safeInitLowEnd() {
+        try {
+            this._isLowEnd.set(this.detectLowEnd());
+        } catch {
+            // leitura de navigator.* bloqueada — assume não-low-end
+            this._isLowEnd.set(false);
+        }
     }
 
     private detectLowEnd(): boolean {
-        const nav = navigator as Navigator & {
-            deviceMemory?: number;
-            connection?: { saveData?: boolean; effectiveType?: string };
-        };
+        const connection = this.readNav<{ saveData?: boolean; effectiveType?: string }>(
+            'connection',
+        );
 
-        if (nav.connection?.saveData) return true;
-        const slow = nav.connection?.effectiveType;
+        if (connection?.saveData === true) return true;
+        const slow = connection?.effectiveType;
         if (slow === 'slow-2g' || slow === '2g' || slow === '3g') return true;
 
-        if (typeof nav.deviceMemory === 'number' && nav.deviceMemory <= 4) return true;
-        if (typeof nav.hardwareConcurrency === 'number' && nav.hardwareConcurrency <= 4)
-            return true;
+        const deviceMemory = this.readNav<number>('deviceMemory');
+        if (typeof deviceMemory === 'number' && deviceMemory > 0 && deviceMemory <= 4) return true;
+
+        const cores = this.readNav<number>('hardwareConcurrency');
+        if (typeof cores === 'number' && cores > 0 && cores <= 4) return true;
 
         return false;
+    }
+
+    private readNav<T>(key: string): T | undefined {
+        try {
+            if (typeof navigator === 'undefined') return undefined;
+            const value = (navigator as unknown as Record<string, unknown>)[key];
+            return value as T | undefined;
+        } catch {
+            return undefined;
+        }
     }
 }

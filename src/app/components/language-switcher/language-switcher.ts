@@ -33,14 +33,22 @@ export class LanguageSwitcher {
         this.currentLang.set(lang);
         this.translate.use(lang);
         if (isPlatformBrowser(this.platformId)) {
-            localStorage.setItem(STORAGE_KEY, lang);
+            try {
+                localStorage.setItem(STORAGE_KEY, lang);
+            } catch {
+                // storage indisponível — idioma continua ativo na sessão atual
+            }
         }
     }
 
     private resolveInitialLang(): Lang {
         if (isPlatformBrowser(this.platformId)) {
-            const saved = localStorage.getItem(STORAGE_KEY) as Lang | null;
-            if (saved && SUPPORTED.includes(saved)) return saved;
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY) as Lang | null;
+                if (saved && SUPPORTED.includes(saved)) return saved;
+            } catch {
+                // cai no fallback do navegador
+            }
         }
         const browser = this.translate.getBrowserLang();
         return browser && SUPPORTED.includes(browser as Lang) ? (browser as Lang) : 'pt';

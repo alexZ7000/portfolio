@@ -56,7 +56,7 @@
         <div class="pearl-container">
             <button class="back-to-top" (click)="scrollToTop()" aria-label="Back to Top">
                 <div class="pearl-core"></div>
-                <i class="fa-solid fa-chevron-up"></i>
+                <fa-icon [icon]="['fas', 'chevron-up']" aria-hidden="true"></fa-icon>
             </button>
             <div class="pearl-glow"></div>
         </div>
@@ -70,7 +70,7 @@
                         rel="noopener noreferrer"
                         [attr.aria-label]="social.label"
                     >
-                        <i [class]="social.icon"></i>
+                        <fa-icon [icon]="social.icon" aria-hidden="true"></fa-icon>
                     </a>
                 }
             </div>

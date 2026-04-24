@@ -1,11 +1,13 @@
-import { EnvironmentProviders, Provider, signal } from '@angular/core';
+import { EnvironmentProviders, Provider, inject, provideAppInitializer, signal } from '@angular/core';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { Observable, of } from 'rxjs';
 import { vi } from 'vitest';
 import { DeviceCapabilityService } from '../app/utils/functions/device-capability';
+import { registerIcons } from '../app/utils/icons/icon-library';
 
 export type TestingProvider = Provider | EnvironmentProviders;
 
@@ -22,6 +24,7 @@ export function provideTesting(extra: TestingProvider[] = []): TestingProvider[]
         provideHttpClient(withFetch()),
         provideHttpClientTesting(),
         provideRouter([]),
+        provideAppInitializer(() => registerIcons(inject(FaIconLibrary))),
         ...(TranslateModule.forRoot({
             loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
         }).providers ?? []),

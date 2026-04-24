@@ -27,10 +27,13 @@ describe('AboutMe', () => {
             expect(new Set(names).size).toBe(names.length);
         });
 
-        it('attaches an icon class and hex colour to every skill', () => {
+        it('attaches a FontAwesome icon tuple and hex colour to every skill', () => {
             const { component } = setup();
             for (const skill of component.skills) {
-                expect(skill.icon.length).toBeGreaterThan(0);
+                expect(Array.isArray(skill.icon)).toBe(true);
+                const [prefix, name] = skill.icon as [string, string];
+                expect(['fas', 'fab', 'far']).toContain(prefix);
+                expect(name.length).toBeGreaterThan(0);
                 expect(skill.color).toMatch(/^#[0-9a-f]{3,8}$/i);
             }
         });

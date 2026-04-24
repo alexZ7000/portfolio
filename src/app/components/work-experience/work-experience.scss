@@ -10,7 +10,6 @@
     @media (min-width: 768px) {
         padding: var(--space-8) var(--space-5);
     }
-
     @media (min-width: 1024px) {
         padding: var(--space-9) var(--space-5);
     }
@@ -32,7 +31,6 @@
         @media (min-width: 768px) {
             gap: var(--space-7);
         }
-
         @media (min-width: 1024px) {
             grid-template-columns: 260px 1fr;
             gap: var(--space-8);
@@ -49,7 +47,6 @@
         @media (min-width: 640px) {
             gap: var(--space-3);
         }
-
         @media (min-width: 1024px) {
             flex-direction: column;
             flex-wrap: nowrap;
@@ -68,19 +65,13 @@
         background: var(--surface);
         border: 1px solid var(--surface-border);
         color: var(--text-muted);
-        font-family: var(--font-display);
-        font-size: var(--text-xs);
-        font-weight: 700;
+        font: 700 var(--text-xs) / 1.2 var(--font-display);
         letter-spacing: 0.08em;
         text-transform: uppercase;
         overflow: hidden;
-        width: auto;
         min-height: 2.75rem;
         text-align: left;
-        transition:
-            background var(--duration-normal) var(--ease-out),
-            border-color var(--duration-normal) var(--ease-out),
-            color var(--duration-normal) var(--ease-out);
+        transition: all var(--duration-normal) var(--ease-out);
 
         @media (min-width: 640px) {
             gap: var(--space-3);
@@ -88,9 +79,27 @@
             font-size: var(--text-sm);
             letter-spacing: 0.1em;
         }
-
         @media (min-width: 1024px) {
             width: 100%;
+        }
+
+        &:hover {
+            color: var(--text);
+            border-color: var(--surface-border-strong);
+        }
+
+        &.is-active {
+            color: var(--accent);
+            background: linear-gradient(90deg, var(--accent-glow), transparent);
+            border-color: var(--accent-muted);
+
+            .xp__tab-bar {
+                transform: scaleX(1);
+
+                @media (min-width: 1024px) {
+                    transform: scaleY(1);
+                }
+            }
         }
     }
 
@@ -119,25 +128,6 @@
         }
     }
 
-    &__tab:hover {
-        color: var(--text);
-        border-color: var(--surface-border-strong);
-    }
-
-    &__tab.is-active {
-        color: var(--accent);
-        background: linear-gradient(90deg, var(--accent-glow), transparent);
-        border-color: var(--accent-muted);
-
-        .xp__tab-bar {
-            transform: scaleX(1);
-
-            @media (min-width: 1024px) {
-                transform: scaleY(1);
-            }
-        }
-    }
-
     &__panel {
         display: flex;
         flex-direction: column;
@@ -152,18 +142,15 @@
     border-radius: var(--radius-md);
     padding: var(--space-5);
     overflow: hidden;
-
-    @media (min-width: 640px) {
-        padding: var(--space-6);
-    }
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     opacity: 0;
     animation: xp-slide-in 0.6s var(--ease-out) forwards;
-    transition:
-        transform var(--duration-normal) var(--ease-out),
-        border-color var(--duration-normal) var(--ease-out),
-        box-shadow var(--duration-normal) var(--ease-out);
+    transition: all var(--duration-normal) var(--ease-out);
+
+    @media (min-width: 640px) {
+        padding: var(--space-6);
+    }
 
     &__glow {
         position: absolute;
@@ -202,8 +189,7 @@
     }
 
     &__company {
-        font-family: var(--font-body);
-        font-size: var(--text-base);
+        font: var(--text-base) / 1.5 var(--font-body);
         color: var(--text-muted);
         margin: var(--space-1) 0 0;
     }
@@ -262,7 +248,6 @@
         .xp-card__glow {
             opacity: 1;
         }
-
         .xp-card__role {
             color: var(--accent);
         }

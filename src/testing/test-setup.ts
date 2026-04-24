@@ -1,3 +1,7 @@
+import { registerIcons } from '../app/utils/icons/icon-library';
+
+registerIcons();
+
 if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {
     Object.defineProperty(window, 'matchMedia', {
         configurable: true,

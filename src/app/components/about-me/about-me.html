@@ -15,7 +15,11 @@
                         [appReveal]="'up'"
                         [revealDelay]="i * 60"
                     >
-                        <i [class]="skill.icon" class="skill-card__icon" aria-hidden="true"></i>
+                        <fa-icon
+                            [icon]="skill.icon"
+                            class="skill-card__icon"
+                            aria-hidden="true"
+                        ></fa-icon>
                         <span class="skill-card__name">{{ skill.name }}</span>
                     </li>
                 }

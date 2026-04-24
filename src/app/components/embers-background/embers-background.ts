@@ -49,7 +49,7 @@ interface Ember {
 
             .ember {
                 position: absolute;
-                bottom: -20px;
+                bottom: 0;
                 border-radius: 50%;
                 opacity: 0;
                 mix-blend-mode: screen;
@@ -78,19 +78,17 @@ interface Ember {
 
             @keyframes rise {
                 0% {
-                    bottom: -10px;
-                    transform: translateX(0);
+                    transform: translate3d(0, 10px, 0);
                     opacity: 0;
                 }
                 20% {
                     opacity: 1;
                 }
                 50% {
-                    transform: translateX(-20px);
+                    transform: translate3d(-20px, -55vh, 0);
                 }
                 100% {
-                    bottom: 110vh;
-                    transform: translateX(20px);
+                    transform: translate3d(20px, -110vh, 0);
                     opacity: 0;
                 }
             }

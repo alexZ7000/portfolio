@@ -1,10 +1,21 @@
 <header class="navbar" [class.is-scrolled]="isScrolled()" [class.is-menu-open]="isMobileMenuOpen()">
     <div class="navbar__inner">
         <button class="navbar__logo" type="button" (click)="scrollTo('home')" aria-label="Home">
-            <img
-                [src]="themeService.isDarkTheme() ? 'assets/logoWhite.png' : 'assets/logoBlack.png'"
-                alt="Alessandro Lima"
-            />
+            @let isDark = themeService.isDarkTheme();
+            <picture>
+                <source
+                    type="image/webp"
+                    [srcset]="isDark ? 'assets/logoWhite.webp' : 'assets/logoBlack.webp'"
+                />
+                <img
+                    [src]="isDark ? 'assets/logoWhite.png' : 'assets/logoBlack.png'"
+                    alt="Alessandro Lima"
+                    width="600"
+                    height="58"
+                    decoding="async"
+                    fetchpriority="high"
+                />
+            </picture>
         </button>
 
         <nav class="navbar__nav navbar__nav--desktop" aria-label="Primary">
@@ -40,12 +51,10 @@
             [attr.aria-expanded]="isMobileMenuOpen()"
             [attr.aria-label]="isMobileMenuOpen() ? 'Close menu' : 'Open menu'"
         >
-            <i
-                class="fas"
-                [class.fa-bars]="!isMobileMenuOpen()"
-                [class.fa-times]="isMobileMenuOpen()"
+            <fa-icon
+                [icon]="['fas', isMobileMenuOpen() ? 'xmark' : 'bars']"
                 aria-hidden="true"
-            ></i>
+            ></fa-icon>
         </button>
     </div>
 
