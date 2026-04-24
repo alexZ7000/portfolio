@@ -3,7 +3,9 @@
 @if (storageAvailable()) {
     <app-preloader></app-preloader>
 
-    <app-custom-cursor></app-custom-cursor>
+    @defer (on idle) {
+        <app-custom-cursor></app-custom-cursor>
+    }
 
     <a href="#main" class="visually-hidden">Skip to main content</a>
 

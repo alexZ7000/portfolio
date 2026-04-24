@@ -59,51 +59,165 @@
 
         <meta
             http-equiv="Content-Security-Policy"
-            content="default-src 'self'; script-src 'self' 'sha256-Zhcx4c3fej1yFwnQG1LoVwKcVq2SpV6QjzcIleP7SGw='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self'; connect-src 'self' https://alexZ7000.com.br; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';"
+            content="default-src 'self'; script-src 'self' 'sha256-Zhcx4c3fej1yFwnQG1LoVwKcVq2SpV6QjzcIleP7SGw=' 'sha256-HtOLsZJPuMVYH4IJcqH4K3BNIQW7pwobgUIi0MCJMrw='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self'; connect-src 'self' https://alexZ7000.com.br; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';"
         />
 
+        <style>
+            html:not(.js-on) app-root {
+                display: none;
+            }
+            html:not(.js-on) .noscript-gate {
+                display: flex;
+            }
+        </style>
+
+        <script>
+            document.documentElement.classList.add('js-on');
+        </script>
+
         <script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://alexZ7000.com.br/#person","name":"Alessandro Lima","alternateName":"alexZ7000","url":"https://alexZ7000.com.br/","jobTitle":"Full-Stack Developer","sameAs":["https://github.com/alexZ7000","https://linkedin.com/in/alelimafilho"]},{"@type":"WebSite","@id":"https://alexZ7000.com.br/#website","url":"https://alexZ7000.com.br/","name":"Alessandro Lima — Portfolio","inLanguage":"pt-BR","author":{"@id":"https://alexZ7000.com.br/#person"}}]}
+            {
+                "@context": "https://schema.org",
+                "@graph": [
+                    {
+                        "@type": "Person",
+                        "@id": "https://alexZ7000.com.br/#person",
+                        "name": "Alessandro Lima",
+                        "alternateName": "alexZ7000",
+                        "url": "https://alexZ7000.com.br/",
+                        "jobTitle": "Full-Stack Developer",
+                        "sameAs": [
+                            "https://github.com/alexZ7000",
+                            "https://linkedin.com/in/alelimafilho"
+                        ]
+                    },
+                    {
+                        "@type": "WebSite",
+                        "@id": "https://alexZ7000.com.br/#website",
+                        "url": "https://alexZ7000.com.br/",
+                        "name": "Alessandro Lima — Portfolio",
+                        "inLanguage": "pt-BR",
+                        "author": { "@id": "https://alexZ7000.com.br/#person" }
+                    }
+                ]
+            }
         </script>
     </head>
     <body>
         <app-root></app-root>
         <noscript>
             <style>
-                .noscript-overlay {
+                .noscript-gate {
                     position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background-color: rgba(20, 20, 20, 0.95);
-                    color: #fff;
-                    display: flex;
-                    justify-content: center;
+                    inset: 0;
+                    display: none;
                     align-items: center;
+                    justify-content: center;
+                    padding: 1.5rem;
+                    background:
+                        radial-gradient(
+                            circle at 50% 30%,
+                            rgba(0, 242, 161, 0.18),
+                            rgba(10, 10, 10, 0.96)
+                        ),
+                        #030303;
+                    color: #f5f6f8;
+                    font-family:
+                        'Lato',
+                        system-ui,
+                        -apple-system,
+                        'Segoe UI',
+                        sans-serif;
+                    z-index: 99999;
+                }
+                .noscript-gate__card {
+                    max-width: 34rem;
+                    width: 100%;
+                    padding: 2.25rem 1.5rem;
                     text-align: center;
-                    z-index: 9999;
-                    font-family: Arial, sans-serif;
+                    background: rgba(15, 17, 21, 0.92);
+                    border: 1px solid rgba(0, 242, 161, 0.35);
+                    border-radius: 1.25rem;
+                    box-shadow:
+                        0 30px 80px rgba(0, 0, 0, 0.55),
+                        0 0 60px rgba(0, 242, 161, 0.1);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1.25rem;
                 }
-                .noscript-content {
-                    max-width: 600px;
-                    padding: 2rem;
+                @media (min-width: 640px) {
+                    .noscript-gate__card {
+                        padding: 2.75rem 2.25rem;
+                        border-radius: 1.5rem;
+                    }
                 }
-                .noscript-content h1 {
-                    font-size: 2rem;
-                    margin-bottom: 1rem;
+                .noscript-gate__icon {
+                    width: 3rem;
+                    height: 3rem;
+                    color: #00f2a1;
+                    filter: drop-shadow(0 0 18px rgba(0, 242, 161, 0.55));
                 }
-                .noscript-content p {
-                    font-size: 1.2rem;
+                .noscript-gate__title {
+                    font-family: 'Cinzel', 'Playfair Display', serif;
+                    font-size: clamp(1.35rem, 1rem + 1.4vw, 1.85rem);
+                    font-weight: 700;
+                    letter-spacing: 0.14em;
+                    text-transform: uppercase;
+                    margin: 0;
+                    line-height: 1.2;
+                    color: #fff;
+                }
+                .noscript-gate__title::after {
+                    content: '';
+                    display: block;
+                    width: 3.5rem;
+                    height: 2px;
+                    background: #00f2a1;
+                    margin: 0.9rem auto 0;
+                    box-shadow: 0 0 12px rgba(0, 242, 161, 0.6);
+                }
+                .noscript-gate__body {
+                    margin: 0;
+                    font-size: 1rem;
+                    line-height: 1.65;
+                    color: #a1a9b4;
+                }
+                .noscript-gate__body strong {
+                    color: #f5f6f8;
+                }
+                .noscript-gate__lang {
+                    margin: 0;
+                    font-size: 0.85rem;
                     line-height: 1.6;
+                    color: #6f7a86;
+                    letter-spacing: 0.04em;
                 }
             </style>
-            <div class="noscript-overlay">
-                <div class="noscript-content">
-                    <h1>JavaScript Disabled</h1>
-                    <p>
-                        For the Portfolio work correctly, It is essential that JavaScript is enabled
-                        on your browser. Please enable JavaScript and reload the page.
+            <div class="noscript-gate" role="alertdialog" aria-labelledby="noscript-title">
+                <div class="noscript-gate__card">
+                    <svg
+                        class="noscript-gate__icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.75"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <path d="M12 2 3 6v6c0 5 3.8 9.3 9 10 5.2-.7 9-5 9-10V6l-9-4z" />
+                        <path d="m9 12 2 2 4-4" />
+                    </svg>
+                    <h1 id="noscript-title" class="noscript-gate__title">JavaScript desativado</h1>
+                    <p class="noscript-gate__body">
+                        Este portfólio depende de <strong>JavaScript</strong> para renderizar e
+                        interagir. Habilite a execução de scripts para este domínio nas
+                        configurações do seu navegador e recarregue a página.
+                    </p>
+                    <p class="noscript-gate__lang">
+                        This portfolio requires JavaScript. Please enable script execution for this
+                        site in your browser settings and reload the page.
                     </p>
                 </div>
             </div>

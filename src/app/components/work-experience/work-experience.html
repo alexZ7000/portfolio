@@ -1,4 +1,4 @@
-<section id="work-experience" [appReveal]="'up'" class="xp" aria-labelledby="xp-title">
+<section id="work-experience" [appReveal]="'up'" class="xp section-pad" aria-labelledby="xp-title">
     <header class="xp__header">
         <h2 id="xp-title" class="section-title">{{ 'workExperienceTitle' | translate }}</h2>
     </header>
@@ -64,13 +64,7 @@
             class="xp__panel"
         >
             @for (exp of filteredExperiences(); track exp.translationKeyIndex; let i = $index) {
-                <article
-                    class="xp-card"
-                    [style.animation-delay]="i * 0.1 + 's'"
-                    [appReveal]="'up'"
-                    [revealDelay]="i * 120"
-                >
-                    <span class="xp-card__glow" aria-hidden="true"></span>
+                <article class="xp-card panel" [appReveal]="'up'" [revealDelay]="i * 120">
                     <div class="xp-card__body">
                         <header class="xp-card__header">
                             <div>
@@ -81,7 +75,7 @@
                                     {{ 'exp' + exp.translationKeyIndex + 'Company' | translate }}
                                 </p>
                             </div>
-                            <time class="xp-card__period">
+                            <time class="xp-card__period pill pill--accent">
                                 {{ 'exp' + exp.translationKeyIndex + 'Period' | translate }}
                             </time>
                         </header>
@@ -93,7 +87,7 @@
                         @if (exp.technologies.length) {
                             <ul class="xp-card__tech" aria-label="Technologies used">
                                 @for (tech of exp.technologies; track tech) {
-                                    <li class="xp-card__tech-item">{{ tech }}</li>
+                                    <li class="pill">{{ tech }}</li>
                                 }
                             </ul>
                         }

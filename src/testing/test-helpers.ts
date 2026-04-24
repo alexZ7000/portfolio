@@ -1,4 +1,10 @@
-import { EnvironmentProviders, Provider, inject, provideAppInitializer, signal } from '@angular/core';
+import {
+    EnvironmentProviders,
+    Provider,
+    inject,
+    provideAppInitializer,
+    signal,
+} from '@angular/core';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';

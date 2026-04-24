@@ -1,4 +1,4 @@
-<section id="contact" class="contact" aria-labelledby="contact-title">
+<section id="contact" class="contact section-pad" aria-labelledby="contact-title">
     <div class="contact__glow" aria-hidden="true"></div>
 
     <header class="contact__header">
@@ -9,7 +9,7 @@
         @for (contact of contacts; track contact.title) {
             <li>
                 <a
-                    class="contact-card"
+                    class="contact-card panel"
                     [href]="contact.link"
                     target="_blank"
                     rel="noopener noreferrer"

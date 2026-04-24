@@ -123,8 +123,12 @@ describe('Navbar', () => {
             const logo = root.querySelector('img') as HTMLImageElement;
             const webpSource = root.querySelector('source[type="image/webp"]') as HTMLSourceElement;
 
-            const expectedPng = theme.isDarkTheme() ? 'assets/logoWhite.png' : 'assets/logoBlack.png';
-            const expectedWebp = theme.isDarkTheme() ? 'assets/logoWhite.webp' : 'assets/logoBlack.webp';
+            const expectedPng = theme.isDarkTheme()
+                ? 'assets/logoWhite.png'
+                : 'assets/logoBlack.png';
+            const expectedWebp = theme.isDarkTheme()
+                ? 'assets/logoWhite.webp'
+                : 'assets/logoBlack.webp';
 
             expect(logo.getAttribute('src')).toBe(expectedPng);
             expect(webpSource.getAttribute('srcset')).toBe(expectedWebp);

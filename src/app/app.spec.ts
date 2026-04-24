@@ -22,17 +22,20 @@ describe('AppComponent', () => {
         expect(fixture.componentInstance).toBeTruthy();
     });
 
-    it('renders the preloader, navbar, custom cursor, storage gate and toaster shell', () => {
+    it('renders the preloader, navbar, storage gate and toaster shell eagerly', () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
 
         const root = fixture.nativeElement as HTMLElement;
         expect(root.querySelector('app-storage-gate')).toBeTruthy();
         expect(root.querySelector('app-preloader')).toBeTruthy();
-        expect(root.querySelector('app-custom-cursor')).toBeTruthy();
         expect(root.querySelector('app-navbar')).toBeTruthy();
         expect(root.querySelector('app-toaster-container')).toBeTruthy();
         expect(root.querySelector('router-outlet')).toBeTruthy();
+        // app-custom-cursor is behind a @defer (on idle) block so it does not
+        // render in the initial pass — it only loads when the browser is idle
+        // AND storage is available.
+        expect(root.querySelector('app-custom-cursor')).toBeNull();
     });
 
     it('exposes a "skip to main" link for keyboard users', () => {

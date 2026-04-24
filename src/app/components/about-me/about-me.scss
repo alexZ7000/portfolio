@@ -6,11 +6,6 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: var(--space-7) var(--space-4);
-
-    @media (min-width: 768px) {
-        padding: var(--space-8) var(--space-5);
-    }
 
     &__grid {
         width: var(--container);
@@ -67,7 +62,6 @@
             gap: var(--space-5);
             padding: var(--space-4);
         }
-
         @media (min-width: 1024px) {
             justify-content: flex-start;
         }
@@ -79,11 +73,6 @@
     position: relative;
     width: 4.25rem;
     height: 4.25rem;
-
-    @media (min-width: 640px) {
-        width: 5rem;
-        height: 5rem;
-    }
     display: flex;
     align-items: center;
     justify-content: center;
@@ -94,9 +83,14 @@
     transition: all var(--duration-normal) var(--ease-bounce);
     cursor: pointer;
 
+    @media (min-width: 640px) {
+        width: 5rem;
+        height: 5rem;
+    }
+
     body.light-theme & {
         background: rgba(255, 255, 255, 0.6);
-        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-color: rgba(0, 0, 0, 0.1);
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     }
 
@@ -104,9 +98,7 @@
         font-size: 1.9rem;
         color: var(--skill-color);
         transform: rotate(-45deg);
-        transition:
-            transform var(--duration-normal),
-            filter var(--duration-normal);
+        transition: all var(--duration-normal);
         z-index: 2;
 
         @media (min-width: 640px) {
@@ -121,9 +113,7 @@
         width: 150%;
         margin-left: -75%;
         text-align: center;
-        font-family: var(--font-body);
-        font-size: 0.85rem;
-        font-weight: 700;
+        font: 700 0.85rem var(--font-body);
         color: var(--text);
         background: var(--bg-elevated);
         padding: 0.25rem 0.5rem;
@@ -138,7 +128,7 @@
 
     &:hover {
         background: var(--accent);
-        border-color: #ffffff;
+        border-color: #fff;
         box-shadow: 0 0 20px var(--accent-glow);
         transform: rotate(45deg) scale(1.15);
         z-index: 5;
@@ -148,7 +138,6 @@
             transform: rotate(-45deg) scale(1.2);
             filter: drop-shadow(0 0 5px currentColor);
         }
-
         .skill-card__name {
             opacity: 1;
             transform: rotate(-45deg) translateY(0);

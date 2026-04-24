@@ -291,34 +291,38 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
         const svg = this.dragonSvg.nativeElement;
         const fireContainer = svg.querySelector('#fire-container') as SVGGElement | null;
         const wrapper = svg.querySelector('#dragon-wrapper');
-        const mouthLocator = svg.querySelector('#mouth-locator') as SVGGraphicsElement | null;
         const head = svg.querySelector('#dragon-head') as SVGGraphicsElement | null;
         const lightOverlay = document.querySelector('.screen-fire-light') as HTMLElement | null;
 
-        if (!fireContainer || !wrapper || !mouthLocator || !head) {
+        if (!fireContainer || !wrapper || !head) {
             this.isBreathingFire = false;
             return;
         }
 
-        const svgRect = svg.getBoundingClientRect();
-        const locatorRect = mouthLocator.getBoundingClientRect();
-        const scaleX = 1024 / svgRect.width;
-        const scaleY = 1024 / svgRect.height;
-        const startX = (locatorRect.left - svgRect.left + locatorRect.width / 2) * scaleX;
-        const startY = (locatorRect.top - svgRect.top + locatorRect.height / 2) * scaleY;
+        // Coordenadas FIXAS do mouth-locator no espaço do viewBox 0..1024.
+        // Derivadas de <circle cx="3800" cy="7300" /> dentro de um <g> com
+        // transform="translate(1024,1024) scale(-0.1,-0.1)":
+        //   x = 1024 + 3800 * -0.1 = 644
+        //   y = 1024 + 7300 * -0.1 = 294
+        // Usar valores fixos evita getBoundingClientRect em um <circle r="0">,
+        // que retorna bbox inconsistente em navegadores mobile.
+        const startX = 644;
+        const startY = 294;
 
         if (lightOverlay) {
-            const screenX = locatorRect.left + locatorRect.width / 2;
-            const screenY = locatorRect.top + locatorRect.height / 2;
+            const svgRect = svg.getBoundingClientRect();
+            const screenX = svgRect.left + (startX / 1024) * svgRect.width;
+            const screenY = svgRect.top + (startY / 1024) * svgRect.height;
             lightOverlay.style.setProperty('--light-x', `${screenX}px`);
             lightOverlay.style.setProperty('--light-y', `${screenY}px`);
+            const flickerRepeat = this.capability.isTouch() ? 3 : 8;
             gsap.timeline()
                 .to(lightOverlay, { opacity: 1, duration: 0.05, ease: 'power2.out' })
                 .to(lightOverlay, {
                     opacity: 0.6,
                     duration: 0.08,
                     yoyo: true,
-                    repeat: 8,
+                    repeat: flickerRepeat,
                     ease: 'rough({ strength: 2, points: 10, randomize: true })',
                 })
                 .to(lightOverlay, { opacity: 0, duration: 0.4, ease: 'power2.in' });
@@ -362,7 +366,11 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             onComplete: () => flash.remove(),
         });
 
-        const particleCount = this.capability.isLowEnd() ? 20 : 60;
+        const isTouch = this.capability.isTouch();
+        const isLowEnd = this.capability.isLowEnd();
+        const useCheapFire = isTouch || isLowEnd;
+        const particleCount = isLowEnd ? 15 : isTouch ? 22 : 60;
+
         for (let i = 0; i < particleCount; i++) {
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             const startR = Math.random() * 20 + 15;
@@ -370,7 +378,7 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             circle.setAttribute('cx', startX.toString());
             circle.setAttribute('cy', startY.toString());
             circle.setAttribute('fill', 'url(#fireGradient)');
-            if (!this.capability.isLowEnd()) {
+            if (!useCheapFire) {
                 circle.setAttribute('filter', 'url(#magmaFire)');
             }
             circle.style.opacity = '0';

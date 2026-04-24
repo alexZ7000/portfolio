@@ -108,8 +108,12 @@ export class CustomCursorComponent implements AfterViewInit {
         if (this.capability.prefersReducedMotion()) return;
 
         this.enabled.set(true);
+        document.body.classList.add('custom-cursor-active');
         this.animate();
-        this.destroyRef.onDestroy(() => cancelAnimationFrame(this.rafId));
+        this.destroyRef.onDestroy(() => {
+            cancelAnimationFrame(this.rafId);
+            document.body.classList.remove('custom-cursor-active');
+        });
     }
 
     @HostListener('document:mousemove', ['$event'])

@@ -88,7 +88,7 @@ describe('StorageGateComponent', () => {
         expect(component.blocked()).toBe(false);
     });
 
-    it('retry does nothing while storage is still blocked', () => {
+    it('retry always reloads the page so the user sees the gate again if still blocked', () => {
         Object.defineProperty(window, 'localStorage', {
             configurable: true,
             get: () => ({
@@ -107,8 +107,7 @@ describe('StorageGateComponent', () => {
 
         const { component } = setup('browser');
         component.retry();
-        expect(component.blocked()).toBe(true);
-        expect(reloadSpy).not.toHaveBeenCalled();
+        expect(reloadSpy).toHaveBeenCalledOnce();
     });
 
     it('exposes a translated gate copy based on navigator.language', () => {

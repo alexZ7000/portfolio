@@ -54,11 +54,18 @@ export class DeviceCapabilityService {
         try {
             this._isLowEnd.set(this.detectLowEnd());
         } catch {
-            // leitura de navigator.* bloqueada — assume não-low-end
             this._isLowEnd.set(false);
         }
     }
 
+    /**
+     * Apenas sinais EXPLÍCITOS do usuário/rede contam como low-end. Não usamos
+     * `navigator.deviceMemory` nem `hardwareConcurrency` — proteções anti-fingerprint
+     * (Firefox RFP, Tor) devolvem valores falsos (`hardwareConcurrency=2`,
+     * `deviceMemory=undefined`), e tratar isso como hardware fraco penalizaria
+     * usuários que só querem privacidade. Quem tem hardware fraco de verdade pode
+     * sinalizar via Data Saver ou `prefers-reduced-motion` do sistema.
+     */
     private detectLowEnd(): boolean {
         const connection = this.readNav<{ saveData?: boolean; effectiveType?: string }>(
             'connection',
@@ -67,12 +74,6 @@ export class DeviceCapabilityService {
         if (connection?.saveData === true) return true;
         const slow = connection?.effectiveType;
         if (slow === 'slow-2g' || slow === '2g' || slow === '3g') return true;
-
-        const deviceMemory = this.readNav<number>('deviceMemory');
-        if (typeof deviceMemory === 'number' && deviceMemory > 0 && deviceMemory <= 4) return true;
-
-        const cores = this.readNav<number>('hardwareConcurrency');
-        if (typeof cores === 'number' && cores > 0 && cores <= 4) return true;
 
         return false;
     }
