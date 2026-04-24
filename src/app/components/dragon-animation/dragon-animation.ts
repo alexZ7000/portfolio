@@ -170,9 +170,13 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             const fillColor = mainColor;
             const glow = `drop-shadow(0 0 10px ${mainColor})`;
 
+            const pathLengths = new WeakMap<SVGPathElement, number>();
             let pathsDrawable = true;
             try {
-                paths.forEach((p) => (p as SVGPathElement).getTotalLength());
+                paths.forEach((p) => {
+                    const el = p as SVGPathElement;
+                    pathLengths.set(el, el.getTotalLength());
+                });
             } catch {
                 pathsDrawable = false;
             }
@@ -183,9 +187,10 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
                 gsap.set(eyeOutline, { fill: eyeFillColor });
                 gsap.set(wrapper, { opacity: 1, scale: 1, y: 0 });
             } else {
+                const lengthOf = (target: Element) => pathLengths.get(target as SVGPathElement) ?? 0;
                 gsap.set(paths, {
-                    strokeDasharray: (_, target) => (target as SVGPathElement).getTotalLength(),
-                    strokeDashoffset: (_, target) => (target as SVGPathElement).getTotalLength(),
+                    strokeDasharray: (_, target) => lengthOf(target),
+                    strokeDashoffset: (_, target) => lengthOf(target),
                     stroke: mainColor,
                     strokeWidth: 35,
                     fill: 'transparent',

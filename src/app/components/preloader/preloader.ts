@@ -100,9 +100,13 @@ export class PreloaderComponent implements AfterViewInit {
         const color = accent || fallback;
         const fillColor = color;
 
+        const pathLengths = new WeakMap<SVGPathElement, number>();
         let pathsDrawable = true;
         try {
-            paths.forEach((p) => (p as SVGPathElement).getTotalLength());
+            paths.forEach((p) => {
+                const el = p as SVGPathElement;
+                pathLengths.set(el, el.getTotalLength());
+            });
         } catch {
             pathsDrawable = false;
         }
@@ -115,9 +119,10 @@ export class PreloaderComponent implements AfterViewInit {
             return;
         }
 
+        const lengthOf = (t: Element) => pathLengths.get(t as SVGPathElement) ?? 0;
         gsap.set(paths, {
-            strokeDasharray: (_, t) => (t as SVGPathElement).getTotalLength(),
-            strokeDashoffset: (_, t) => (t as SVGPathElement).getTotalLength(),
+            strokeDasharray: (_, t) => lengthOf(t),
+            strokeDashoffset: (_, t) => lengthOf(t),
             stroke: color,
             strokeWidth: 35,
             fill: 'transparent',
