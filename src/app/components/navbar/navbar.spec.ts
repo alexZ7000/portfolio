@@ -126,12 +126,16 @@ describe('Navbar', () => {
             const expectedPng = theme.isDarkTheme()
                 ? 'assets/logoWhite.png'
                 : 'assets/logoBlack.png';
-            const expectedWebp = theme.isDarkTheme()
-                ? 'assets/logoWhite.webp'
-                : 'assets/logoBlack.webp';
+            const expectedWebpSrcset = theme.isDarkTheme()
+                ? 'assets/logoWhite-600.webp 600w, assets/logoWhite.webp 1200w'
+                : 'assets/logoBlack-600.webp 600w, assets/logoBlack.webp 1200w';
+            const expectedPngSrcset = theme.isDarkTheme()
+                ? 'assets/logoWhite-600.png 600w, assets/logoWhite.png 1200w'
+                : 'assets/logoBlack-600.png 600w, assets/logoBlack.png 1200w';
 
             expect(logo.getAttribute('src')).toBe(expectedPng);
-            expect(webpSource.getAttribute('srcset')).toBe(expectedWebp);
+            expect(logo.getAttribute('srcset')).toBe(expectedPngSrcset);
+            expect(webpSource.getAttribute('srcset')).toBe(expectedWebpSrcset);
             expect(logo.getAttribute('fetchpriority')).toBe('high');
             expect(logo.getAttribute('width')).toBe('600');
             expect(logo.getAttribute('height')).toBe('58');

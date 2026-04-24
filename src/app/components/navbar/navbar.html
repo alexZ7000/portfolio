@@ -5,10 +5,21 @@
             <picture>
                 <source
                     type="image/webp"
-                    [srcset]="isDark ? 'assets/logoWhite.webp' : 'assets/logoBlack.webp'"
+                    [srcset]="
+                        isDark
+                            ? 'assets/logoWhite-600.webp 600w, assets/logoWhite.webp 1200w'
+                            : 'assets/logoBlack-600.webp 600w, assets/logoBlack.webp 1200w'
+                    "
+                    sizes="(max-width: 640px) 320px, (max-width: 1279px) 480px, 600px"
                 />
                 <img
                     [src]="isDark ? 'assets/logoWhite.png' : 'assets/logoBlack.png'"
+                    [srcset]="
+                        isDark
+                            ? 'assets/logoWhite-600.png 600w, assets/logoWhite.png 1200w'
+                            : 'assets/logoBlack-600.png 600w, assets/logoBlack.png 1200w'
+                    "
+                    sizes="(max-width: 640px) 320px, (max-width: 1279px) 480px, 600px"
                     alt="Alessandro Lima"
                     width="600"
                     height="58"
