@@ -2,13 +2,24 @@ import { TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
 import { describe, expect, it } from 'vitest';
 import { EmbersBackgroundComponent } from './embers-background';
-import { provideTesting } from '../../../testing/test-helpers';
+import {
+    DeviceCapabilityMockOptions,
+    provideDeviceCapabilityMock,
+    provideTesting,
+} from '../../../testing/test-helpers';
 
 describe('EmbersBackgroundComponent', () => {
-    function setup(platform: 'browser' | 'server' = 'browser') {
+    function setup(
+        platform: 'browser' | 'server' = 'browser',
+        capability: DeviceCapabilityMockOptions = {},
+    ) {
         TestBed.configureTestingModule({
             imports: [EmbersBackgroundComponent],
-            providers: [...provideTesting(), { provide: PLATFORM_ID, useValue: platform }],
+            providers: [
+                ...provideTesting(),
+                { provide: PLATFORM_ID, useValue: platform },
+                provideDeviceCapabilityMock(capability),
+            ],
         });
         const fixture = TestBed.createComponent(EmbersBackgroundComponent);
         fixture.detectChanges();
@@ -16,9 +27,24 @@ describe('EmbersBackgroundComponent', () => {
     }
 
     describe('browser platform', () => {
-        it('populates exactly 25 embers on init', () => {
+        it('populates 25 embers on a full-capability device', () => {
             const { component } = setup();
             expect(component.embers().length).toBe(25);
+        });
+
+        it('caps embers at 12 on touch devices', () => {
+            const { component } = setup('browser', { isTouch: true });
+            expect(component.embers().length).toBe(12);
+        });
+
+        it('caps embers at 6 on low-end devices', () => {
+            const { component } = setup('browser', { isLowEnd: true });
+            expect(component.embers().length).toBe(6);
+        });
+
+        it('renders no embers when the user prefers reduced motion', () => {
+            const { component } = setup('browser', { prefersReducedMotion: true });
+            expect(component.embers().length).toBe(0);
         });
 
         it('renders one .ember element per item in the signal', () => {

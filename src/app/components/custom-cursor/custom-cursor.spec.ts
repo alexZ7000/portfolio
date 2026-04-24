@@ -2,7 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { CustomCursorComponent } from './custom-cursor';
-import { mockMatchMedia, MatchMediaMock, provideTesting } from '../../../testing/test-helpers';
+import {
+    mockMatchMedia,
+    MatchMediaMock,
+    provideDeviceCapabilityMock,
+    DeviceCapabilityMockOptions,
+    provideTesting,
+} from '../../../testing/test-helpers';
 
 describe('CustomCursorComponent', () => {
     let mm: MatchMediaMock;
@@ -29,10 +35,17 @@ describe('CustomCursorComponent', () => {
         window.cancelAnimationFrame = originalCancelRaf;
     });
 
-    function setup(platform: 'browser' | 'server' = 'browser') {
+    function setup(
+        platform: 'browser' | 'server' = 'browser',
+        capability: DeviceCapabilityMockOptions = {},
+    ) {
         TestBed.configureTestingModule({
             imports: [CustomCursorComponent],
-            providers: [...provideTesting(), { provide: PLATFORM_ID, useValue: platform }],
+            providers: [
+                ...provideTesting(),
+                { provide: PLATFORM_ID, useValue: platform },
+                provideDeviceCapabilityMock(capability),
+            ],
         });
         const fixture = TestBed.createComponent(CustomCursorComponent);
         fixture.detectChanges();
@@ -53,10 +66,19 @@ describe('CustomCursorComponent', () => {
         });
 
         it('stays disabled on touch-only (hover: none) devices', () => {
-            mm.setMatches(true);
-            const { component, fixture } = setup();
+            const { component, fixture } = setup('browser', { isTouch: true });
             expect(component.enabled()).toBe(false);
             expect((fixture.nativeElement as HTMLElement).querySelector('.cursor-dot')).toBeNull();
+        });
+
+        it('stays disabled on low-end devices', () => {
+            const { component } = setup('browser', { isLowEnd: true });
+            expect(component.enabled()).toBe(false);
+        });
+
+        it('stays disabled when the user prefers reduced motion', () => {
+            const { component } = setup('browser', { prefersReducedMotion: true });
+            expect(component.enabled()).toBe(false);
         });
 
         it('stays disabled on the server regardless of matchMedia', () => {
@@ -74,8 +96,7 @@ describe('CustomCursorComponent', () => {
         });
 
         it('ignores events when disabled so signals stay at zero', () => {
-            mm.setMatches(true);
-            const { component } = setup();
+            const { component } = setup('browser', { isTouch: true });
             component.onMouseMove(new MouseEvent('mousemove', { clientX: 99, clientY: 99 }));
             expect(component.mouseX()).toBe(0);
             expect(component.mouseY()).toBe(0);

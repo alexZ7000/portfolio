@@ -1,10 +1,11 @@
-import { EnvironmentProviders, Provider } from '@angular/core';
+import { EnvironmentProviders, Provider, signal } from '@angular/core';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { vi } from 'vitest';
+import { DeviceCapabilityService } from '../app/utils/functions/device-capability';
 
 export type TestingProvider = Provider | EnvironmentProviders;
 
@@ -166,4 +167,25 @@ export function makeGsapMock() {
 export async function flushMicrotasks() {
     await Promise.resolve();
     await Promise.resolve();
+}
+
+export interface DeviceCapabilityMockOptions {
+    prefersReducedMotion?: boolean;
+    isLowEnd?: boolean;
+    isTouch?: boolean;
+}
+
+export function provideDeviceCapabilityMock(opts: DeviceCapabilityMockOptions = {}): Provider {
+    const reduced = signal(opts.prefersReducedMotion ?? false);
+    const lowEnd = signal(opts.isLowEnd ?? false);
+    const touch = signal(opts.isTouch ?? false);
+    return {
+        provide: DeviceCapabilityService,
+        useValue: {
+            prefersReducedMotion: reduced.asReadonly(),
+            isLowEnd: lowEnd.asReadonly(),
+            isTouch: touch.asReadonly(),
+            shouldReduceEffects: () => reduced() || lowEnd(),
+        },
+    };
 }
