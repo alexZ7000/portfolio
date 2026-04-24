@@ -59,21 +59,8 @@
 
         <meta
             http-equiv="Content-Security-Policy"
-            content="default-src 'self'; script-src 'self' 'sha256-Zhcx4c3fej1yFwnQG1LoVwKcVq2SpV6QjzcIleP7SGw=' 'sha256-HtOLsZJPuMVYH4IJcqH4K3BNIQW7pwobgUIi0MCJMrw='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self'; connect-src 'self' https://alexZ7000.com.br; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';"
+            content="default-src 'self'; script-src 'self' 'sha256-HtOLsZJPuMVYH4IJcqH4K3BNIQW7pwobgUIi0MCJMrw='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self'; connect-src 'self' https://alexZ7000.com.br; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';"
         />
-
-        <style>
-            html:not(.js-on) app-root {
-                display: none;
-            }
-            html:not(.js-on) .noscript-gate {
-                display: flex;
-            }
-        </style>
-
-        <script>
-            document.documentElement.classList.add('js-on');
-        </script>
 
         <script type="application/ld+json">
             {
@@ -110,7 +97,7 @@
                 .noscript-gate {
                     position: fixed;
                     inset: 0;
-                    display: none;
+                    display: flex;
                     align-items: center;
                     justify-content: center;
                     padding: 1.5rem;
