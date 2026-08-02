@@ -1,9 +1,9 @@
 <section id="certificates" class="certs section-pad" aria-labelledby="certs-title">
-    <header class="certs__header">
+    <header class="certs__header section-header">
         <h2 id="certs-title" class="section-title">
             <fa-icon
                 [icon]="['fas', 'dragon']"
-                class="certs__title-icon"
+                class="certs__title-icon title-icon"
                 aria-hidden="true"
             ></fa-icon>
             {{ 'certificatesTitle' | translate }}
@@ -11,7 +11,7 @@
         <p class="certs__subtitle">{{ 'certificatesSubtitle' | translate }}</p>
     </header>
 
-    <ul class="certs__grid" role="list">
+    <ul class="certs__grid auto-grid auto-grid--3" role="list">
         @for (cert of certificates; track cert.name; let i = $index) {
             <li
                 class="cert-card-wrapper"

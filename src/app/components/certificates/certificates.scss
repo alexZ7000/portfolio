@@ -1,26 +1,11 @@
-:host {
-    display: block;
-}
-
 .certs {
     width: var(--container);
     margin-inline: auto;
     perspective: 1200px;
 
-    &__header {
-        text-align: center;
-        margin-bottom: var(--space-7);
-
-        @media (min-width: 768px) {
-            margin-bottom: var(--space-8);
-        }
-    }
-
+    // .title-icon cobre cor, margem e glow; so o tamanho diverge.
     &__title-icon {
-        color: var(--accent);
         font-size: 0.9em;
-        margin-right: var(--space-3);
-        filter: drop-shadow(0 0 10px var(--accent-glow));
     }
 
     &__subtitle {
@@ -29,25 +14,11 @@
         letter-spacing: 0.1em;
         margin-top: var(--space-3);
     }
-
-    &__grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: var(--space-5);
-
-        @media (min-width: 768px) {
-            grid-template-columns: repeat(2, 1fr);
-        }
-        @media (min-width: 1280px) {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
 }
 
 .cert-card-wrapper {
     perspective: 1200px;
     min-height: 18rem;
-    list-style: none;
 
     @media (min-width: 768px) {
         min-height: 22rem;

@@ -1,11 +1,11 @@
 <section id="contact" class="contact section-pad" aria-labelledby="contact-title">
     <div class="contact__glow" aria-hidden="true"></div>
 
-    <header class="contact__header">
+    <header class="contact__header section-header">
         <h2 id="contact-title" class="section-title">{{ 'contactTitle' | translate }}</h2>
     </header>
 
-    <ul class="contact__grid" role="list">
+    <ul class="contact__grid auto-grid" role="list">
         @for (contact of contacts; track contact.title) {
             <li>
                 <a

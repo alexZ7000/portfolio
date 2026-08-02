@@ -1,5 +1,5 @@
 <section id="work-experience" [appReveal]="'up'" class="xp section-pad" aria-labelledby="xp-title">
-    <header class="xp__header">
+    <header class="xp__header section-header">
         <h2 id="xp-title" class="section-title">{{ 'workExperienceTitle' | translate }}</h2>
     </header>
 
@@ -9,7 +9,7 @@
                 role="tab"
                 [attr.aria-selected]="activeTab() === 'professional'"
                 [attr.aria-controls]="'xp-panel-professional'"
-                class="xp__tab"
+                class="xp__tab eyebrow"
                 [class.is-active]="activeTab() === 'professional'"
                 (click)="setActiveTab('professional')"
             >
@@ -26,7 +26,7 @@
                 role="tab"
                 [attr.aria-selected]="activeTab() === 'academic'"
                 [attr.aria-controls]="'xp-panel-academic'"
-                class="xp__tab"
+                class="xp__tab eyebrow"
                 [class.is-active]="activeTab() === 'academic'"
                 (click)="setActiveTab('academic')"
             >
@@ -43,7 +43,7 @@
                 role="tab"
                 [attr.aria-selected]="activeTab() === 'personal'"
                 [attr.aria-controls]="'xp-panel-personal'"
-                class="xp__tab"
+                class="xp__tab eyebrow"
                 [class.is-active]="activeTab() === 'personal'"
                 (click)="setActiveTab('personal')"
             >
@@ -72,7 +72,34 @@
                                     {{ 'exp' + exp.translationKeyIndex + 'Title' | translate }}
                                 </h3>
                                 <p class="xp-card__company">
-                                    {{ 'exp' + exp.translationKeyIndex + 'Company' | translate }}
+                                    @if (exp.companyUrl) {
+                                        <a
+                                            class="xp-card__company-link"
+                                            [href]="exp.companyUrl"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            [attr.aria-label]="
+                                                ('exp' + exp.translationKeyIndex + 'Company'
+                                                    | translate) +
+                                                ' — ' +
+                                                ('visitCompanySite' | translate)
+                                            "
+                                        >
+                                            {{
+                                                'exp' + exp.translationKeyIndex + 'Company'
+                                                    | translate
+                                            }}
+                                            <fa-icon
+                                                [icon]="['fas', 'arrow-up-right-from-square']"
+                                                class="xp-card__company-icon"
+                                                aria-hidden="true"
+                                            ></fa-icon>
+                                        </a>
+                                    } @else {
+                                        {{
+                                            'exp' + exp.translationKeyIndex + 'Company' | translate
+                                        }}
+                                    }
                                 </p>
                             </div>
                             <time class="xp-card__period pill pill--accent">

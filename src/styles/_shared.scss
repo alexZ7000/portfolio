@@ -1,0 +1,66 @@
+// Utilitarios compartilhados entre componentes.
+//
+// Tudo aqui existia duplicado em 3+ stylesheets de componente. Como cada componente
+// carrega o proprio CSS, a duplicacao pagava os mesmos bytes varias vezes; centralizar
+// paga uma vez so. Variacoes pequenas entre os usos viram custom properties em vez de
+// classes modificadoras, para o componente sobrescrever so o que muda.
+
+// Rotulo em caixa alta com tracking largo: hero, navbar, projects, certificates,
+// contact, work-experience e footer usavam a mesma receita variando so tamanho,
+// peso e tracking.
+// Fonte e leading tambem sao variaveis porque parte dos usos herda a fonte do body
+// em vez da display - definir na utility mudaria a renderizacao desses casos.
+.eyebrow {
+    font-family: var(--eyebrow-font, var(--font-display));
+    font-size: var(--eyebrow-size, var(--text-xs));
+    font-weight: var(--eyebrow-weight, 700);
+    line-height: var(--eyebrow-leading, 1.2);
+    letter-spacing: var(--eyebrow-tracking, 0.2em);
+    text-transform: uppercase;
+}
+
+// Cabecalho de secao centralizado.
+.section-header {
+    text-align: center;
+    margin-bottom: var(--section-header-gap, var(--space-7));
+
+    @media (min-width: 768px) {
+        margin-bottom: var(--section-header-gap-md, var(--space-8));
+    }
+}
+
+// Grid responsivo 1 -> 2 colunas (projects, certificates, contact).
+.auto-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--auto-grid-gap, var(--space-5));
+
+    @media (min-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--auto-grid-gap-md, var(--auto-grid-gap, var(--space-5)));
+    }
+}
+
+// Terceira coluna em telas largas (certificates).
+.auto-grid--3 {
+    @media (min-width: 1280px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+// Icone que acompanha o titulo da secao (projects, certificates).
+.title-icon {
+    color: var(--accent);
+    margin-right: var(--space-3);
+    filter: drop-shadow(0 0 10px var(--accent-glow));
+}
+
+// Hosts de componente. Ficavam como `:host { display: block }` repetido em cada
+// stylesheet; como sao elementos reais no DOM, um seletor global resolve.
+app-about-me,
+app-certificates,
+app-contact,
+app-projects,
+app-work-experience {
+    display: block;
+}

@@ -4,19 +4,15 @@
     class="projects section-pad"
     aria-labelledby="projects-title"
 >
-    <header class="projects__header">
+    <header class="projects__header section-header">
         <h2 id="projects-title" class="section-title">
-            <fa-icon
-                [icon]="['fas', 'dragon']"
-                class="projects__title-icon"
-                aria-hidden="true"
-            ></fa-icon>
+            <fa-icon [icon]="['fas', 'dragon']" class="title-icon" aria-hidden="true"></fa-icon>
             {{ 'projectsTitle' | translate }}
         </h2>
         <p class="projects__subtitle">{{ 'projectsSubtitle' | translate }}</p>
     </header>
 
-    <ul class="projects__grid" role="list">
+    <ul class="projects__grid auto-grid" role="list">
         @for (project of projects; track project.id; let i = $index) {
             <li
                 class="project-card panel"
@@ -35,7 +31,7 @@
                     <h3 class="project-card__title">
                         {{ 'project' + project.id + 'Title' | translate }}
                     </h3>
-                    <p class="project-card__subtitle">
+                    <p class="project-card__subtitle eyebrow">
                         {{ 'project' + project.id + 'Subtitle' | translate }}
                     </p>
                 </header>
@@ -51,13 +47,13 @@
                 </ul>
 
                 <footer class="project-card__footer">
-                    <time class="project-card__period">
+                    <time class="project-card__period eyebrow">
                         {{ 'project' + project.id + 'Period' | translate }}
                     </time>
                     <div class="project-card__links">
                         @for (link of project.links; track link.url) {
                             <a
-                                class="project-card__link"
+                                class="project-card__link eyebrow"
                                 [href]="link.url"
                                 target="_blank"
                                 rel="noopener noreferrer"

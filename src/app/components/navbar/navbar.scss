@@ -86,12 +86,10 @@
         }
     }
 
+    // list-style/margin/padding ja vem do reset global de ul.
     &__links {
         display: flex;
         gap: var(--space-6);
-        list-style: none;
-        margin: 0;
-        padding: 0;
 
         button {
             padding: var(--space-2) var(--space-3);
@@ -172,13 +170,4 @@
     }
 }
 
-@keyframes navbar-slide-down {
-    from {
-        opacity: 0;
-        transform: translateY(-12px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+// @keyframes navbar-slide-down vive em src/styles/_animations.scss.

@@ -1,19 +1,6 @@
-:host {
-    display: block;
-}
-
 .xp {
     width: var(--container);
     margin-inline: auto;
-
-    &__header {
-        text-align: center;
-        margin-bottom: var(--space-7);
-
-        @media (min-width: 768px) {
-            margin-bottom: var(--space-8);
-        }
-    }
 
     &__layout {
         display: grid;
@@ -45,6 +32,7 @@
     }
 
     &__tab {
+        --eyebrow-tracking: 0.08em;
         position: relative;
         display: flex;
         align-items: center;
@@ -54,17 +42,14 @@
         background: var(--surface);
         border: 1px solid var(--surface-border);
         color: var(--text-muted);
-        font: 700 var(--text-xs) / 1.2 var(--font-display);
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
         overflow: hidden;
         min-height: 2.75rem;
         text-align: left;
         transition: all var(--duration-normal) var(--ease-out);
 
         @media (min-width: 640px) {
+            --eyebrow-size: var(--text-sm);
             padding: var(--space-4) var(--space-5);
-            font-size: var(--text-sm);
         }
         @media (min-width: 1024px) {
             width: 100%;
@@ -159,6 +144,26 @@
         font: var(--text-base) / 1.5 var(--font-body);
         color: var(--text-muted);
         margin: var(--space-1) 0 0;
+    }
+
+    &__company-link {
+        display: inline-flex;
+        align-items: baseline;
+        gap: var(--space-2);
+        color: var(--accent);
+        text-decoration: underline;
+        text-decoration-color: transparent;
+        text-underline-offset: 3px;
+        transition: text-decoration-color var(--duration-normal);
+
+        &:hover,
+        &:focus-visible {
+            text-decoration-color: currentcolor;
+        }
+    }
+
+    &__company-icon {
+        font-size: 0.75em;
     }
 
     &__description {

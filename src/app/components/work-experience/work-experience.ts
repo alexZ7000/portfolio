@@ -9,6 +9,7 @@ interface Experience {
     type: ExperienceType;
     translationKeyIndex: number;
     technologies: string[];
+    companyUrl?: string;
 }
 
 @Component({
@@ -27,6 +28,7 @@ export class WorkExperience {
             type: 'professional',
             translationKeyIndex: 1,
             technologies: ['Windows Server', 'Linux', 'Hardware', 'Redes', 'Suporte'],
+            companyUrl: 'https://novarutra.com.br',
         },
         {
             type: 'professional',
