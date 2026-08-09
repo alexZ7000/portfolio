@@ -50,8 +50,8 @@
 
     "exp6Title": "Dev Community — Programador",
     "exp6Company": "Entidade Dev Community — IMT",
-    "exp6Period": "2024 — Presente",
-    "exp6Description": "Atuo como programador na entidade de software do IMT, construindo produtos para alunos, professores e clientes externos. Ministrei aulas abertas de React para outros estudantes do instituto (repositório Aulão_React).",
+    "exp6Period": "2024 — 2026",
+    "exp6Description": "Atuei como programador na entidade de software do IMT, construindo produtos para alunos, professores e clientes externos. Ministrei aulas abertas de React para outros estudantes do instituto (repositório Aulão_React).",
 
     "projectsTitle": "Projetos Selecionados",
     "projectsSubtitle": "Os trabalhos que melhor representam minha forja como desenvolvedor — do backend legado ao frontend internacional.",
@@ -91,6 +91,9 @@
     "project6Description": "Template de boilerplate React com Clean Architecture + TypeScript + SWC + Vite + TailwindCSS + Jest + Husky + Prettier. Criado para acelerar o bootstrap de novos projetos e documentar boas práticas de engenharia que adoto no dia a dia.",
 
     "contactTitle": "Contato",
+    "contactEmailPrimary": "E-mail principal",
+    "contactEmailAlt": "E-mail alternativo",
+    "contactWhatsappAction": "Abrir conversa",
     "jobTitle": "Desenvolvedor de Software",
     "copySuccess": "Email copiado para a área de transferência!",
     "copyButton": "Copiar e-mail para a área de transferência",
