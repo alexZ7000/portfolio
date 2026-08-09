@@ -17,6 +17,7 @@
                 class="cert-card-wrapper"
                 [appReveal]="'up'"
                 [revealDelay]="i * 120"
+                (mouseenter)="onMouseEnter(i)"
                 (mousemove)="onMouseMove($event, i)"
                 (mouseleave)="onMouseLeave(i)"
             >

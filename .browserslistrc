@@ -1,0 +1,20 @@
+# Alvo de compilacao do esbuild e base do autoprefixer.
+#
+# Sem este arquivo o Angular usa o proprio default, que e "as duas ultimas
+# versoes de cada navegador" — na pratica, so Chrome dos ultimos ~3 meses. O
+# esbuild entao emite sintaxe recentissima, e quem abre o site num Chrome
+# atrasado recebe um bundle que a engine dele nao consegue nem interpretar: a
+# pagina fica em branco ou parada, sem erro visivel na tela.
+#
+# Os pisos abaixo sao exatamente os do suporte oficial do Angular 21. Isso
+# estende a compatibilidade de ~3 meses para ~3 anos de navegador sem sair da
+# faixa que o proprio framework garante — descer mais faz o build avisar que a
+# combinacao nao e suportada, e o codigo do @angular/* passa a poder usar APIs
+# de runtime que nenhum downlevel de sintaxe resolve.
+chrome >= 111
+edge >= 111
+firefox >= 112
+safari >= 16.4
+ios_saf >= 16.4
+not dead
+not op_mini all

@@ -5,8 +5,14 @@
         <h2 id="contact-title" class="section-title">{{ 'contactTitle' | translate }}</h2>
     </header>
 
+    <!--
+        Sem aria-label no link: o nome acessivel vem do proprio conteudo (titulo +
+        valor). Assim o texto lido bate exatamente com o que esta na tela — e o
+        numero de telefone, que nao aparece em lugar nenhum, tambem nao vaza pro
+        leitor de tela.
+    -->
     <ul class="contact__grid auto-grid" role="list">
-        @for (contact of contacts; track contact.title) {
+        @for (contact of contacts; track contact.link) {
             <li>
                 <a
                     class="contact-card panel"
@@ -14,14 +20,18 @@
                     target="_blank"
                     rel="noopener noreferrer"
                     [style.--contact-color]="contact.color"
-                    [attr.aria-label]="contact.title + ': ' + contact.value"
+                    [style.--contact-rgb]="contact.rgb"
                 >
                     <span class="contact-card__icon-wrap" aria-hidden="true">
                         <fa-icon [icon]="contact.icon"></fa-icon>
                     </span>
                     <span class="contact-card__body">
-                        <span class="contact-card__title">{{ contact.title }}</span>
-                        <span class="contact-card__value">{{ contact.value }}</span>
+                        <span class="contact-card__title">
+                            {{ contact.titleKey ? (contact.titleKey | translate) : contact.title }}
+                        </span>
+                        <span class="contact-card__value">
+                            {{ contact.valueKey ? (contact.valueKey | translate) : contact.value }}
+                        </span>
                     </span>
                     <span class="contact-card__hover" aria-hidden="true"></span>
                 </a>

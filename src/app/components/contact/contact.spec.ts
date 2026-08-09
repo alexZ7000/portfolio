@@ -15,23 +15,30 @@ describe('ContactComponent', () => {
     }
 
     describe('contacts data', () => {
-        it('declares four contact channels', () => {
+        it('declares five contact channels', () => {
             const { component } = setup();
-            expect(component.contacts.length).toBe(4);
+            expect(component.contacts.length).toBe(5);
         });
 
-        it('covers LinkedIn, GitHub, Email and WhatsApp', () => {
+        it('leads with the primary email address', () => {
+            const { component } = setup();
+            const first = component.contacts[0];
+            expect(first.titleKey).toBe('contactEmailPrimary');
+            expect(first.value).toBe('contato@alexZ7000.com.br');
+            expect(first.link).toBe('mailto:contato@alexZ7000.com.br');
+        });
+
+        it('keeps the secondary email address as a channel', () => {
+            const { component } = setup();
+            const alt = component.contacts.find((c) => c.titleKey === 'contactEmailAlt');
+            expect(alt?.value).toBe('aledeveloper@pm.me');
+            expect(alt?.link).toBe('mailto:aledeveloper@pm.me');
+        });
+
+        it('covers LinkedIn, GitHub and WhatsApp', () => {
             const { component } = setup();
             const titles = component.contacts.map((c) => c.title);
-            expect(titles).toEqual(
-                expect.arrayContaining(['LinkedIn', 'GitHub', 'Email', 'WhatsApp']),
-            );
-        });
-
-        it('uses a mailto: URL for the email contact', () => {
-            const { component } = setup();
-            const email = component.contacts.find((c) => c.title === 'Email');
-            expect(email?.link.startsWith('mailto:')).toBe(true);
+            expect(titles).toEqual(expect.arrayContaining(['LinkedIn', 'GitHub', 'WhatsApp']));
         });
 
         it('uses external https URLs for LinkedIn, GitHub and WhatsApp', () => {
@@ -40,6 +47,43 @@ describe('ContactComponent', () => {
                 const contact = component.contacts.find((c) => c.title === title);
                 expect(contact?.link.startsWith('https://')).toBe(true);
             }
+        });
+
+        it('gives every channel an rgb triplet so no style depends on color-mix()', () => {
+            const { component } = setup();
+            for (const contact of component.contacts) {
+                expect(contact.rgb).toMatch(/^\d{1,3}, \d{1,3}, \d{1,3}$/);
+            }
+        });
+    });
+
+    describe('phone number privacy', () => {
+        it('reaches WhatsApp through a translated label instead of the number', () => {
+            const { component } = setup();
+            const whatsapp = component.contacts.find((c) => c.title === 'WhatsApp');
+            expect(whatsapp?.valueKey).toBe('contactWhatsappAction');
+            expect(whatsapp?.value).toBeUndefined();
+        });
+
+        it('never renders the phone number anywhere in the section', () => {
+            const { fixture } = setup();
+            const markup = (fixture.nativeElement as HTMLElement).innerHTML;
+            // Nem o formato exibido, nem os digitos crus fora do href.
+            expect(markup).not.toContain('95550-1739');
+            const outsideHref = markup.replace(/href="[^"]*"/g, '');
+            expect(outsideHref).not.toContain('955501739');
+        });
+
+        it('still links straight to the WhatsApp conversation', () => {
+            const { fixture } = setup();
+            const links = Array.from(
+                (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLAnchorElement>(
+                    '.contact-card',
+                ),
+            );
+            expect(
+                links.some((a) => a.getAttribute('href') === 'https://wa.me/5511955501739'),
+            ).toBe(true);
         });
     });
 
@@ -62,16 +106,18 @@ describe('ContactComponent', () => {
             }
         });
 
-        it('exposes an accessible label that combines title and value', () => {
-            const { fixture, component } = setup();
+        // Sem aria-label: o nome acessivel vem do conteudo do link, entao ele bate
+        // com o que esta na tela — e o telefone, que nao aparece, tambem nao e lido.
+        it('derives the accessible name from the card content', () => {
+            const { fixture } = setup();
             const first = (fixture.nativeElement as HTMLElement).querySelector<HTMLAnchorElement>(
                 '.contact-card',
             );
-            const expected = `${component.contacts[0].title}: ${component.contacts[0].value}`;
-            expect(first?.getAttribute('aria-label')).toBe(expected);
+            expect(first?.hasAttribute('aria-label')).toBe(false);
+            expect(first?.textContent).toContain('contato@alexZ7000.com.br');
         });
 
-        it('threads the per-contact brand colour into a CSS custom property', () => {
+        it('threads the per-contact brand colour into CSS custom properties', () => {
             const { fixture, component } = setup();
             const card = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(
                 '.contact-card',
@@ -79,6 +125,7 @@ describe('ContactComponent', () => {
             expect(card?.style.getPropertyValue('--contact-color')).toBe(
                 component.contacts[0].color,
             );
+            expect(card?.style.getPropertyValue('--contact-rgb')).toBe(component.contacts[0].rgb);
         });
     });
 });

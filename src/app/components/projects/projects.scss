@@ -44,6 +44,13 @@
 
         @media (min-width: 768px) {
             grid-column: 1 / -1;
+
+            // A reserva de espaco so existe onde o rotulo volta a ser absoluto,
+            // e so neste cartao — os demais nao tem rotulo e nao devem quebrar o
+            // titulo mais cedo a toa.
+            .project-card__header {
+                padding-right: 10rem;
+            }
         }
 
         &:hover {
@@ -56,21 +63,34 @@
     // Caixa alta, peso e tamanho ja vem de .pill/.pill--accent no template;
     // aqui fica so o que diverge deles.
     &__badge {
-        position: absolute;
-        top: var(--space-4);
-        right: var(--space-4);
+        // Ate 768px o cartao ocupa uma coluna so, e o rotulo — caixa alta com
+        // tracking de 0.18em mais o icone — fica quase tao largo quanto o
+        // titulo. Posicionado de forma absoluta ele cobria a primeira linha do
+        // titulo do COIL. No fluxo normal ele simplesmente senta acima do
+        // titulo, sem depender de reservar largura na mao.
+        align-self: flex-start;
         display: inline-flex;
         align-items: center;
         gap: var(--space-2);
+        // Um respiro vertical a mais que o .pill--accent padrao: aqui o rotulo
+        // e um bloco proprio, nao uma pilula perdida no meio do texto.
+        padding-block: calc(var(--space-2) + 2px);
         font-family: var(--font-display);
         letter-spacing: 0.18em;
+
+        // A partir de 768px o destaque ocupa a largura toda da grade e sobra
+        // espaco pro rotulo voltar pro canto superior direito.
+        @media (min-width: 768px) {
+            position: absolute;
+            top: var(--space-4);
+            right: var(--space-4);
+        }
     }
 
     &__header {
         display: flex;
         flex-direction: column;
         gap: var(--space-2);
-        padding-right: var(--space-6);
     }
 
     &__title {

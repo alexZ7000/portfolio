@@ -78,11 +78,24 @@
 
 html {
     scroll-behavior: smooth;
-    text-rendering: optimizeLegibility;
+    // `text-rendering: optimizeLegibility` foi removido de proposito: em texto
+    // latino ele nao muda praticamente nada visualmente, mas forca o motor a
+    // carregar as tabelas de kerning/ligadura da fonte inteira e recalcular a
+    // metrica de cada bloco. Em maquinas lentas custa centenas de milissegundos
+    // no primeiro paint.
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-synthesis: none;
     tab-size: 4;
+}
+
+// Rolagem suave e uma animacao de main thread. Quando a maquina ja nao entrega
+// os frames, ela vira o oposto do que promete: o scroll fica pastoso e atrasado
+// em relacao a roda do mouse. A classe fica no <html> porque e ele o elemento
+// que rola — em <body> a propriedade nao teria efeito.
+html.is-low-end,
+html.reduced-motion {
+    scroll-behavior: auto;
 }
 
 html,
@@ -263,7 +276,16 @@ ol {
     box-shadow: var(--shadow-md);
     position: relative;
     overflow: hidden;
-    transition: all var(--duration-slow) var(--ease-out);
+    transition:
+        transform var(--duration-slow) var(--ease-out),
+        border-color var(--duration-slow) var(--ease-out),
+        box-shadow var(--duration-slow) var(--ease-out);
+
+    body.is-low-end &,
+    body.no-backdrop-filter & {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
 
     &::after {
         content: '';
@@ -295,11 +317,19 @@ ol {
     border: 1px solid var(--surface-border);
     border-radius: var(--radius-md);
     overflow: hidden;
+    // `transition: all` faz o navegador observar toda propriedade animavel do
+    // elemento a cada recalculo de estilo. Listar as tres que realmente mudam
+    // corta esse trabalho em elementos que existem as dezenas na pagina.
+    transition:
+        transform var(--duration-normal) var(--ease-out),
+        border-color var(--duration-normal) var(--ease-out),
+        box-shadow var(--duration-normal) var(--ease-out);
+
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    transition: all var(--duration-normal) var(--ease-out);
 
-    body.is-low-end & {
+    body.is-low-end &,
+    body.no-backdrop-filter & {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
     }
@@ -309,6 +339,12 @@ ol {
     background: var(--surface-strong);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+
+    body.is-low-end &,
+    body.no-backdrop-filter & {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
 }
 
 // Pílulas/badges pequenas reutilizadas em tech stack e periodos.
@@ -431,7 +467,13 @@ ol {
     margin-inline: auto;
 }
 
-body::before {
+// Granulado sobre a pagina inteira. E o efeito mais caro do site: um elemento
+// fixo, do tamanho da viewport, com `mix-blend-mode` — o que obriga o navegador a
+// misturar a arvore de renderizacao inteira contra ele a cada frame de scroll.
+// Em GPU integrada ou composicao por software isso sozinho derruba o site pra
+// poucos frames por segundo. So aparece onde ha folga (classe `fx-rich`, posta
+// pelo DeviceCapabilityService depois de medir o frame rate real).
+body.fx-rich::before {
     content: '';
     position: fixed;
     inset: 0;
@@ -480,11 +522,14 @@ body.reduced-motion {
         transition: none !important;
         transform: none !important;
         opacity: 1 !important;
+        will-change: auto !important;
     }
 }
 
-body.is-low-end::before {
-    display: none !important;
+// Vinheta fixa em tela cheia. Barata em relacao ao granulado, mas ainda e mais
+// uma camada de composicao do tamanho da viewport; some junto com o resto.
+body.is-low-end::after {
+    display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

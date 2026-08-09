@@ -40,6 +40,16 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
     private isBreathingFire = false;
     private staticFallbackApplied = false;
 
+    // Estado do parallax de ponteiro. `mousemove` dispara varias vezes por frame;
+    // fazer o trabalho no proprio evento significava um getBoundingClientRect
+    // (que forca layout sincrono) e dois tweens GSAP por evento. Em maquina fraca
+    // isso sozinho consumia o frame inteiro e travava a pagina. Agora o evento so
+    // anota a coordenada e o trabalho acontece uma vez por frame.
+    private pointerX = 0;
+    private pointerY = 0;
+    private pointerRafId = 0;
+    private pointerListenerBound = false;
+
     async ngAfterViewInit() {
         if (!isPlatformBrowser(this.platformId)) return;
 
@@ -103,6 +113,9 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
         this.scrollTriggerApi = [];
         if (isPlatformBrowser(this.platformId)) {
             window.removeEventListener('mousemove', this.handleMouseMove);
+            this.pointerListenerBound = false;
+            if (this.pointerRafId) cancelAnimationFrame(this.pointerRafId);
+            this.pointerRafId = 0;
         }
     }
 
@@ -246,22 +259,47 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
                 },
             });
             if (parallax.scrollTrigger) this.scrollTriggerApi.push(parallax.scrollTrigger);
-
-            window.addEventListener('mousemove', this.handleMouseMove, { passive: true });
         }, this.dragonSvg);
+
+        // Fora do `gsap.context`: o contexto e recriado a cada troca de tema e
+        // registrar aqui dentro acumulava um listener de mousemove por troca.
+        this.bindPointerParallax();
+    }
+
+    private bindPointerParallax() {
+        if (this.pointerListenerBound) return;
+        if (!this.capability.allowsPointerEffects()) return;
+        this.pointerListenerBound = true;
+        window.addEventListener('mousemove', this.handleMouseMove, { passive: true });
     }
 
     private handleMouseMove = (event: MouseEvent) => {
+        this.pointerX = event.clientX;
+        this.pointerY = event.clientY;
+        if (this.pointerRafId) return;
+        this.pointerRafId = requestAnimationFrame(this.applyPointerParallax);
+    };
+
+    private applyPointerParallax = () => {
+        this.pointerRafId = 0;
+
         const gsap = this.gsapApi;
         if (!gsap || !this.dragonSvg) return;
+        // A sondagem de frame rate pode rebaixar a maquina depois do boot; quando
+        // isso acontece o parallax sai de cena em vez de continuar cobrando caro.
+        if (!this.capability.allowsPointerEffects()) {
+            window.removeEventListener('mousemove', this.handleMouseMove);
+            this.pointerListenerBound = false;
+            return;
+        }
 
         const svg = this.dragonSvg.nativeElement;
         const wrapper = svg.querySelector('#dragon-wrapper');
         const pupil = svg.querySelector('#dragon-pupil');
         const eyeOutline = svg.querySelector('#dragon-eye-outline');
 
-        const xPos = event.clientX / window.innerWidth - 0.5;
-        const yPos = event.clientY / window.innerHeight - 0.5;
+        const xPos = this.pointerX / window.innerWidth - 0.5;
+        const yPos = this.pointerY / window.innerHeight - 0.5;
 
         gsap.to(wrapper, {
             rotationY: xPos * 12,
@@ -276,8 +314,8 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
         if (!pupil || !eyeOutline) return;
 
         const eyeRect = eyeOutline.getBoundingClientRect();
-        const dx = event.clientX - (eyeRect.left + eyeRect.width / 2);
-        const dy = event.clientY - (eyeRect.top + eyeRect.height / 2);
+        const dx = this.pointerX - (eyeRect.left + eyeRect.width / 2);
+        const dy = this.pointerY - (eyeRect.top + eyeRect.height / 2);
         const angle = Math.atan2(dy, dx);
         const distance = Math.hypot(dx, dy);
 
@@ -374,8 +412,23 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
 
         const isTouch = this.capability.isTouch();
         const isLowEnd = this.capability.isLowEnd();
-        const useCheapFire = isTouch || isLowEnd;
-        const particleCount = isLowEnd ? 15 : isTouch ? 22 : 60;
+        const useCheapFire = isTouch || isLowEnd || !this.capability.supportsBlendModes();
+        const particleCount = isLowEnd ? 12 : isTouch ? 22 : 45;
+
+        // `#magmaFire` e feTurbulence + feDisplacementMap. Aplicado por particula,
+        // o navegador reavaliava a turbulencia 60 vezes por frame — o clique no
+        // dragao congelava a aba por segundos em GPU integrada. Aplicado uma vez
+        // no grupo, o resultado visual e praticamente o mesmo por 1/N do custo.
+        if (!useCheapFire) {
+            fireContainer.setAttribute('filter', 'url(#magmaFire)');
+        }
+        const clearFire = () => {
+            fireContainer.removeAttribute('filter');
+            this.isBreathingFire = false;
+        };
+        // Rede de seguranca: as particulas tem duracoes diferentes, entao o
+        // `onComplete` da ultima criada nem sempre e o ultimo a rodar.
+        window.setTimeout(clearFire, 2500);
 
         for (let i = 0; i < particleCount; i++) {
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -384,9 +437,6 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             circle.setAttribute('cx', startX.toString());
             circle.setAttribute('cy', startY.toString());
             circle.setAttribute('fill', 'url(#fireGradient)');
-            if (!useCheapFire) {
-                circle.setAttribute('filter', 'url(#magmaFire)');
-            }
             circle.style.opacity = '0';
             fireContainer.appendChild(circle);
 
@@ -398,7 +448,7 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             gsap.timeline({
                 onComplete: () => {
                     circle.remove();
-                    if (i === particleCount - 1) this.isBreathingFire = false;
+                    if (i === particleCount - 1) clearFire();
                 },
             })
                 .to(circle, { opacity: 1, duration: 0.05, delay: i * 0.008 })

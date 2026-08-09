@@ -1,5 +1,4 @@
 import {
-    AfterViewInit,
     ChangeDetectionStrategy,
     Component,
     DestroyRef,
@@ -12,7 +11,6 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import type { gsap } from 'gsap';
 import { RevealOnScrollDirective } from '../../utils/directives/reveal-on-scroll';
 import { DeviceCapabilityService } from '../../utils/functions/device-capability';
 
@@ -31,14 +29,24 @@ interface Certificate {
     styleUrl: './certificates.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CertificatesComponent implements AfterViewInit {
+export class CertificatesComponent {
     @ViewChildren('cardRef') cardRefs!: QueryList<ElementRef<HTMLElement>>;
     @ViewChildren('glareRef') glareRefs!: QueryList<ElementRef<HTMLElement>>;
 
     private platformId = inject(PLATFORM_ID);
     private destroyRef = inject(DestroyRef);
     private capability = inject(DeviceCapabilityService);
-    private gsapApi: typeof gsap | undefined;
+
+    // Estado do tilt. O hover 3D antes criava dois tweens GSAP por `mousemove` e
+    // chamava getBoundingClientRect a cada evento — com cinco cartoes em tela e o
+    // mouse emitindo mais eventos do que frames, essa secao era a mais pesada da
+    // pagina em navegadores antigos. Agora o retangulo e medido uma vez por
+    // entrada no cartao e o transform e escrito uma vez por frame.
+    private activeIndex = -1;
+    private activeRect: DOMRect | null = null;
+    private pointerX = 0;
+    private pointerY = 0;
+    private rafId = 0;
 
     readonly certificates: readonly Certificate[] = [
         {
@@ -73,67 +81,91 @@ export class CertificatesComponent implements AfterViewInit {
         },
     ];
 
-    async ngAfterViewInit() {
-        if (!isPlatformBrowser(this.platformId)) return;
-        if (this.capability.shouldReduceEffects() || this.capability.isTouch()) return;
-
-        let destroyed = false;
+    constructor() {
         this.destroyRef.onDestroy(() => {
-            destroyed = true;
+            if (this.rafId) cancelAnimationFrame(this.rafId);
+            this.rafId = 0;
         });
+    }
 
-        try {
-            const { gsap } = await import('gsap');
-            if (destroyed) return;
-            this.gsapApi = gsap;
-        } catch {
-            // Hover 3D é opcional — sem GSAP, cards continuam funcionais
-        }
+    onMouseEnter(index: number) {
+        if (!this.tiltAllowed()) return;
+        const card = this.cardRefs.get(index)?.nativeElement;
+        if (!card) return;
+
+        const rect = card.getBoundingClientRect();
+        // Cartao sem area medida (ainda fora do layout, ou escondido) dividiria
+        // por zero no calculo do angulo e produziria `rotateX(Infinitydeg)`.
+        if (rect.width <= 0 || rect.height <= 0) return;
+
+        this.activeIndex = index;
+        this.activeRect = rect;
+        card.classList.add('is-tilting');
     }
 
     onMouseMove(e: MouseEvent, index: number) {
-        const gsap = this.gsapApi;
-        if (!gsap) return;
-
-        const card = this.cardRefs.get(index)?.nativeElement;
-        const glare = this.glareRefs.get(index)?.nativeElement;
-        if (!card || !glare) return;
-
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -10;
-        const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 10;
-
-        gsap.to(card, {
-            rotationX: rotateX,
-            rotationY: rotateY,
-            transformPerspective: 1000,
-            duration: 0.1,
-            ease: 'power1.out',
-        });
-        gsap.to(glare, {
-            x: x - rect.width * 0.5,
-            y: y - rect.height * 0.5,
-            opacity: 0.4,
-            duration: 0.1,
-        });
+        if (this.activeIndex !== index) {
+            // Sem `mouseenter` (ponteiro ja estava sobre o cartao quando a secao
+            // renderizou): mede agora e segue.
+            this.onMouseEnter(index);
+            if (this.activeIndex !== index) return;
+        }
+        this.pointerX = e.clientX;
+        this.pointerY = e.clientY;
+        if (this.rafId) return;
+        this.rafId = requestAnimationFrame(this.applyTilt);
     }
 
     onMouseLeave(index: number) {
-        const gsap = this.gsapApi;
-        if (!gsap) return;
+        if (this.activeIndex !== index) return;
+        this.activeIndex = -1;
+        this.activeRect = null;
 
         const card = this.cardRefs.get(index)?.nativeElement;
         const glare = this.glareRefs.get(index)?.nativeElement;
-        if (card)
-            gsap.to(card, {
-                rotationX: 0,
-                rotationY: 0,
-                duration: 0.5,
-                ease: 'elastic.out(1, 0.5)',
-            });
-        if (glare) gsap.to(glare, { opacity: 0, duration: 0.5 });
+        // A volta ao repouso e uma transicao CSS (ver certificates.scss): o
+        // compositor cuida dela sozinho, sem manter uma engine de animacao viva.
+        if (card) {
+            card.classList.remove('is-tilting');
+            card.style.transform = '';
+        }
+        if (glare) glare.style.opacity = '0';
+    }
+
+    private applyTilt = () => {
+        this.rafId = 0;
+
+        const index = this.activeIndex;
+        const rect = this.activeRect;
+        if (index < 0 || !rect) return;
+        if (!this.tiltAllowed()) {
+            this.onMouseLeave(index);
+            return;
+        }
+
+        const card = this.cardRefs.get(index)?.nativeElement;
+        const glare = this.glareRefs.get(index)?.nativeElement;
+        if (!card) return;
+
+        const x = this.pointerX - rect.left;
+        const y = this.pointerY - rect.top;
+        const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -10;
+        const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 10;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg)`;
+
+        if (glare) {
+            glare.style.transform = `translate3d(${(x - rect.width * 0.5).toFixed(1)}px, ${(y - rect.height * 0.5).toFixed(1)}px, 0)`;
+            glare.style.opacity = '0.4';
+        }
+    };
+
+    /**
+     * Reavaliado a cada evento em vez de so na inicializacao: a sondagem de frame
+     * rate pode rebaixar a maquina depois que a secao ja montou.
+     */
+    private tiltAllowed(): boolean {
+        return isPlatformBrowser(this.platformId) && this.capability.allowsPointerEffects();
     }
 
     openCertificate(link: string) {

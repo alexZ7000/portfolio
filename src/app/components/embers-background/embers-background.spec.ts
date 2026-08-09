@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { EmbersBackgroundComponent } from './embers-background';
 import {
     DeviceCapabilityMockOptions,
-    provideDeviceCapabilityMock,
+    makeDeviceCapabilityMock,
     provideTesting,
 } from '../../../testing/test-helpers';
 
@@ -13,38 +13,66 @@ describe('EmbersBackgroundComponent', () => {
         platform: 'browser' | 'server' = 'browser',
         capability: DeviceCapabilityMockOptions = {},
     ) {
+        const mock = makeDeviceCapabilityMock(capability);
         TestBed.configureTestingModule({
             imports: [EmbersBackgroundComponent],
             providers: [
                 ...provideTesting(),
                 { provide: PLATFORM_ID, useValue: platform },
-                provideDeviceCapabilityMock(capability),
+                mock.provider,
             ],
         });
         const fixture = TestBed.createComponent(EmbersBackgroundComponent);
         fixture.detectChanges();
-        return { fixture, component: fixture.componentInstance };
+        return { fixture, component: fixture.componentInstance, capability: mock.controls };
     }
 
     describe('browser platform', () => {
-        it('populates 25 embers on a full-capability device', () => {
+        it('populates 18 embers on a full-capability device', () => {
             const { component } = setup();
-            expect(component.embers().length).toBe(25);
+            expect(component.embers().length).toBe(18);
         });
 
-        it('caps embers at 12 on touch devices', () => {
+        it('caps embers at 10 on touch devices', () => {
             const { component } = setup('browser', { isTouch: true });
-            expect(component.embers().length).toBe(12);
+            expect(component.embers().length).toBe(10);
         });
 
-        it('caps embers at 6 on low-end devices', () => {
+        it('caps embers at 5 on low-end devices', () => {
             const { component } = setup('browser', { isLowEnd: true });
-            expect(component.embers().length).toBe(6);
+            expect(component.embers().length).toBe(5);
         });
 
         it('renders no embers when the user prefers reduced motion', () => {
             const { component } = setup('browser', { prefersReducedMotion: true });
             expect(component.embers().length).toBe(0);
+        });
+
+        // A sondagem de frame rate roda depois do primeiro paint: as brasas
+        // precisam encolher com a pagina ja montada, nao so na inicializacao.
+        it('sheds embers when the device is downgraded mid-session', () => {
+            const { fixture, component, capability } = setup();
+            expect(component.embers().length).toBe(18);
+
+            capability.setLowEnd(true);
+            fixture.detectChanges();
+
+            expect(component.embers().length).toBe(5);
+            expect((fixture.nativeElement as HTMLElement).querySelectorAll('.ember').length).toBe(
+                5,
+            );
+        });
+
+        // Cortar pelo fim da lista mantem no lugar as brasas que continuam em
+        // tela; regerar a lista faria todas saltarem de posicao.
+        it('keeps the surviving embers identical when downgrading', () => {
+            const { fixture, component, capability } = setup();
+            const before = component.embers().slice(0, 5);
+
+            capability.setLowEnd(true);
+            fixture.detectChanges();
+
+            expect(component.embers()).toEqual(before);
         });
 
         it('renders one .ember element per item in the signal', () => {

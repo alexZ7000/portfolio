@@ -99,6 +99,26 @@ body.light-theme {
     color-scheme: light;
 }
 
+/*
+ * As superficies do tema sao translucidas e contam com `backdrop-filter` pra
+ * separar o painel do fundo. Onde o filtro nao existe (ou foi desligado por
+ * custo) o resultado nao e "menos bonito": e texto sobre texto. Nesses casos as
+ * superficies viram opacas, o que preserva o contraste sem custo de composicao.
+ */
+body.no-backdrop-filter,
+body.is-low-end {
+    --bg-overlay: #0a0a0a;
+    --surface: #171717;
+    --surface-strong: #1f1f1f;
+}
+
+body.light-theme.no-backdrop-filter,
+body.light-theme.is-low-end {
+    --bg-overlay: #f4f5f7;
+    --surface: #ffffff;
+    --surface-strong: #ffffff;
+}
+
 /* Legacy aliases — kept for SCSS files not yet migrated */
 :root {
     --gray-dark-theme: #1a1a1a;

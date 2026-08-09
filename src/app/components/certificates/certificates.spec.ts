@@ -2,18 +2,42 @@ import { TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CertificatesComponent } from './certificates';
-import { provideTesting } from '../../../testing/test-helpers';
+import {
+    DeviceCapabilityMockOptions,
+    makeDeviceCapabilityMock,
+    provideTesting,
+} from '../../../testing/test-helpers';
 
 describe('CertificatesComponent', () => {
     let openSpy: ReturnType<typeof vi.spyOn>;
+    let originalRaf: typeof window.requestAnimationFrame;
+    let originalCancelRaf: typeof window.cancelAnimationFrame;
+    let rafQueue: FrameRequestCallback[];
 
     beforeEach(() => {
         openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+        rafQueue = [];
+        originalRaf = window.requestAnimationFrame;
+        originalCancelRaf = window.cancelAnimationFrame;
+        window.requestAnimationFrame = ((cb: FrameRequestCallback) => {
+            rafQueue.push(cb);
+            return rafQueue.length;
+        }) as typeof window.requestAnimationFrame;
+        window.cancelAnimationFrame = (() => {}) as typeof window.cancelAnimationFrame;
     });
 
     afterEach(() => {
         openSpy.mockRestore();
+        window.requestAnimationFrame = originalRaf;
+        window.cancelAnimationFrame = originalCancelRaf;
     });
+
+    /** O tilt e escrito no frame seguinte ao evento; os testes o avancam. */
+    function flushFrame() {
+        const queued = rafQueue;
+        rafQueue = [];
+        queued.forEach((cb) => cb(0));
+    }
 
     function setup(platform: 'browser' | 'server' = 'browser') {
         TestBed.configureTestingModule({
@@ -23,6 +47,39 @@ describe('CertificatesComponent', () => {
         const fixture = TestBed.createComponent(CertificatesComponent);
         fixture.detectChanges();
         return { fixture, component: fixture.componentInstance };
+    }
+
+    function setupTilt(capability: DeviceCapabilityMockOptions = {}) {
+        const mock = makeDeviceCapabilityMock(capability);
+        TestBed.configureTestingModule({
+            imports: [CertificatesComponent],
+            providers: [
+                ...provideTesting(),
+                { provide: PLATFORM_ID, useValue: 'browser' },
+                mock.provider,
+            ],
+        });
+        const fixture = TestBed.createComponent(CertificatesComponent);
+        fixture.detectChanges();
+        const component = fixture.componentInstance;
+
+        // jsdom nao faz layout: sem isto todo getBoundingClientRect devolve
+        // zeros, o angulo do tilt vira Infinity e nada chega ao style.
+        for (const ref of component.cardRefs) {
+            vi.spyOn(ref.nativeElement, 'getBoundingClientRect').mockReturnValue({
+                x: 0,
+                y: 0,
+                top: 0,
+                left: 0,
+                right: 300,
+                bottom: 200,
+                width: 300,
+                height: 200,
+                toJSON: () => ({}),
+            } as DOMRect);
+        }
+
+        return { fixture, component, capability: mock.controls };
     }
 
     describe('data model', () => {
@@ -88,16 +145,123 @@ describe('CertificatesComponent', () => {
     });
 
     describe('tilt handlers', () => {
-        it('onMouseMove is a no-op when GSAP has not loaded (SSR fallback)', () => {
+        it('onMouseMove is a no-op on the server', () => {
             const { component } = setup('server');
             expect(() =>
                 component.onMouseMove(new MouseEvent('mousemove', { clientX: 50, clientY: 50 }), 0),
             ).not.toThrow();
         });
 
-        it('onMouseLeave is a no-op when GSAP has not loaded (SSR fallback)', () => {
+        it('onMouseLeave is a no-op on the server', () => {
             const { component } = setup('server');
             expect(() => component.onMouseLeave(0)).not.toThrow();
+        });
+
+        // O ponto da reescrita: um `mousemove` nao pode mais medir layout nem
+        // escrever no DOM. Ele so anota a posicao; o trabalho vai pro frame.
+        it('measures the card once on enter and never again while moving', () => {
+            const { component } = setupTilt();
+            const card = component.cardRefs.get(0)!.nativeElement;
+            const measure = card.getBoundingClientRect as ReturnType<typeof vi.fn>;
+
+            component.onMouseEnter(0);
+            expect(measure).toHaveBeenCalledTimes(1);
+
+            for (let i = 0; i < 12; i++) {
+                component.onMouseMove(
+                    new MouseEvent('mousemove', { clientX: 10 + i, clientY: 10 + i }),
+                    0,
+                );
+                flushFrame();
+            }
+            expect(measure).toHaveBeenCalledTimes(1);
+        });
+
+        it('ignores a card that has no measured area yet', () => {
+            const { component } = setupTilt();
+            const card = component.cardRefs.get(0)!.nativeElement;
+            (card.getBoundingClientRect as ReturnType<typeof vi.fn>).mockReturnValue({
+                width: 0,
+                height: 0,
+                top: 0,
+                left: 0,
+                toJSON: () => ({}),
+            } as DOMRect);
+
+            component.onMouseEnter(0);
+            component.onMouseMove(new MouseEvent('mousemove', { clientX: 10, clientY: 10 }), 0);
+            flushFrame();
+
+            expect(card.style.transform).toBe('');
+        });
+
+        it('coalesces a burst of moves into one frame', () => {
+            const { component } = setupTilt();
+            component.onMouseEnter(0);
+
+            const before = rafQueue.length;
+            for (let i = 0; i < 12; i++) {
+                component.onMouseMove(new MouseEvent('mousemove', { clientX: i, clientY: i }), 0);
+            }
+            expect(rafQueue.length - before).toBe(1);
+        });
+
+        it('writes the tilt transform on the card when the frame runs', () => {
+            const { component } = setupTilt();
+            component.onMouseEnter(0);
+            component.onMouseMove(new MouseEvent('mousemove', { clientX: 10, clientY: 10 }), 0);
+            flushFrame();
+
+            const card = component.cardRefs.get(0)!.nativeElement;
+            expect(card.style.transform).toContain('rotateX(');
+            expect(card.style.transform).toContain('rotateY(');
+        });
+
+        it('clears the transform on leave so CSS can ease it back to rest', () => {
+            const { component } = setupTilt();
+            component.onMouseEnter(0);
+            component.onMouseMove(new MouseEvent('mousemove', { clientX: 10, clientY: 10 }), 0);
+            flushFrame();
+
+            component.onMouseLeave(0);
+            const card = component.cardRefs.get(0)!.nativeElement;
+            expect(card.style.transform).toBe('');
+            expect(card.classList.contains('is-tilting')).toBe(false);
+        });
+
+        it('does not tilt on touch devices', () => {
+            const { component } = setupTilt({ isTouch: true });
+            component.onMouseEnter(0);
+            component.onMouseMove(new MouseEvent('mousemove', { clientX: 10, clientY: 10 }), 0);
+            flushFrame();
+
+            expect(component.cardRefs.get(0)!.nativeElement.style.transform).toBe('');
+        });
+
+        it('does not tilt when the user prefers reduced motion', () => {
+            const { component } = setupTilt({ prefersReducedMotion: true });
+            component.onMouseEnter(0);
+            component.onMouseMove(new MouseEvent('mousemove', { clientX: 10, clientY: 10 }), 0);
+            flushFrame();
+
+            expect(component.cardRefs.get(0)!.nativeElement.style.transform).toBe('');
+        });
+
+        // A capacidade e reavaliada no evento, nao so na montagem: a sondagem de
+        // frame rate roda depois que a secao ja apareceu.
+        it('drops the tilt when the device is downgraded mid-hover', () => {
+            const { component, capability } = setupTilt();
+            component.onMouseEnter(0);
+            component.onMouseMove(new MouseEvent('mousemove', { clientX: 10, clientY: 10 }), 0);
+            flushFrame();
+            const card = component.cardRefs.get(0)!.nativeElement;
+            expect(card.style.transform).not.toBe('');
+
+            capability.setLowEnd(true);
+            component.onMouseMove(new MouseEvent('mousemove', { clientX: 30, clientY: 30 }), 0);
+            flushFrame();
+
+            expect(card.style.transform).toBe('');
         });
     });
 });

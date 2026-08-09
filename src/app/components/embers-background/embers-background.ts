@@ -3,6 +3,7 @@ import {
     Component,
     OnInit,
     PLATFORM_ID,
+    computed,
     inject,
     signal,
 } from '@angular/core';
@@ -17,6 +18,9 @@ interface Ember {
     delay: string;
     depth: 'near' | 'far';
 }
+
+/** Teto de brasas geradas; quantas entram em tela depende da maquina. */
+const EMBER_POOL_SIZE = 18;
 
 @Component({
     selector: 'app-embers-background',
@@ -52,28 +56,30 @@ interface Ember {
                 bottom: 0;
                 border-radius: 50%;
                 opacity: 0;
-                mix-blend-mode: screen;
                 animation: rise linear infinite;
                 background: radial-gradient(circle, #ffaa00 0%, #ff4500 40%, transparent 80%);
                 will-change: transform, opacity;
             }
 
             .ember.near {
-                filter: blur(0);
                 opacity: 0.8;
                 z-index: 2;
             }
             .ember.far {
-                filter: blur(4px);
                 opacity: 0.4;
                 z-index: 0;
             }
 
-            :host-context(body.is-low-end) .ember {
-                mix-blend-mode: normal;
+            /*
+             * Blend e blur por brasa custam uma camada de composicao cada. Com as
+             * brasas em elemento fixo cobrindo a viewport, essas camadas entram na
+             * conta de todo frame de scroll. So aparecem onde a maquina aguenta.
+             */
+            :host-context(body.fx-rich) .ember {
+                mix-blend-mode: screen;
             }
-            :host-context(body.is-low-end) .ember.far {
-                filter: none;
+            :host-context(body.fx-rich) .ember.far {
+                filter: blur(4px);
             }
 
             @keyframes rise {
@@ -100,28 +106,37 @@ export class EmbersBackgroundComponent implements OnInit {
     private platformId = inject(PLATFORM_ID);
     private capability = inject(DeviceCapabilityService);
 
-    embers = signal<Ember[]>([]);
+    private readonly pool = signal<Ember[]>([]);
+
+    /**
+     * Derivado da capacidade em vez de fixado na inicializacao: a sondagem de
+     * frame rate roda depois do primeiro paint, e quando ela rebaixa a maquina as
+     * brasas excedentes saem de tela sozinhas. Cortar pelo fim da lista evita que
+     * as que continuam visiveis pulem de posicao.
+     */
+    readonly embers = computed(() => {
+        if (this.capability.prefersReducedMotion()) return [];
+        const isLowEnd = this.capability.isLowEnd();
+        const count = isLowEnd ? 5 : this.capability.isTouch() ? 10 : EMBER_POOL_SIZE;
+        return this.pool().slice(0, count);
+    });
 
     ngOnInit() {
         if (!isPlatformBrowser(this.platformId)) return;
-        if (this.capability.prefersReducedMotion()) return;
 
-        const isLowEnd = this.capability.isLowEnd();
-        const isTouch = this.capability.isTouch();
-        const emberCount = isLowEnd ? 6 : isTouch ? 12 : 25;
-
-        const embersArray: Ember[] = Array.from({ length: emberCount }).map(() => {
-            const size = 2 + Math.random() * 6;
-            const isNear = Math.random() > 0.5;
-            return {
-                left: `${Math.random() * 100}%`,
-                width: `${isNear ? size : size * 0.5}px`,
-                height: `${isNear ? size : size * 0.5}px`,
-                duration: `${5 + Math.random() * 15}s`,
-                delay: `-${Math.random() * 20}s`,
-                depth: isNear ? 'near' : 'far',
-            };
-        });
-        this.embers.set(embersArray);
+        this.pool.set(
+            Array.from({ length: EMBER_POOL_SIZE }).map(() => {
+                const size = 2 + Math.random() * 6;
+                const isNear = Math.random() > 0.5;
+                return {
+                    left: `${Math.random() * 100}%`,
+                    width: `${isNear ? size : size * 0.5}px`,
+                    height: `${isNear ? size : size * 0.5}px`,
+                    duration: `${5 + Math.random() * 15}s`,
+                    delay: `-${Math.random() * 20}s`,
+                    depth: isNear ? 'near' : 'far',
+                };
+            }),
+        );
     }
 }

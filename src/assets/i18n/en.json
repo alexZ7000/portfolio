@@ -50,8 +50,8 @@
 
     "exp6Title": "Dev Community — Programmer",
     "exp6Company": "Dev Community Org — IMT",
-    "exp6Period": "2024 — Present",
-    "exp6Description": "I contribute as a programmer to IMT's software org, building products for students, faculty and external clients. I also ran an open React class for fellow Mauá students (Aulão_React repo).",
+    "exp6Period": "2024 — 2026",
+    "exp6Description": "I contributed as a programmer to IMT's software org, building products for students, faculty and external clients. I also ran an open React class for fellow Mauá students (Aulão_React repo).",
 
     "projectsTitle": "Selected Projects",
     "projectsSubtitle": "The work that best represents my forge as a developer — from legacy backends to international frontends.",
@@ -91,6 +91,9 @@
     "project6Description": "React starter with Clean Architecture + TypeScript + SWC + Vite + TailwindCSS + Jest + Husky + Prettier. Built to bootstrap new projects quickly and document the engineering practices I rely on day-to-day.",
 
     "contactTitle": "Contact",
+    "contactEmailPrimary": "Primary email",
+    "contactEmailAlt": "Alternate email",
+    "contactWhatsappAction": "Start a chat",
     "jobTitle": "Software Developer",
     "copySuccess": "Email copied to clipboard!",
     "copyButton": "Copy email to clipboard",

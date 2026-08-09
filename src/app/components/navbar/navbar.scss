@@ -11,10 +11,11 @@
     display: flex;
     justify-content: center;
     background: transparent;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid transparent;
-    transition: all var(--duration-normal) var(--ease-out);
+    transition:
+        background-color var(--duration-normal) var(--ease-out),
+        border-color var(--duration-normal) var(--ease-out),
+        box-shadow var(--duration-normal) var(--ease-out);
 
     @media (min-width: 640px) {
         padding: var(--space-4) 0;
@@ -25,11 +26,27 @@
         background: var(--bg-overlay);
         border-bottom-color: var(--accent-muted);
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+
+        // O blur so entra quando a barra tem fundo. Antes ele ficava ligado o
+        // tempo todo, inclusive no topo com a barra transparente: um elemento
+        // fixo com backdrop-filter obriga o navegador a re-borrar a faixa de
+        // pagina atras dele a cada frame de scroll, mesmo sem nada pra borrar.
+        //
+        // `:host-context()` e nao `body.fx-rich &`: a encapsulacao emulada do
+        // Angular carimba o atributo de escopo em TODOS os compostos do seletor,
+        // inclusive no `body` — que nunca o tem, entao a regra jamais casaria.
+        :host-context(body.fx-rich) & {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
     }
 
     &__inner {
         width: 100%;
-        max-width: 80rem;
+        // 84rem e nao 80rem: a marca com o nome ao lado do dragao e mais larga que
+        // o wordmark antigo, e em 80rem ela encostava no primeiro item da nav.
+        // Continua mais estreita que o --container das secoes (90rem).
+        max-width: 84rem;
         padding: 0 var(--space-4);
         display: flex;
         align-items: center;
@@ -41,35 +58,89 @@
             gap: var(--space-4);
         }
         @media (min-width: 1024px) {
-            padding: 0 var(--space-7);
+            padding: 0 var(--space-6);
+            // Separacao minima garantida entre a marca e a nav quando os dois
+            // blocos crescem o suficiente pra consumir a folga do space-between.
+            gap: var(--space-6);
         }
     }
 
     &__logo {
         display: flex;
         align-items: center;
+        gap: var(--space-3);
+        // A marca e quem cede espaco quando a barra aperta (ver __toggle).
+        // Sem `overflow: hidden` aqui de proposito: cortaria o drop-shadow do
+        // dragao. Quem trunca e o proprio __logo-name.
+        min-width: 0;
         padding: 0;
         background: none;
         border: none;
         cursor: pointer;
 
-        img {
-            height: 2.25rem;
-            width: auto;
-            max-width: min(60vw, 20rem);
-            display: block;
-            object-fit: contain;
-
-            @media (min-width: 640px) {
-                height: 2.75rem;
+        &:hover {
+            .navbar__logo-mark {
+                transform: rotate(-6deg) scale(1.06);
             }
-            @media (min-width: 768px) {
-                height: 3.25rem;
-            }
-            @media (min-width: 1280px) {
-                height: 3.75rem;
+            .navbar__logo-name {
+                color: var(--accent);
             }
         }
+    }
+
+    &__logo-mark {
+        flex-shrink: 0;
+        display: block;
+        width: 2.1rem;
+        height: 2.1rem;
+        object-fit: contain;
+        transition: transform var(--duration-normal) var(--ease-bounce);
+
+        @media (min-width: 640px) {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+
+        // O brilho promove uma camada dentro de uma barra `position: fixed`, que
+        // o compositor repinta a cada frame de scroll. So onde ha folga.
+        :host-context(body.fx-rich) & {
+            filter: drop-shadow(0 0 10px var(--accent-glow));
+        }
+    }
+
+    &__logo-name {
+        font-family: var(--font-display);
+        font-weight: 700;
+        // Teto em 1.25rem: acima disso a marca disputa espaco com os cinco itens
+        // da nav na faixa de 1024–1440px, onde a barra e mais apertada.
+        font-size: clamp(0.9rem, 0.72rem + 0.6vw, 1.25rem);
+        // O tracking largo e o que amarra o nome ao resto do tema (os titulos de
+        // secao usam 0.2em+). O padding compensa o espaco que o tracking adiciona
+        // depois da ultima letra, senao o nome fica visualmente descentralizado.
+        letter-spacing: 0.16em;
+        padding-right: 0.16em;
+        text-transform: uppercase;
+        line-height: 1;
+        white-space: nowrap;
+        // Em telas muito estreitas o nome corta com reticencias em vez de empurrar
+        // o botao do menu pra fora da tela.
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--text);
+        transition: color var(--duration-normal) var(--ease-out);
+
+        // Faixa 1024–1279: a nav desktop ja apareceu (cinco itens mais o seletor
+        // de idioma) mas a largura ainda nao comporta os dois blocos, e o nome
+        // passava por cima do primeiro link. Abaixo de 1024 o menu vira
+        // hamburguer e o espaco volta, entao a marca completa reaparece.
+        @media (min-width: 1024px) and (max-width: 1279px) {
+            display: none;
+        }
+    }
+
+    &__logo-surname {
+        color: var(--accent);
     }
 
     &__nav {
@@ -80,6 +151,11 @@
         &--desktop {
             display: none;
 
+            // A marca cresceu ao ganhar o nome ao lado do dragao. Sem isto o
+            // flexbox espremia a nav pra caber tudo e rotulos de duas palavras
+            // ("Sobre Mim") quebravam em duas linhas dentro da barra.
+            flex-shrink: 0;
+
             @media (min-width: 1024px) {
                 display: flex;
             }
@@ -89,17 +165,25 @@
     // list-style/margin/padding ja vem do reset global de ul.
     &__links {
         display: flex;
-        gap: var(--space-6);
+        gap: var(--space-5);
+
+        @media (min-width: 1280px) {
+            gap: var(--space-6);
+        }
 
         button {
             padding: var(--space-2) var(--space-3);
             font: 700 var(--text-xs) / 1.2 var(--font-display);
             letter-spacing: 0.2em;
             text-transform: uppercase;
+            white-space: nowrap;
             color: var(--text-muted);
             background: transparent;
             border: none;
-            transition: all var(--duration-fast);
+            transition:
+                color var(--duration-fast),
+                text-shadow var(--duration-fast),
+                transform var(--duration-fast);
 
             &:hover {
                 color: var(--accent);
@@ -125,6 +209,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        // Botao de tamanho fixo nao deve encolher: sem isto o flexbox pode tirar
+        // largura dele pra caber a marca, que cresceu ao ganhar o nome ao lado
+        // do dragao.
+        flex: 0 0 auto;
         width: 2.75rem;
         height: 2.75rem;
         border-radius: var(--radius-sm);
@@ -150,9 +238,12 @@
         width: 100%;
         min-height: calc(100vh - 100%);
         background: var(--bg-overlay);
-        backdrop-filter: blur(24px);
-        -webkit-backdrop-filter: blur(24px);
         display: flex;
+
+        :host-context(body.fx-rich) & {
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
         flex-direction: column;
         align-items: center;
         justify-content: center;

@@ -1,32 +1,33 @@
 <header class="navbar" [class.is-scrolled]="isScrolled()" [class.is-menu-open]="isMobileMenuOpen()">
     <div class="navbar__inner">
-        <button class="navbar__logo" type="button" (click)="scrollTo('home')" aria-label="Home">
+        <!--
+            A marca agora e o dragao em SVG (branco no tema escuro, preto no
+            claro) com o nome ao lado em Cinzel, a mesma display font dos titulos
+            das secoes. Antes era um PNG de 1200px com o nome ja rasterizado
+            dentro: pesava mais, borrava em tela de alta densidade e nao
+            acompanhava o tema. O nome acessivel vem do aria-label do botao,
+            entao a imagem e o texto entram como decorativos.
+        -->
+        <button
+            class="navbar__logo"
+            type="button"
+            (click)="scrollTo('home')"
+            aria-label="Alessandro Lima — Home"
+        >
             @let isDark = themeService.isDarkTheme();
-            <picture>
-                <source
-                    type="image/webp"
-                    [srcset]="
-                        isDark
-                            ? 'assets/logoWhite-600.webp 600w, assets/logoWhite.webp 1200w'
-                            : 'assets/logoBlack-600.webp 600w, assets/logoBlack.webp 1200w'
-                    "
-                    sizes="(max-width: 640px) 320px, (max-width: 1279px) 480px, 600px"
-                />
-                <img
-                    [src]="isDark ? 'assets/logoWhite.png' : 'assets/logoBlack.png'"
-                    [srcset]="
-                        isDark
-                            ? 'assets/logoWhite-600.png 600w, assets/logoWhite.png 1200w'
-                            : 'assets/logoBlack-600.png 600w, assets/logoBlack.png 1200w'
-                    "
-                    sizes="(max-width: 640px) 320px, (max-width: 1279px) 480px, 600px"
-                    alt="Alessandro Lima"
-                    width="600"
-                    height="58"
-                    decoding="async"
-                    fetchpriority="high"
-                />
-            </picture>
+            <img
+                class="navbar__logo-mark"
+                [src]="isDark ? 'dragonWhite.svg' : 'dragonBlack.svg'"
+                alt=""
+                aria-hidden="true"
+                width="48"
+                height="48"
+                decoding="async"
+                fetchpriority="high"
+            />
+            <span class="navbar__logo-name" aria-hidden="true">
+                Alessandro <span class="navbar__logo-surname">Lima</span>
+            </span>
         </button>
 
         <nav class="navbar__nav navbar__nav--desktop" aria-label="Primary">

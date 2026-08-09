@@ -182,19 +182,55 @@ export interface DeviceCapabilityMockOptions {
     prefersReducedMotion?: boolean;
     isLowEnd?: boolean;
     isTouch?: boolean;
+    supportsBackdropFilter?: boolean;
+    supportsBlendModes?: boolean;
 }
 
-export function provideDeviceCapabilityMock(opts: DeviceCapabilityMockOptions = {}): Provider {
+/**
+ * Os signals ficam expostos em `controls` pra que um teste possa rebaixar a
+ * maquina no meio do caminho — que e o cenario que a sondagem de frame rate cria
+ * em producao e que os componentes precisam tolerar.
+ */
+export interface DeviceCapabilityMock {
+    provider: Provider;
+    controls: {
+        setLowEnd: (value: boolean) => void;
+        setReducedMotion: (value: boolean) => void;
+    };
+}
+
+export function makeDeviceCapabilityMock(
+    opts: DeviceCapabilityMockOptions = {},
+): DeviceCapabilityMock {
     const reduced = signal(opts.prefersReducedMotion ?? false);
     const lowEnd = signal(opts.isLowEnd ?? false);
     const touch = signal(opts.isTouch ?? false);
+    const backdrop = signal(opts.supportsBackdropFilter ?? true);
+    const blend = signal(opts.supportsBlendModes ?? true);
+
+    const shouldReduceEffects = () => reduced() || lowEnd();
+
     return {
-        provide: DeviceCapabilityService,
-        useValue: {
-            prefersReducedMotion: reduced.asReadonly(),
-            isLowEnd: lowEnd.asReadonly(),
-            isTouch: touch.asReadonly(),
-            shouldReduceEffects: () => reduced() || lowEnd(),
+        provider: {
+            provide: DeviceCapabilityService,
+            useValue: {
+                prefersReducedMotion: reduced.asReadonly(),
+                isLowEnd: lowEnd.asReadonly(),
+                isTouch: touch.asReadonly(),
+                supportsBackdropFilter: backdrop.asReadonly(),
+                supportsBlendModes: blend.asReadonly(),
+                shouldReduceEffects,
+                allowsPointerEffects: () => !shouldReduceEffects() && !touch(),
+                markLowEnd: () => lowEnd.set(true),
+            },
+        },
+        controls: {
+            setLowEnd: (value: boolean) => lowEnd.set(value),
+            setReducedMotion: (value: boolean) => reduced.set(value),
         },
     };
+}
+
+export function provideDeviceCapabilityMock(opts: DeviceCapabilityMockOptions = {}): Provider {
+    return makeDeviceCapabilityMock(opts).provider;
 }

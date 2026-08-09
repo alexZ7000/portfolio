@@ -29,7 +29,10 @@
     place-items: center;
     background: var(--bg, #030303);
 
-    body.light-theme & {
+    // `:host-context()` e nao `body.light-theme &`: a encapsulacao emulada do
+    // Angular carimba o atributo de escopo em todos os compostos do seletor,
+    // inclusive no `body`, que nunca o tem — a regra antiga nunca chegou a valer.
+    :host-context(body.light-theme) & {
         background: #f5f5f5;
     }
 }
@@ -44,7 +47,8 @@
         overflow: visible;
     }
 
-    ::ng-deep svg path {
-        will-change: stroke-dashoffset, fill;
-    }
+    // Nao ha `will-change` nos paths de proposito: `stroke-dashoffset` e `fill`
+    // nao sao propriedades de composicao, entao a dica nao acelera nada — so
+    // promove umas trinta camadas de uma vez no primeiro frame da pagina, que e
+    // justamente o momento em que a maquina esta mais ocupada.
 }

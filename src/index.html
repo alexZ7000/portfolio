@@ -49,13 +49,16 @@
             type="font/woff2"
             crossorigin
         />
+        <!--
+            O dragao serve a logo da navbar, o favicon e o preloader — os tres
+            apontam pro mesmo arquivo, entao uma requisicao atende todos.
+        -->
         <link
             rel="preload"
             as="image"
-            type="image/webp"
+            type="image/svg+xml"
             fetchpriority="high"
-            imagesrcset="assets/logoWhite-600.webp 600w, assets/logoWhite.webp 1200w"
-            imagesizes="(max-width: 640px) 320px, (max-width: 1279px) 480px, 600px"
+            href="dragonWhite.svg"
         />
         <link rel="preload" href="assets/i18n/pt.json" as="fetch" type="application/json" />
 

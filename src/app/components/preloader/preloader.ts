@@ -58,10 +58,13 @@ export class PreloaderComponent implements AfterViewInit {
             return;
         }
 
+        // 3500ms cobriam o pior caso, mas era tempo demais olhando pra uma tela
+        // coberta quando algo dava errado — que e exatamente o que acontece em
+        // maquina lenta, e o que o usuario le como "o site travou".
         const safetyTimer = window.setTimeout(() => {
             if (!this.done()) this.done.set(true);
             setTimeout(() => this.hidden.set(true), 400);
-        }, 3500);
+        }, 2200);
         this.destroyRef.onDestroy(() => window.clearTimeout(safetyTimer));
 
         try {
@@ -127,7 +130,11 @@ export class PreloaderComponent implements AfterViewInit {
             strokeWidth: 35,
             fill: 'transparent',
             opacity: 1,
-            filter: `drop-shadow(0 0 12px ${color})`,
+            // Um `drop-shadow` por path significa ~30 filtros SVG reavaliados a
+            // cada frame enquanto o traco e desenhado — e isso na primeira tela da
+            // pagina, com a aba ainda coberta pelo preloader. Onde a maquina ja
+            // deu sinal de ser fraca, o dragao aparece sem o brilho.
+            filter: this.capability.isLowEnd() ? 'none' : `drop-shadow(0 0 12px ${color})`,
         });
 
         const tl = gsap

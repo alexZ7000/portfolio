@@ -114,31 +114,51 @@ describe('Navbar', () => {
         });
     });
 
-    describe('theme switching', () => {
-        it('reads from ThemeService for the logo source (png fallback + webp source)', () => {
+    describe('brand', () => {
+        it('pairs the dragon mark with the name in the display font', () => {
             const { fixture } = setup();
-            const theme = TestBed.inject(ThemeService);
             const root = fixture.nativeElement as HTMLElement;
 
-            const logo = root.querySelector('img') as HTMLImageElement;
-            const webpSource = root.querySelector('source[type="image/webp"]') as HTMLSourceElement;
+            const mark = root.querySelector<HTMLImageElement>('.navbar__logo-mark');
+            const name = root.querySelector<HTMLElement>('.navbar__logo-name');
 
-            const expectedPng = theme.isDarkTheme()
-                ? 'assets/logoWhite.png'
-                : 'assets/logoBlack.png';
-            const expectedWebpSrcset = theme.isDarkTheme()
-                ? 'assets/logoWhite-600.webp 600w, assets/logoWhite.webp 1200w'
-                : 'assets/logoBlack-600.webp 600w, assets/logoBlack.webp 1200w';
-            const expectedPngSrcset = theme.isDarkTheme()
-                ? 'assets/logoWhite-600.png 600w, assets/logoWhite.png 1200w'
-                : 'assets/logoBlack-600.png 600w, assets/logoBlack.png 1200w';
+            expect(mark).toBeTruthy();
+            expect(name?.textContent?.replace(/\s+/g, ' ').trim()).toBe('Alessandro Lima');
+            expect(name?.querySelector('.navbar__logo-surname')?.textContent?.trim()).toBe('Lima');
+        });
 
-            expect(logo.getAttribute('src')).toBe(expectedPng);
-            expect(logo.getAttribute('srcset')).toBe(expectedPngSrcset);
-            expect(webpSource.getAttribute('srcset')).toBe(expectedWebpSrcset);
-            expect(logo.getAttribute('fetchpriority')).toBe('high');
-            expect(logo.getAttribute('width')).toBe('600');
-            expect(logo.getAttribute('height')).toBe('58');
+        it('swaps the dragon between the white and black SVG with the theme', () => {
+            const { fixture } = setup();
+            const theme = TestBed.inject(ThemeService);
+            const mark = (fixture.nativeElement as HTMLElement).querySelector<HTMLImageElement>(
+                '.navbar__logo-mark',
+            );
+
+            const expected = theme.isDarkTheme() ? 'dragonWhite.svg' : 'dragonBlack.svg';
+            expect(mark?.getAttribute('src')).toBe(expected);
+            expect(mark?.getAttribute('fetchpriority')).toBe('high');
+        });
+
+        // O nome vive no aria-label do botao; a imagem e o texto sao decorativos,
+        // senao o leitor de tela anunciaria "Alessandro Lima" duas vezes.
+        it('exposes the brand once to assistive tech', () => {
+            const { fixture } = setup();
+            const root = fixture.nativeElement as HTMLElement;
+            const button = root.querySelector<HTMLButtonElement>('.navbar__logo');
+            const mark = root.querySelector<HTMLImageElement>('.navbar__logo-mark');
+
+            expect(button?.getAttribute('aria-label')).toContain('Alessandro Lima');
+            expect(mark?.getAttribute('alt')).toBe('');
+            expect(mark?.getAttribute('aria-hidden')).toBe('true');
+            expect(root.querySelector('.navbar__logo-name')?.getAttribute('aria-hidden')).toBe(
+                'true',
+            );
+        });
+
+        it('no longer ships the rasterised wordmark', () => {
+            const { fixture } = setup();
+            expect((fixture.nativeElement as HTMLElement).innerHTML).not.toContain('logoWhite');
+            expect((fixture.nativeElement as HTMLElement).innerHTML).not.toContain('logoBlack');
         });
     });
 });

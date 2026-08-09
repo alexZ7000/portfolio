@@ -43,7 +43,17 @@
         rgba(50, 0, 0, 0.1) 50%,
         transparent 70%
     );
-    mix-blend-mode: hard-light;
     transition: opacity 0.05s linear;
     overflow: hidden;
+
+    // Elemento fixo do tamanho da viewport: com blend mode ele vira uma camada de
+    // composicao permanente, mesmo parado em opacity 0 esperando o clique no
+    // dragao. Onde ha folga o blend volta e o clarao fica igual ao original.
+    //
+    // `:host-context()` e nao `body.fx-rich &`: a encapsulacao emulada carimba o
+    // atributo de escopo tambem no `body`, que nunca o tem — daquele jeito a
+    // regra nunca casaria.
+    :host-context(body.fx-rich) & {
+        mix-blend-mode: hard-light;
+    }
 }

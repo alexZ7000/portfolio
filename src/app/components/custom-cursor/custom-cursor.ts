@@ -248,41 +248,59 @@ export class CustomCursorComponent implements AfterViewInit {
     private outlineX = 0;
     private outlineY = 0;
     private rafId = 0;
+    private pendingX = 0;
+    private pendingY = 0;
+    private pendingTarget: HTMLElement | null = null;
+    private lastResolvedTarget: HTMLElement | null = null;
 
     ngAfterViewInit() {
         if (!isPlatformBrowser(this.platformId)) return;
-        if (this.capability.isTouch() || this.capability.isLowEnd()) return;
-        if (this.capability.prefersReducedMotion()) return;
+        if (!this.capability.allowsPointerEffects()) return;
 
         this.enabled.set(true);
         document.body.classList.add('custom-cursor-active');
-        this.animate();
         this.destroyRef.onDestroy(() => {
             cancelAnimationFrame(this.rafId);
+            this.rafId = 0;
             document.body.classList.remove('custom-cursor-active');
         });
     }
 
+    /**
+     * O evento so guarda o estado bruto. Antes ele escrevia dois signals (uma
+     * passada de change detection cada) e rodava `closest()` sobre uma lista de
+     * dezesseis seletores — tudo isso varias vezes por frame, ja que o mouse
+     * emite eventos mais rapido do que a tela desenha.
+     */
     @HostListener('document:mousemove', ['$event'])
     onMouseMove(e: MouseEvent) {
         if (!this.enabled()) return;
-        this.mouseX.set(e.clientX);
-        this.mouseY.set(e.clientY);
-        const target = e.target as HTMLElement | null;
-        this.hoveringClickable.set(!!target?.closest(CLICKABLE_SELECTOR));
+        this.pendingX = e.clientX;
+        this.pendingY = e.clientY;
+        this.pendingTarget = e.target as HTMLElement | null;
+        this.ensureFrame();
+    }
+
+    private ensureFrame() {
+        if (this.rafId) return;
+        this.rafId = requestAnimationFrame(this.animate);
     }
 
     @HostListener('document:mousedown', ['$event'])
     onMouseDown(e?: MouseEvent) {
+        if (!this.enabled()) return;
         this.isClicked.set(true);
         const target = e?.target as HTMLElement | null | undefined;
         this.isSelectingText.set(this.isTextTarget(target ?? null));
+        this.ensureFrame();
     }
 
     @HostListener('document:mouseup')
     onMouseUp() {
+        if (!this.enabled()) return;
         this.isClicked.set(false);
         this.isSelectingText.set(false);
+        this.ensureFrame();
     }
 
     private isTextTarget(target: HTMLElement | null): boolean {
@@ -294,13 +312,42 @@ export class CustomCursorComponent implements AfterViewInit {
     }
 
     private animate = () => {
+        this.rafId = 0;
+
+        // A sondagem de frame rate pode rebaixar a maquina depois do boot. Se isso
+        // acontecer, o cursor custom se desliga em vez de manter um loop de rAF
+        // permanente numa maquina que ja nao esta dando conta.
+        if (!this.capability.allowsPointerEffects()) {
+            this.enabled.set(false);
+            document.body.classList.remove('custom-cursor-active');
+            return;
+        }
+
+        this.mouseX.set(this.pendingX);
+        this.mouseY.set(this.pendingY);
+
+        // `closest()` sobre a lista de seletores so roda quando o elemento sob o
+        // ponteiro muda — arrastar o mouse dentro do mesmo botao nao recalcula nada.
+        const target = this.pendingTarget;
+        if (target !== this.lastResolvedTarget) {
+            this.lastResolvedTarget = target;
+            this.hoveringClickable.set(!!target?.closest(CLICKABLE_SELECTOR));
+        }
+
         const speed = 0.35;
-        this.outlineX += (this.mouseX() - this.outlineX) * speed;
-        this.outlineY += (this.mouseY() - this.outlineY) * speed;
+        const dx = this.pendingX - this.outlineX;
+        const dy = this.pendingY - this.outlineY;
+        this.outlineX += dx * speed;
+        this.outlineY += dy * speed;
         const scale = this.isClicked() ? 0.85 : 1;
         this.outlineTransform.set(
             `translate3d(${this.outlineX}px, ${this.outlineY}px, 0) translate(-50%, -50%) scale(${scale})`,
         );
-        this.rafId = requestAnimationFrame(this.animate);
+
+        // O contorno persegue o ponteiro por interpolacao. Quando alcanca, o loop
+        // para: antes ele rodava a 60fps para sempre, mesmo com o mouse parado e a
+        // aba so sendo lida.
+        const settled = Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5;
+        if (!settled) this.ensureFrame();
     };
 }

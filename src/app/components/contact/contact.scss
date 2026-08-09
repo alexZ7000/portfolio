@@ -39,8 +39,14 @@
     }
 }
 
+// `color-mix()` so chegou no Chrome 111 / Safari 16.2. Onde ele nao existe a
+// declaracao inteira e invalida e o cartao perde fundo, sombra e realce — que era
+// exatamente o que quebrava esta secao em navegadores atrasados. `rgba()` sobre a
+// cor ja decomposta em canais (--contact-rgb, vinda do componente) roda em
+// qualquer engine com custom properties.
 .contact-card {
     --contact-color: var(--accent);
+    --contact-rgb: 0, 242, 161;
     display: flex;
     align-items: center;
     gap: var(--space-4);
@@ -65,7 +71,7 @@
         justify-content: center;
         font-size: var(--text-lg);
         color: var(--contact-color);
-        background: color-mix(in srgb, var(--contact-color) 8%, transparent);
+        background: rgba(var(--contact-rgb), 0.08);
         transition: all var(--duration-normal) var(--ease-bounce);
 
         @media (min-width: 640px) {
@@ -99,11 +105,7 @@
     &__hover {
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-            135deg,
-            transparent,
-            color-mix(in srgb, var(--contact-color) 12%, transparent)
-        );
+        background: linear-gradient(135deg, transparent, rgba(var(--contact-rgb), 0.12));
         opacity: 0;
         transition: opacity var(--duration-normal);
         pointer-events: none;
@@ -113,11 +115,11 @@
     &:focus-visible {
         transform: translateY(-4px);
         border-color: var(--contact-color);
-        box-shadow: 0 16px 40px color-mix(in srgb, var(--contact-color) 25%, transparent);
+        box-shadow: 0 16px 40px rgba(var(--contact-rgb), 0.25);
 
         .contact-card__icon-wrap {
             transform: scale(1.08) rotate(-4deg);
-            box-shadow: 0 0 20px color-mix(in srgb, var(--contact-color) 50%, transparent);
+            box-shadow: 0 0 20px rgba(var(--contact-rgb), 0.5);
         }
         .contact-card__value {
             color: var(--contact-color);
