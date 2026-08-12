@@ -68,7 +68,6 @@ describe('ContactComponent', () => {
         it('never renders the phone number anywhere in the section', () => {
             const { fixture } = setup();
             const markup = (fixture.nativeElement as HTMLElement).innerHTML;
-            // Nem o formato exibido, nem os digitos crus fora do href.
             expect(markup).not.toContain('95550-1739');
             const outsideHref = markup.replace(/href="[^"]*"/g, '');
             expect(outsideHref).not.toContain('955501739');
@@ -106,8 +105,6 @@ describe('ContactComponent', () => {
             }
         });
 
-        // Sem aria-label: o nome acessivel vem do conteudo do link, entao ele bate
-        // com o que esta na tela — e o telefone, que nao aparece, tambem nao e lido.
         it('derives the accessible name from the card content', () => {
             const { fixture } = setup();
             const first = (fixture.nativeElement as HTMLElement).querySelector<HTMLAnchorElement>(

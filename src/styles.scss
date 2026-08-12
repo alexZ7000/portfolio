@@ -78,21 +78,12 @@
 
 html {
     scroll-behavior: smooth;
-    // `text-rendering: optimizeLegibility` foi removido de proposito: em texto
-    // latino ele nao muda praticamente nada visualmente, mas forca o motor a
-    // carregar as tabelas de kerning/ligadura da fonte inteira e recalcular a
-    // metrica de cada bloco. Em maquinas lentas custa centenas de milissegundos
-    // no primeiro paint.
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-synthesis: none;
     tab-size: 4;
 }
 
-// Rolagem suave e uma animacao de main thread. Quando a maquina ja nao entrega
-// os frames, ela vira o oposto do que promete: o scroll fica pastoso e atrasado
-// em relacao a roda do mouse. A classe fica no <html> porque e ele o elemento
-// que rola — em <body> a propriedade nao teria efeito.
 html.is-low-end,
 html.reduced-motion {
     scroll-behavior: auto;
@@ -310,16 +301,12 @@ ol {
     }
 }
 
-// Base reutilizada por xp-card, cert-card e contact-card.
 .panel {
     position: relative;
     background: var(--surface);
     border: 1px solid var(--surface-border);
     border-radius: var(--radius-md);
     overflow: hidden;
-    // `transition: all` faz o navegador observar toda propriedade animavel do
-    // elemento a cada recalculo de estilo. Listar as tres que realmente mudam
-    // corta esse trabalho em elementos que existem as dezenas na pagina.
     transition:
         transform var(--duration-normal) var(--ease-out),
         border-color var(--duration-normal) var(--ease-out),
@@ -347,7 +334,6 @@ ol {
     }
 }
 
-// Pílulas/badges pequenas reutilizadas em tech stack e periodos.
 .pill {
     display: inline-block;
     font: 600 var(--text-xs) / 1.2 var(--font-body);
@@ -371,7 +357,6 @@ ol {
     border-radius: var(--radius-full);
 }
 
-// Padding/section wrapper usado por about, work, certs, contact.
 .section-pad {
     padding: var(--space-7) var(--space-4);
 
@@ -467,12 +452,6 @@ ol {
     margin-inline: auto;
 }
 
-// Granulado sobre a pagina inteira. E o efeito mais caro do site: um elemento
-// fixo, do tamanho da viewport, com `mix-blend-mode` — o que obriga o navegador a
-// misturar a arvore de renderizacao inteira contra ele a cada frame de scroll.
-// Em GPU integrada ou composicao por software isso sozinho derruba o site pra
-// poucos frames por segundo. So aparece onde ha folga (classe `fx-rich`, posta
-// pelo DeviceCapabilityService depois de medir o frame rate real).
 body.fx-rich::before {
     content: '';
     position: fixed;
@@ -516,7 +495,6 @@ body.light-theme::after {
     will-change: auto;
 }
 
-body.is-low-end,
 body.reduced-motion {
     .reveal-ready {
         transition: none !important;
@@ -526,8 +504,10 @@ body.reduced-motion {
     }
 }
 
-// Vinheta fixa em tela cheia. Barata em relacao ao granulado, mas ainda e mais
-// uma camada de composicao do tamanho da viewport; some junto com o resto.
+body.is-low-end .hero__title {
+    animation: none;
+}
+
 body.is-low-end::after {
     display: none;
 }

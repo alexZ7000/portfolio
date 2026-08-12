@@ -36,11 +36,6 @@ describe('CustomCursorComponent', () => {
         window.cancelAnimationFrame = originalCancelRaf;
     });
 
-    /**
-     * O componente coalesce os eventos de ponteiro num unico frame: `mousemove`
-     * so anota a coordenada e o trabalho (signals, `closest()`, transform)
-     * acontece no rAF seguinte. Os testes precisam avancar esse frame.
-     */
     function flushFrame() {
         const queued = rafQueue;
         rafQueue = [];
@@ -83,9 +78,9 @@ describe('CustomCursorComponent', () => {
             expect((fixture.nativeElement as HTMLElement).querySelector('.cursor-dot')).toBeNull();
         });
 
-        it('stays disabled on low-end devices', () => {
+        it('stays enabled on low-end devices', () => {
             const { component } = setup('browser', { isLowEnd: true });
-            expect(component.enabled()).toBe(false);
+            expect(component.enabled()).toBe(true);
         });
 
         it('stays disabled when the user prefers reduced motion', () => {
@@ -108,13 +103,8 @@ describe('CustomCursorComponent', () => {
             expect(component.mouseY()).toBe(240);
         });
 
-        // Este e o ponto da mudanca: o mouse emite eventos mais rapido do que a
-        // tela desenha, e cada um custava duas passadas de change detection mais
-        // um `closest()` sobre dezesseis seletores.
         it('coalesces a burst of events into a single frame at the last position', () => {
             const { component } = setup();
-            // Delta em vez de valor absoluto: o scheduler do Angular tambem usa
-            // rAF, entao a fila nao comeca necessariamente vazia.
             const before = rafQueue.length;
             for (let i = 1; i <= 10; i++) {
                 component.onMouseMove(new MouseEvent('mousemove', { clientX: i, clientY: i * 2 }));
@@ -164,8 +154,6 @@ describe('CustomCursorComponent', () => {
     });
 
     describe('frame loop lifecycle', () => {
-        // Antes o rAF se reagendava incondicionalmente: o loop rodava a 60fps pra
-        // sempre, mesmo com o mouse parado e a aba so sendo lida.
         it('stops scheduling frames once the outline catches up to the pointer', () => {
             const { component } = setup();
             component.onMouseMove(new MouseEvent('mousemove', { clientX: 300, clientY: 300 }));
@@ -188,9 +176,7 @@ describe('CustomCursorComponent', () => {
             expect(rafQueue.length).toBe(1);
         });
 
-        // A sondagem de frame rate roda depois do boot; se ela rebaixar a maquina
-        // o cursor precisa sair de cena em vez de manter o loop vivo.
-        it('disables itself when the device is downgraded mid-session', () => {
+        it('keeps running when the device is downgraded mid-session', () => {
             const mock = makeDeviceCapabilityMock();
             TestBed.configureTestingModule({
                 imports: [CustomCursorComponent],
@@ -209,8 +195,9 @@ describe('CustomCursorComponent', () => {
             component.onMouseMove(new MouseEvent('mousemove', { clientX: 5, clientY: 5 }));
             flushFrame();
 
-            expect(component.enabled()).toBe(false);
-            expect(document.body.classList.contains('custom-cursor-active')).toBe(false);
+            expect(component.enabled()).toBe(true);
+            expect(component.mouseX()).toBe(5);
+            expect(document.body.classList.contains('custom-cursor-active')).toBe(true);
         });
     });
 

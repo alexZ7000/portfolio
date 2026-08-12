@@ -5,12 +5,6 @@
         <h2 id="contact-title" class="section-title">{{ 'contactTitle' | translate }}</h2>
     </header>
 
-    <!--
-        Sem aria-label no link: o nome acessivel vem do proprio conteudo (titulo +
-        valor). Assim o texto lido bate exatamente com o que esta na tela — e o
-        numero de telefone, que nao aparece em lugar nenhum, tambem nao vaza pro
-        leitor de tela.
-    -->
     <ul class="contact__grid auto-grid" role="list">
         @for (contact of contacts; track contact.link) {
             <li>

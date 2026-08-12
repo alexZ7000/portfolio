@@ -1,13 +1,3 @@
-// Keyframes dos componentes.
-//
-// Nomes de @keyframes sao globais em CSS - o encapsulamento de view do Angular escopa
-// seletores, nunca nomes de animacao. Entao esses blocos ja se comportavam como globais
-// mesmo declarados dentro do componente; a unica diferenca era contarem para o budget de
-// CSS daquele componente. Mover para ca nao muda nada em runtime.
-//
-// Os nomes ja vinham prefixados pelo componente de origem, entao nao ha colisao.
-
-// footer
 @keyframes footer-swim {
     0% {
         transform: translate3d(0, 0, 0);
@@ -47,7 +37,6 @@
     }
 }
 
-// hero
 @keyframes hero-shine {
     0% {
         background-position: 0% 50%;
@@ -69,7 +58,6 @@
     }
 }
 
-// navbar
 @keyframes navbar-slide-down {
     from {
         opacity: 0;

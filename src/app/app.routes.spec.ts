@@ -12,8 +12,7 @@ describe('app.routes', () => {
         expect(root?.loadComponent).toBeDefined();
 
         const loaded = (await root!.loadComponent!()) as
-            | { name: string }
-            | { default: { name: string } };
+            { name: string } | { default: { name: string } };
         const ctor = 'default' in loaded ? loaded.default : loaded;
         expect(ctor.name).toMatch(/Home$/);
     });

@@ -49,8 +49,6 @@ export class StorageGateComponent {
 
     retry() {
         if (!isPlatformBrowser(this.platformId)) return;
-        // Sempre recarrega. Se o usuário habilitou cookies, o app sobe normal.
-        // Se continua bloqueado, a gate reaparece após o reload.
         this.availability.recheck();
         window.location.reload();
     }

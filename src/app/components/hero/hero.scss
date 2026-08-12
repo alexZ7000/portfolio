@@ -140,7 +140,6 @@
         }
     }
 
-    // Nao usa .eyebrow: herda a fonte e o leading do body, nao da display.
     &__scroll-hint {
         font-size: var(--text-xs);
         font-weight: 600;
@@ -169,5 +168,3 @@
         animation: scroll-pulse 2s var(--ease-in-out) infinite;
     }
 }
-
-// @keyframes hero-shine / scroll-pulse vivem em src/styles/_animations.scss.

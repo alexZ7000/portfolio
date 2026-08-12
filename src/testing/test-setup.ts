@@ -2,12 +2,6 @@ import { registerIcons } from '../app/utils/icons/icon-library';
 
 registerIcons();
 
-// Node 22+ exposes `localStorage` on `globalThis` as part of the Web Storage API, but it stays
-// inert unless the process is started with `--localstorage-file`. Vitest's jsdom environment only
-// copies a window key onto the global when that key is absent from the Node global *or* present in
-// its own allowlist (`getWindowKeys`), and `localStorage` is neither — so jsdom's perfectly good
-// implementation never reaches the tests and `localStorage` resolves to Node's inert one.
-// `sessionStorage` is unaffected because Node's in-memory version works without any flag.
 if (typeof globalThis.localStorage === 'undefined') {
     const store = new Map<string, string>();
     const localStorageStub: Storage = {
@@ -21,8 +15,6 @@ if (typeof globalThis.localStorage === 'undefined') {
         clear: () => store.clear(),
     };
 
-    // Configurable so specs can swap in a throwing stub to exercise blocked-storage paths and
-    // restore the original descriptor afterwards.
     Object.defineProperty(globalThis, 'localStorage', {
         configurable: true,
         writable: true,

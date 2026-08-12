@@ -32,7 +32,6 @@ describe('CertificatesComponent', () => {
         window.cancelAnimationFrame = originalCancelRaf;
     });
 
-    /** O tilt e escrito no frame seguinte ao evento; os testes o avancam. */
     function flushFrame() {
         const queued = rafQueue;
         rafQueue = [];
@@ -63,8 +62,6 @@ describe('CertificatesComponent', () => {
         fixture.detectChanges();
         const component = fixture.componentInstance;
 
-        // jsdom nao faz layout: sem isto todo getBoundingClientRect devolve
-        // zeros, o angulo do tilt vira Infinity e nada chega ao style.
         for (const ref of component.cardRefs) {
             vi.spyOn(ref.nativeElement, 'getBoundingClientRect').mockReturnValue({
                 x: 0,
@@ -157,8 +154,6 @@ describe('CertificatesComponent', () => {
             expect(() => component.onMouseLeave(0)).not.toThrow();
         });
 
-        // O ponto da reescrita: um `mousemove` nao pode mais medir layout nem
-        // escrever no DOM. Ele so anota a posicao; o trabalho vai pro frame.
         it('measures the card once on enter and never again while moving', () => {
             const { component } = setupTilt();
             const card = component.cardRefs.get(0)!.nativeElement;
@@ -247,9 +242,7 @@ describe('CertificatesComponent', () => {
             expect(component.cardRefs.get(0)!.nativeElement.style.transform).toBe('');
         });
 
-        // A capacidade e reavaliada no evento, nao so na montagem: a sondagem de
-        // frame rate roda depois que a secao ja apareceu.
-        it('drops the tilt when the device is downgraded mid-hover', () => {
+        it('keeps tilting when the device is downgraded to low-end mid-hover', () => {
             const { component, capability } = setupTilt();
             component.onMouseEnter(0);
             component.onMouseMove(new MouseEvent('mousemove', { clientX: 10, clientY: 10 }), 0);
@@ -258,6 +251,21 @@ describe('CertificatesComponent', () => {
             expect(card.style.transform).not.toBe('');
 
             capability.setLowEnd(true);
+            component.onMouseMove(new MouseEvent('mousemove', { clientX: 30, clientY: 30 }), 0);
+            flushFrame();
+
+            expect(card.style.transform).not.toBe('');
+        });
+
+        it('drops the tilt when reduced motion is requested mid-hover', () => {
+            const { component, capability } = setupTilt();
+            component.onMouseEnter(0);
+            component.onMouseMove(new MouseEvent('mousemove', { clientX: 10, clientY: 10 }), 0);
+            flushFrame();
+            const card = component.cardRefs.get(0)!.nativeElement;
+            expect(card.style.transform).not.toBe('');
+
+            capability.setReducedMotion(true);
             component.onMouseMove(new MouseEvent('mousemove', { clientX: 30, clientY: 30 }), 0);
             flushFrame();
 

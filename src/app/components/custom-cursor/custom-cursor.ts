@@ -266,12 +266,6 @@ export class CustomCursorComponent implements AfterViewInit {
         });
     }
 
-    /**
-     * O evento so guarda o estado bruto. Antes ele escrevia dois signals (uma
-     * passada de change detection cada) e rodava `closest()` sobre uma lista de
-     * dezesseis seletores — tudo isso varias vezes por frame, ja que o mouse
-     * emite eventos mais rapido do que a tela desenha.
-     */
     @HostListener('document:mousemove', ['$event'])
     onMouseMove(e: MouseEvent) {
         if (!this.enabled()) return;
@@ -314,20 +308,9 @@ export class CustomCursorComponent implements AfterViewInit {
     private animate = () => {
         this.rafId = 0;
 
-        // A sondagem de frame rate pode rebaixar a maquina depois do boot. Se isso
-        // acontecer, o cursor custom se desliga em vez de manter um loop de rAF
-        // permanente numa maquina que ja nao esta dando conta.
-        if (!this.capability.allowsPointerEffects()) {
-            this.enabled.set(false);
-            document.body.classList.remove('custom-cursor-active');
-            return;
-        }
-
         this.mouseX.set(this.pendingX);
         this.mouseY.set(this.pendingY);
 
-        // `closest()` sobre a lista de seletores so roda quando o elemento sob o
-        // ponteiro muda — arrastar o mouse dentro do mesmo botao nao recalcula nada.
         const target = this.pendingTarget;
         if (target !== this.lastResolvedTarget) {
             this.lastResolvedTarget = target;
@@ -344,9 +327,6 @@ export class CustomCursorComponent implements AfterViewInit {
             `translate3d(${this.outlineX}px, ${this.outlineY}px, 0) translate(-50%, -50%) scale(${scale})`,
         );
 
-        // O contorno persegue o ponteiro por interpolacao. Quando alcanca, o loop
-        // para: antes ele rodava a 60fps para sempre, mesmo com o mouse parado e a
-        // aba so sendo lida.
         const settled = Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5;
         if (!settled) this.ensureFrame();
     };

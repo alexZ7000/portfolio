@@ -2,7 +2,6 @@
     width: var(--container);
     margin-inline: auto;
 
-    // .title-icon cobre cor, margem e glow; so o tamanho diverge.
     &__title-icon {
         font-size: 0.9em;
     }
@@ -32,8 +31,6 @@
     height: 100%;
     padding: var(--space-5);
     cursor: pointer;
-    // O retorno ao repouso e uma transicao CSS; durante o tilt a classe
-    // `.is-tilting` a desliga pro transform seguir o ponteiro sem atraso.
     transition:
         transform var(--duration-slow) var(--ease-out),
         border-color var(--duration-normal) var(--ease-out);
@@ -61,13 +58,6 @@
         z-index: 2;
     }
 
-    // `mix-blend-mode` forca o cartao inteiro a virar uma camada de composicao
-    // isolada. Com cinco cartoes em tela isso derrubava o frame rate em GPU
-    // integrada, entao o realce so ganha blend onde ha folga pra pagar por ele.
-    //
-    // `:host-context()` e nao `body.fx-rich &`: a encapsulacao emulada carimba o
-    // atributo de escopo em todos os compostos do seletor, e o `body` nunca o
-    // tem — a regra escrita daquele jeito nunca casaria.
     :host-context(body.fx-rich) &__glare {
         mix-blend-mode: overlay;
     }

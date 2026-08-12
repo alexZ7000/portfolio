@@ -139,8 +139,6 @@ describe('Navbar', () => {
             expect(mark?.getAttribute('fetchpriority')).toBe('high');
         });
 
-        // O nome vive no aria-label do botao; a imagem e o texto sao decorativos,
-        // senao o leitor de tela anunciaria "Alessandro Lima" duas vezes.
         it('exposes the brand once to assistive tech', () => {
             const { fixture } = setup();
             const root = fixture.nativeElement as HTMLElement;

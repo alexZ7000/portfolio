@@ -10,7 +10,6 @@ describe('DeviceCapabilityService', () => {
     let originalRaf: typeof window.requestAnimationFrame;
     let rafQueue: FrameRequestCallback[];
 
-    /** jsdom nao expoe `CSS` — o objeto inteiro precisa ser simulado. */
     function stubCssSupports(impl: (property: string, value: string) => boolean) {
         (globalThis as { CSS?: unknown }).CSS = { supports: vi.fn(impl) };
     }
@@ -21,7 +20,6 @@ describe('DeviceCapabilityService', () => {
         originalRaf = window.requestAnimationFrame;
         rafQueue = [];
 
-        // Por padrao o "navegador" de teste tem tudo; cada caso simula a falta.
         stubCssSupports(() => true);
         window.requestAnimationFrame = ((cb: FrameRequestCallback) => {
             rafQueue.push(cb);
@@ -32,8 +30,10 @@ describe('DeviceCapabilityService', () => {
         document.documentElement.className = '';
         try {
             window.localStorage?.removeItem('portfolio:low-end');
+            window.localStorage?.removeItem('portfolio:fx-verdict:v2');
+            window.sessionStorage?.removeItem('portfolio:fx-verdict:v3');
         } catch {
-            // storage indisponivel no runner — os testes que dependem dele saem cedo
+            void 0;
         }
     });
 
@@ -93,7 +93,6 @@ describe('DeviceCapabilityService', () => {
             expect(document.body.classList.contains('no-blend-modes')).toBe(true);
         });
 
-        // `scroll-behavior` so tem efeito no elemento que rola, que e o <html>.
         it('mirrors the low-end flag onto the document element', () => {
             const service = make();
             service.markLowEnd();
@@ -107,14 +106,14 @@ describe('DeviceCapabilityService', () => {
             expect(make().allowsPointerEffects()).toBe(true);
         });
 
-        it('blocks them once the device is downgraded', () => {
+        it('keeps pointer effects when the device is downgraded to low-end', () => {
             const service = make();
             service.markLowEnd();
-            expect(service.allowsPointerEffects()).toBe(false);
+            expect(service.allowsPointerEffects()).toBe(true);
             expect(service.shouldReduceEffects()).toBe(true);
         });
 
-        it('blocks them on touch devices even at full capability', () => {
+        it('blocks them on touch devices', () => {
             mm.setMatches(true);
             const service = make();
             expect(service.isTouch()).toBe(true);
@@ -123,19 +122,6 @@ describe('DeviceCapabilityService', () => {
     });
 
     describe('frame rate probe', () => {
-        /**
-         * Roda a sondagem com um relogio controlado.
-         *
-         * Dois detalhes que, se errados, fazem o teste passar sem testar nada:
-         * so `setTimeout` e falsificado — o default do vitest tambem substitui
-         * `requestAnimationFrame`, o que engoliria os frames antes deles
-         * chegarem na fila daqui; e `performance.now` precisa estar preso ANTES
-         * do timer de arranque, senao a sondagem grava o instante real como
-         * marco zero e nenhum frame simulado cai dentro da janela de medicao.
-         *
-         * `frameDurations` e chamada por indice, entao um caso pode misturar uma
-         * travada isolada com frames saudaveis.
-         */
         function runProbe(frameDurations: (frame: number) => number, maxFrames: number) {
             vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
             let clock = 0;
@@ -144,7 +130,7 @@ describe('DeviceCapabilityService', () => {
                 const service = make();
                 expect(service.isLowEnd()).toBe(false);
 
-                vi.advanceTimersByTime(2000); // deixa a sondagem arrancar
+                vi.advanceTimersByTime(8500);
                 expect(rafQueue.length).toBeGreaterThan(0);
 
                 for (let i = 0; i < maxFrames && rafQueue.length; i++) {
@@ -160,26 +146,60 @@ describe('DeviceCapabilityService', () => {
             }
         }
 
-        it('downgrades the device after a run of stalled frames', () => {
-            // 200ms por frame: bem acima do limite de engasgo.
-            expect(runProbe(() => 200, 10)).toBe(true);
+        it('downgrades a device that cannot hold the frame rate', () => {
+            expect(runProbe(() => 200, 20)).toBe(true);
         });
 
         it('leaves a machine that keeps up alone', () => {
-            // ~60fps ate a janela de medicao fechar.
             expect(runProbe(() => 16, 300)).toBe(false);
         });
 
-        // Uma travada isolada nao condena a maquina — o boot e cheio delas.
         it('tolerates an isolated slow frame', () => {
-            expect(runProbe((frame) => (frame === 0 ? 300 : 16), 300)).toBe(false);
+            expect(runProbe((frame) => (frame === 0 ? 400 : 16), 300)).toBe(false);
         });
 
-        // Sem engasgos gritantes, mas entregando ~25fps: e o caso do desktop com
-        // GPU integrada, que a deteccao antiga (so saveData/effectiveType) nunca
-        // enxergava.
-        it('downgrades a machine that is merely slow, with no single stalled frame', () => {
-            expect(runProbe(() => 40, 300)).toBe(true);
+        it('leaves a merely modest machine at full effects', () => {
+            expect(runProbe(() => 33, 300)).toBe(false);
+        });
+
+        it('aborts without a verdict when the page is hidden', () => {
+            const original = Object.getOwnPropertyDescriptor(Document.prototype, 'visibilityState');
+            Object.defineProperty(document, 'visibilityState', {
+                configurable: true,
+                get: () => 'hidden',
+            });
+            try {
+                expect(runProbe(() => 200, 20)).toBe(false);
+            } finally {
+                if (original) {
+                    Object.defineProperty(Document.prototype, 'visibilityState', original);
+                }
+                delete (document as unknown as Record<string, unknown>)['visibilityState'];
+            }
+        });
+    });
+
+    describe('stored verdict', () => {
+        it('remembers a downgrade for the rest of the session', () => {
+            const service = make();
+            service.markLowEnd();
+            expect(window.sessionStorage.getItem('portfolio:fx-verdict:v3')).toBe('1');
+        });
+
+        it('starts degraded when the session already holds a verdict', () => {
+            window.sessionStorage.setItem('portfolio:fx-verdict:v3', '1');
+            expect(make().isLowEnd()).toBe(true);
+        });
+
+        it('discards the legacy permanent flags from localStorage', () => {
+            window.localStorage.setItem('portfolio:low-end', '1');
+            window.localStorage.setItem(
+                'portfolio:fx-verdict:v2',
+                JSON.stringify({ lowEnd: true, at: Date.now() }),
+            );
+            expect(make().isLowEnd()).toBe(false);
+            expect(window.localStorage.getItem('portfolio:low-end')).toBeNull();
+            expect(window.localStorage.getItem('portfolio:fx-verdict:v2')).toBeNull();
         });
     });
 

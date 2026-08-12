@@ -27,14 +27,6 @@
         border-bottom-color: var(--accent-muted);
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
 
-        // O blur so entra quando a barra tem fundo. Antes ele ficava ligado o
-        // tempo todo, inclusive no topo com a barra transparente: um elemento
-        // fixo com backdrop-filter obriga o navegador a re-borrar a faixa de
-        // pagina atras dele a cada frame de scroll, mesmo sem nada pra borrar.
-        //
-        // `:host-context()` e nao `body.fx-rich &`: a encapsulacao emulada do
-        // Angular carimba o atributo de escopo em TODOS os compostos do seletor,
-        // inclusive no `body` — que nunca o tem, entao a regra jamais casaria.
         :host-context(body.fx-rich) & {
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -43,9 +35,6 @@
 
     &__inner {
         width: 100%;
-        // 84rem e nao 80rem: a marca com o nome ao lado do dragao e mais larga que
-        // o wordmark antigo, e em 80rem ela encostava no primeiro item da nav.
-        // Continua mais estreita que o --container das secoes (90rem).
         max-width: 84rem;
         padding: 0 var(--space-4);
         display: flex;
@@ -59,8 +48,6 @@
         }
         @media (min-width: 1024px) {
             padding: 0 var(--space-6);
-            // Separacao minima garantida entre a marca e a nav quando os dois
-            // blocos crescem o suficiente pra consumir a folga do space-between.
             gap: var(--space-6);
         }
     }
@@ -69,9 +56,6 @@
         display: flex;
         align-items: center;
         gap: var(--space-3);
-        // A marca e quem cede espaco quando a barra aperta (ver __toggle).
-        // Sem `overflow: hidden` aqui de proposito: cortaria o drop-shadow do
-        // dragao. Quem trunca e o proprio __logo-name.
         min-width: 0;
         padding: 0;
         background: none;
@@ -101,8 +85,6 @@
             height: 2.5rem;
         }
 
-        // O brilho promove uma camada dentro de uma barra `position: fixed`, que
-        // o compositor repinta a cada frame de scroll. So onde ha folga.
         :host-context(body.fx-rich) & {
             filter: drop-shadow(0 0 10px var(--accent-glow));
         }
@@ -111,29 +93,18 @@
     &__logo-name {
         font-family: var(--font-display);
         font-weight: 700;
-        // Teto em 1.25rem: acima disso a marca disputa espaco com os cinco itens
-        // da nav na faixa de 1024–1440px, onde a barra e mais apertada.
         font-size: clamp(0.9rem, 0.72rem + 0.6vw, 1.25rem);
-        // O tracking largo e o que amarra o nome ao resto do tema (os titulos de
-        // secao usam 0.2em+). O padding compensa o espaco que o tracking adiciona
-        // depois da ultima letra, senao o nome fica visualmente descentralizado.
         letter-spacing: 0.16em;
         padding-right: 0.16em;
         text-transform: uppercase;
         line-height: 1;
         white-space: nowrap;
-        // Em telas muito estreitas o nome corta com reticencias em vez de empurrar
-        // o botao do menu pra fora da tela.
         min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
         color: var(--text);
         transition: color var(--duration-normal) var(--ease-out);
 
-        // Faixa 1024–1279: a nav desktop ja apareceu (cinco itens mais o seletor
-        // de idioma) mas a largura ainda nao comporta os dois blocos, e o nome
-        // passava por cima do primeiro link. Abaixo de 1024 o menu vira
-        // hamburguer e o espaco volta, entao a marca completa reaparece.
         @media (min-width: 1024px) and (max-width: 1279px) {
             display: none;
         }
@@ -151,9 +122,6 @@
         &--desktop {
             display: none;
 
-            // A marca cresceu ao ganhar o nome ao lado do dragao. Sem isto o
-            // flexbox espremia a nav pra caber tudo e rotulos de duas palavras
-            // ("Sobre Mim") quebravam em duas linhas dentro da barra.
             flex-shrink: 0;
 
             @media (min-width: 1024px) {
@@ -162,7 +130,6 @@
         }
     }
 
-    // list-style/margin/padding ja vem do reset global de ul.
     &__links {
         display: flex;
         gap: var(--space-5);
@@ -209,9 +176,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        // Botao de tamanho fixo nao deve encolher: sem isto o flexbox pode tirar
-        // largura dele pra caber a marca, que cresceu ao ganhar o nome ao lado
-        // do dragao.
         flex: 0 0 auto;
         width: 2.75rem;
         height: 2.75rem;
@@ -260,5 +224,3 @@
         margin-top: var(--space-4);
     }
 }
-
-// @keyframes navbar-slide-down vive em src/styles/_animations.scss.

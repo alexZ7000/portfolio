@@ -19,7 +19,6 @@ interface Ember {
     depth: 'near' | 'far';
 }
 
-/** Teto de brasas geradas; quantas entram em tela depende da maquina. */
 const EMBER_POOL_SIZE = 18;
 
 @Component({
@@ -70,11 +69,6 @@ const EMBER_POOL_SIZE = 18;
                 z-index: 0;
             }
 
-            /*
-             * Blend e blur por brasa custam uma camada de composicao cada. Com as
-             * brasas em elemento fixo cobrindo a viewport, essas camadas entram na
-             * conta de todo frame de scroll. So aparecem onde a maquina aguenta.
-             */
             :host-context(body.fx-rich) .ember {
                 mix-blend-mode: screen;
             }
@@ -108,12 +102,6 @@ export class EmbersBackgroundComponent implements OnInit {
 
     private readonly pool = signal<Ember[]>([]);
 
-    /**
-     * Derivado da capacidade em vez de fixado na inicializacao: a sondagem de
-     * frame rate roda depois do primeiro paint, e quando ela rebaixa a maquina as
-     * brasas excedentes saem de tela sozinhas. Cortar pelo fim da lista evita que
-     * as que continuam visiveis pulem de posicao.
-     */
     readonly embers = computed(() => {
         if (this.capability.prefersReducedMotion()) return [];
         const isLowEnd = this.capability.isLowEnd();

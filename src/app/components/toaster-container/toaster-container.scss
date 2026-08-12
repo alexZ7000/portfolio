@@ -1,12 +1,12 @@
-.toaster-wrapper {
+﻿.toaster-wrapper {
     position: fixed;
     top: 1rem;
-    right: 1rem; // Ou center se preferir
+    right: 1rem;
     z-index: 9999;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    pointer-events: none; // Permite clicar através da área vazia
+    pointer-events: none; // Permite clicar atravÃ©s da Ã¡rea vazia
 
     .toast {
         pointer-events: auto;
@@ -22,7 +22,6 @@
         cursor: pointer;
         border-left: 4px solid;
 
-        // Temas
         &.success {
             border-color: var(--green-d);
             color: #065f46;

@@ -48,8 +48,6 @@ describe('EmbersBackgroundComponent', () => {
             expect(component.embers().length).toBe(0);
         });
 
-        // A sondagem de frame rate roda depois do primeiro paint: as brasas
-        // precisam encolher com a pagina ja montada, nao so na inicializacao.
         it('sheds embers when the device is downgraded mid-session', () => {
             const { fixture, component, capability } = setup();
             expect(component.embers().length).toBe(18);
@@ -63,8 +61,6 @@ describe('EmbersBackgroundComponent', () => {
             );
         });
 
-        // Cortar pelo fim da lista mantem no lugar as brasas que continuam em
-        // tela; regerar a lista faria todas saltarem de posicao.
         it('keeps the surviving embers identical when downgrading', () => {
             const { fixture, component, capability } = setup();
             const before = component.embers().slice(0, 5);

@@ -40,11 +40,6 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
     private isBreathingFire = false;
     private staticFallbackApplied = false;
 
-    // Estado do parallax de ponteiro. `mousemove` dispara varias vezes por frame;
-    // fazer o trabalho no proprio evento significava um getBoundingClientRect
-    // (que forca layout sincrono) e dois tweens GSAP por evento. Em maquina fraca
-    // isso sozinho consumia o frame inteiro e travava a pagina. Agora o evento so
-    // anota a coordenada e o trabalho acontece uma vez por frame.
     private pointerX = 0;
     private pointerY = 0;
     private pointerRafId = 0;
@@ -59,7 +54,7 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             this.cleanup();
         });
 
-        if (this.capability.shouldReduceEffects()) {
+        if (this.capability.prefersReducedMotion()) {
             return;
         }
 
@@ -181,7 +176,8 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             const mainColor = accent || (isDarkTheme ? '#00f2a1' : '#006400');
             const eyeFillColor = bg || (isDarkTheme ? '#0a0e14' : '#f3f4f6');
             const fillColor = mainColor;
-            const glow = `drop-shadow(0 0 10px ${mainColor})`;
+            const lite = this.capability.isLowEnd();
+            const glow = lite ? 'none' : `drop-shadow(0 0 10px ${mainColor})`;
 
             const pathLengths = new WeakMap<SVGPathElement, number>();
             let pathsDrawable = true;
@@ -233,36 +229,37 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
                     .to(eyeOutline, { fill: eyeFillColor, duration: 0.6, ease: 'power2.out' }, '<');
             }
 
-            const scrollTween = gsap.to(wrapper, {
-                rotation: -10,
-                y: -60,
-                scale: 0.92,
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: this.dragonSvg.nativeElement,
-                    start: 'top top',
-                    end: 'bottom top',
-                    scrub: 0.6,
-                    invalidateOnRefresh: true,
-                },
-            });
-            if (scrollTween.scrollTrigger) this.scrollTriggerApi.push(scrollTween.scrollTrigger);
+            if (!lite) {
+                const scrollTween = gsap.to(wrapper, {
+                    rotation: -10,
+                    y: -60,
+                    scale: 0.92,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: this.dragonSvg.nativeElement,
+                        start: 'top top',
+                        end: 'bottom top',
+                        scrub: 0.6,
+                        invalidateOnRefresh: true,
+                    },
+                });
+                if (scrollTween.scrollTrigger)
+                    this.scrollTriggerApi.push(scrollTween.scrollTrigger);
 
-            const parallax = gsap.to(wrapper, {
-                yPercent: 12,
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: this.dragonSvg.nativeElement,
-                    start: 'top 80%',
-                    end: 'bottom top',
-                    scrub: 1,
-                },
-            });
-            if (parallax.scrollTrigger) this.scrollTriggerApi.push(parallax.scrollTrigger);
+                const parallax = gsap.to(wrapper, {
+                    yPercent: 12,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: this.dragonSvg.nativeElement,
+                        start: 'top 80%',
+                        end: 'bottom top',
+                        scrub: 1,
+                    },
+                });
+                if (parallax.scrollTrigger) this.scrollTriggerApi.push(parallax.scrollTrigger);
+            }
         }, this.dragonSvg);
 
-        // Fora do `gsap.context`: o contexto e recriado a cada troca de tema e
-        // registrar aqui dentro acumulava um listener de mousemove por troca.
         this.bindPointerParallax();
     }
 
@@ -285,13 +282,6 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
 
         const gsap = this.gsapApi;
         if (!gsap || !this.dragonSvg) return;
-        // A sondagem de frame rate pode rebaixar a maquina depois do boot; quando
-        // isso acontece o parallax sai de cena em vez de continuar cobrando caro.
-        if (!this.capability.allowsPointerEffects()) {
-            window.removeEventListener('mousemove', this.handleMouseMove);
-            this.pointerListenerBound = false;
-            return;
-        }
 
         const svg = this.dragonSvg.nativeElement;
         const wrapper = svg.querySelector('#dragon-wrapper');
@@ -343,13 +333,6 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             return;
         }
 
-        // Coordenadas FIXAS do mouth-locator no espaço do viewBox 0..1024.
-        // Derivadas de <circle cx="3800" cy="7300" /> dentro de um <g> com
-        // transform="translate(1024,1024) scale(-0.1,-0.1)":
-        //   x = 1024 + 3800 * -0.1 = 644
-        //   y = 1024 + 7300 * -0.1 = 294
-        // Usar valores fixos evita getBoundingClientRect em um <circle r="0">,
-        // que retorna bbox inconsistente em navegadores mobile.
         const startX = 644;
         const startY = 294;
 
@@ -415,10 +398,6 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
         const useCheapFire = isTouch || isLowEnd || !this.capability.supportsBlendModes();
         const particleCount = isLowEnd ? 12 : isTouch ? 22 : 45;
 
-        // `#magmaFire` e feTurbulence + feDisplacementMap. Aplicado por particula,
-        // o navegador reavaliava a turbulencia 60 vezes por frame — o clique no
-        // dragao congelava a aba por segundos em GPU integrada. Aplicado uma vez
-        // no grupo, o resultado visual e praticamente o mesmo por 1/N do custo.
         if (!useCheapFire) {
             fireContainer.setAttribute('filter', 'url(#magmaFire)');
         }
@@ -426,8 +405,6 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
             fireContainer.removeAttribute('filter');
             this.isBreathingFire = false;
         };
-        // Rede de seguranca: as particulas tem duracoes diferentes, entao o
-        // `onComplete` da ultima criada nem sempre e o ultimo a rodar.
         window.setTimeout(clearFire, 2500);
 
         for (let i = 0; i < particleCount; i++) {

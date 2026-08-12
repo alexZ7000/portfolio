@@ -30,7 +30,6 @@ export class StorageAvailabilityService {
             try {
                 if (navigator.cookieEnabled === false) return false;
             } catch {
-                // getter bloqueado — trata como cookies desativados
                 return false;
             }
             return true;

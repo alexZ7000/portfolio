@@ -5,22 +5,12 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 interface ContactInfo {
     icon: IconProp;
-    /** Rotulo literal (nomes de marca nao sao traduzidos). */
     title?: string;
-    /** Rotulo traduzido — usado quando o titulo depende do idioma. */
     titleKey?: string;
-    /** Valor literal exibido no cartao. */
     value?: string;
-    /** Valor traduzido — usado quando o dado nao deve aparecer como texto. */
     valueKey?: string;
     link: string;
     color: string;
-    /**
-     * Mesma cor de `color` em canais RGB. `color-mix()` so existe a partir do
-     * Chrome 111 / Safari 16.2; em navegadores mais antigos a declaracao inteira
-     * e descartada e o cartao perde fundo e sombra. `rgba(var(--contact-rgb), a)`
-     * funciona em qualquer engine que suporte custom properties.
-     */
     rgb: string;
 }
 
@@ -69,7 +59,6 @@ export class ContactComponent {
         {
             icon: ['fab', 'whatsapp'],
             title: 'WhatsApp',
-            // O numero nunca aparece como texto: o link leva direto a conversa.
             valueKey: 'contactWhatsappAction',
             link: 'https://wa.me/5511955501739',
             color: '#25d366',

@@ -37,11 +37,6 @@ export class CertificatesComponent {
     private destroyRef = inject(DestroyRef);
     private capability = inject(DeviceCapabilityService);
 
-    // Estado do tilt. O hover 3D antes criava dois tweens GSAP por `mousemove` e
-    // chamava getBoundingClientRect a cada evento — com cinco cartoes em tela e o
-    // mouse emitindo mais eventos do que frames, essa secao era a mais pesada da
-    // pagina em navegadores antigos. Agora o retangulo e medido uma vez por
-    // entrada no cartao e o transform e escrito uma vez por frame.
     private activeIndex = -1;
     private activeRect: DOMRect | null = null;
     private pointerX = 0;
@@ -94,8 +89,6 @@ export class CertificatesComponent {
         if (!card) return;
 
         const rect = card.getBoundingClientRect();
-        // Cartao sem area medida (ainda fora do layout, ou escondido) dividiria
-        // por zero no calculo do angulo e produziria `rotateX(Infinitydeg)`.
         if (rect.width <= 0 || rect.height <= 0) return;
 
         this.activeIndex = index;
@@ -105,8 +98,6 @@ export class CertificatesComponent {
 
     onMouseMove(e: MouseEvent, index: number) {
         if (this.activeIndex !== index) {
-            // Sem `mouseenter` (ponteiro ja estava sobre o cartao quando a secao
-            // renderizou): mede agora e segue.
             this.onMouseEnter(index);
             if (this.activeIndex !== index) return;
         }
@@ -123,8 +114,6 @@ export class CertificatesComponent {
 
         const card = this.cardRefs.get(index)?.nativeElement;
         const glare = this.glareRefs.get(index)?.nativeElement;
-        // A volta ao repouso e uma transicao CSS (ver certificates.scss): o
-        // compositor cuida dela sozinho, sem manter uma engine de animacao viva.
         if (card) {
             card.classList.remove('is-tilting');
             card.style.transform = '';
@@ -160,10 +149,6 @@ export class CertificatesComponent {
         }
     };
 
-    /**
-     * Reavaliado a cada evento em vez de so na inicializacao: a sondagem de frame
-     * rate pode rebaixar a maquina depois que a secao ja montou.
-     */
     private tiltAllowed(): boolean {
         return isPlatformBrowser(this.platformId) && this.capability.allowsPointerEffects();
     }

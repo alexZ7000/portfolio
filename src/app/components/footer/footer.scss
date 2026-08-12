@@ -23,10 +23,6 @@
     background: #020202;
     border-top: 1px solid var(--surface-border);
 
-    // `:host-context()` e nao `body.light-theme &`: a encapsulacao emulada do
-    // Angular carimba o atributo de escopo em todos os compostos do seletor,
-    // inclusive no `body`, que nunca o tem. Escrita do jeito antigo, esta regra
-    // (e a de `is-low-end` logo abaixo) nunca chegou a valer.
     :host-context(body.light-theme) & {
         background: #0a0a0a;
     }
@@ -59,8 +55,6 @@
         animation: footer-swim 15s linear infinite;
         filter: drop-shadow(0 0 20px var(--accent-glow));
 
-        // Um drop-shadow numa faixa de 200% de largura em animacao infinita: das
-        // coisas mais caras da pagina numa GPU integrada.
         :host-context(body.is-low-end) & {
             filter: none;
         }
@@ -171,7 +165,6 @@
         }
     }
 
-    // Nao usa .eyebrow: aqui o texto e caixa baixa, peso normal e line-height do body.
     .copyright {
         font-family: var(--font-display);
         font-size: var(--text-xs);
@@ -190,6 +183,3 @@
         z-index: 5;
     }
 }
-
-// @keyframes footer-swim / footer-swim-back / footer-float / footer-pulse
-// vivem em src/styles/_animations.scss.

@@ -35,9 +35,7 @@ export class LanguageSwitcher {
         if (isPlatformBrowser(this.platformId)) {
             try {
                 localStorage.setItem(STORAGE_KEY, lang);
-            } catch {
-                // storage indisponível — idioma continua ativo na sessão atual
-            }
+            } catch {}
         }
     }
 
@@ -46,9 +44,7 @@ export class LanguageSwitcher {
             try {
                 const saved = localStorage.getItem(STORAGE_KEY) as Lang | null;
                 if (saved && SUPPORTED.includes(saved)) return saved;
-            } catch {
-                // cai no fallback do navegador
-            }
+            } catch {}
         }
         const browser = this.translate.getBrowserLang();
         return browser && SUPPORTED.includes(browser as Lang) ? (browser as Lang) : 'pt';

@@ -13,7 +13,6 @@
         z-index: -1;
     }
 
-    // .section-header sobe para --space-8 a partir de 768px; aqui o respiro e fixo.
     &__header {
         --section-header-gap-md: var(--space-7);
     }
@@ -39,11 +38,6 @@
     }
 }
 
-// `color-mix()` so chegou no Chrome 111 / Safari 16.2. Onde ele nao existe a
-// declaracao inteira e invalida e o cartao perde fundo, sombra e realce — que era
-// exatamente o que quebrava esta secao em navegadores atrasados. `rgba()` sobre a
-// cor ja decomposta em canais (--contact-rgb, vinda do componente) roda em
-// qualquer engine com custom properties.
 .contact-card {
     --contact-color: var(--accent);
     --contact-rgb: 0, 242, 161;

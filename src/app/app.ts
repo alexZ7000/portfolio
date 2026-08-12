@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, PLATFORM_ID, computed, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from './components/navbar/navbar';
 import { ToasterContainer } from './components/toaster-container/toaster-container';
@@ -24,5 +25,15 @@ import { StorageAvailabilityService } from './components/storage-gate/storage-av
 })
 export class AppComponent {
     private availability = inject(StorageAvailabilityService);
+    private platformId = inject(PLATFORM_ID);
     readonly storageAvailable = computed(() => this.availability.available());
+
+    constructor() {
+        if (!isPlatformBrowser(this.platformId)) return;
+        try {
+            document.documentElement.setAttribute('data-app-booted', '1');
+        } catch {
+            void 0;
+        }
+    }
 }

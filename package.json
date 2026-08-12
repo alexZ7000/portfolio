@@ -30,22 +30,6 @@
     },
     "private": true,
     "packageManager": "npm@11.4.2",
-    "//overrides": [
-        "Correcoes de seguranca em dependencias transitivas do toolchain (ambas dev-only,",
-        "nenhuma vai para o bundle do navegador). Ficam como override porque nao existe",
-        "release do Angular 21 que ja traga as versoes corrigidas: subir @angular/build ou",
-        "@angular/cli para a linha que corrige seria major, e desalinharia do @angular/core 21.",
-        "",
-        "undici: GHSA-8xcm-r25x-g524 e outras (severidade alta). Faixa vulneravel 7.0.0-7.28.0;",
-        "o @angular/build 21.2.20 trazia 7.28.0. A 7.29.0 e do mesmo major, entao o override e",
-        "so um bump de minor.",
-        "",
-        "@hono/node-server: GHSA-frvp-7c67-39w9, path traversal no serve-static em Windows.",
-        "So corrigido a partir da 2.0.5 — nao ha patch na linha 1.x. Chega aqui via",
-        "@modelcontextprotocol/sdk, que o @angular/cli usa para o servidor MCP (`ng mcp`),",
-        "recurso que este projeto nao roda. O override cruza um major, entao build e testes",
-        "precisam continuar passando depois de mexer nele."
-    ],
     "overrides": {
         "undici": "^7.29.0",
         "@hono/node-server": "^2.0.5"

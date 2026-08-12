@@ -31,7 +31,6 @@ describe('Home', () => {
         const main = (fixture.nativeElement as HTMLElement).querySelector('main#main');
         expect(main).toBeTruthy();
 
-        // Embers, hero and about-me render immediately (above the fold)
         for (const selector of ['app-embers-background', 'app-hero', 'app-about-me']) {
             expect(main?.querySelector(selector)).toBeTruthy();
         }
@@ -41,8 +40,6 @@ describe('Home', () => {
         const { fixture } = await setup();
         const main = (fixture.nativeElement as HTMLElement).querySelector('main#main');
 
-        // The deferred sections are replaced by placeholders until they enter the viewport.
-        // We assert at least one section placeholder and one footer placeholder exist.
         expect(main?.querySelector('.home__section-placeholder')).toBeTruthy();
         expect(main?.querySelector('.home__footer-placeholder')).toBeTruthy();
     });

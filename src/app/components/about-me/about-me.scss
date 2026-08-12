@@ -84,9 +84,6 @@
         height: 5rem;
     }
 
-    // `:host-context()` e nao `body.light-theme &`: a encapsulacao emulada do
-    // Angular carimba o atributo de escopo em todos os compostos do seletor,
-    // inclusive no `body`, que nunca o tem — a regra antiga nunca chegou a valer.
     :host-context(body.light-theme) & {
         background: rgba(255, 255, 255, 0.6);
         border-color: rgba(0, 0, 0, 0.1);

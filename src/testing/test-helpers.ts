@@ -186,11 +186,6 @@ export interface DeviceCapabilityMockOptions {
     supportsBlendModes?: boolean;
 }
 
-/**
- * Os signals ficam expostos em `controls` pra que um teste possa rebaixar a
- * maquina no meio do caminho — que e o cenario que a sondagem de frame rate cria
- * em producao e que os componentes precisam tolerar.
- */
 export interface DeviceCapabilityMock {
     provider: Provider;
     controls: {
@@ -220,7 +215,7 @@ export function makeDeviceCapabilityMock(
                 supportsBackdropFilter: backdrop.asReadonly(),
                 supportsBlendModes: blend.asReadonly(),
                 shouldReduceEffects,
-                allowsPointerEffects: () => !shouldReduceEffects() && !touch(),
+                allowsPointerEffects: () => !reduced() && !touch(),
                 markLowEnd: () => lowEnd.set(true),
             },
         },

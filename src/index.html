@@ -49,10 +49,6 @@
             type="font/woff2"
             crossorigin
         />
-        <!--
-            O dragao serve a logo da navbar, o favicon e o preloader — os tres
-            apontam pro mesmo arquivo, entao uma requisicao atende todos.
-        -->
         <link
             rel="preload"
             as="image"
@@ -60,6 +56,7 @@
             fetchpriority="high"
             href="dragonWhite.svg"
         />
+        <script src="boot-guard.js" defer></script>
         <link rel="preload" href="assets/i18n/pt.json" as="fetch" type="application/json" />
 
         <meta

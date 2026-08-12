@@ -32,9 +32,6 @@ describe('AppComponent', () => {
         expect(root.querySelector('app-navbar')).toBeTruthy();
         expect(root.querySelector('app-toaster-container')).toBeTruthy();
         expect(root.querySelector('router-outlet')).toBeTruthy();
-        // app-custom-cursor is behind a @defer (on idle) block so it does not
-        // render in the initial pass — it only loads when the browser is idle
-        // AND storage is available.
         expect(root.querySelector('app-custom-cursor')).toBeNull();
     });
 
