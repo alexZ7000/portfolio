@@ -34,28 +34,14 @@ export class DeviceCapabilityService {
         if (!isPlatformBrowser(this.platformId)) return;
 
         this.cleanupLegacyVerdicts();
-        this.safeInitReducedMotion();
         this.safeInitTouch();
         this.safeInitFeatureSupport();
         this.safeInitLowEnd();
 
         effect(() => this.syncBodyClasses());
 
-        if (!this._isLowEnd() && !this._prefersReducedMotion()) {
+        if (!this._isLowEnd()) {
             this.scheduleFrameRateProbe();
-        }
-    }
-
-    private safeInitReducedMotion() {
-        try {
-            if (typeof window.matchMedia !== 'function') return;
-            const q = window.matchMedia('(prefers-reduced-motion: reduce)');
-            this._prefersReducedMotion.set(!!q.matches);
-            const onChange = (e: MediaQueryListEvent) => this._prefersReducedMotion.set(e.matches);
-            if (typeof q.addEventListener === 'function') q.addEventListener('change', onChange);
-            else if (typeof q.addListener === 'function') q.addListener(onChange);
-        } catch {
-            void 0;
         }
     }
 

@@ -84,8 +84,7 @@ html {
     tab-size: 4;
 }
 
-html.is-low-end,
-html.reduced-motion {
+html.is-low-end {
     scroll-behavior: auto;
 }
 
@@ -495,24 +494,10 @@ body.light-theme::after {
     will-change: auto;
 }
 
-body.reduced-motion .reveal-ready {
-    transform: none !important;
-}
-
 body.is-low-end .hero__title {
     animation: none;
 }
 
 body.is-low-end::after {
     display: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-    }
 }
