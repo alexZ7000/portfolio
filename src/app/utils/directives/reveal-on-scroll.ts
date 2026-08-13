@@ -38,8 +38,7 @@ export class RevealOnScrollDirective implements AfterViewInit, OnDestroy {
         const el = this.host.nativeElement;
 
         if (this.capability.prefersReducedMotion()) {
-            el.classList.add('reveal-ready', 'is-visible');
-            return;
+            this.variant = 'fade';
         }
 
         if (typeof IntersectionObserver === 'undefined') {

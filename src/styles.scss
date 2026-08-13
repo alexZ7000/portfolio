@@ -495,13 +495,8 @@ body.light-theme::after {
     will-change: auto;
 }
 
-body.reduced-motion {
-    .reveal-ready {
-        transition: none !important;
-        transform: none !important;
-        opacity: 1 !important;
-        will-change: auto !important;
-    }
+body.reduced-motion .reveal-ready {
+    transform: none !important;
 }
 
 body.is-low-end .hero__title {
@@ -518,12 +513,6 @@ body.is-low-end::after {
     *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
-    }
-
-    .reveal-ready {
-        opacity: 1 !important;
-        transform: none !important;
     }
 }

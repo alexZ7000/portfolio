@@ -55,6 +55,19 @@ export class DragonAnimationComponent implements AfterViewInit, OnDestroy {
         });
 
         if (this.capability.prefersReducedMotion()) {
+            this.applyStaticFallback();
+            const wrapper = this.dragonSvg.nativeElement.querySelector(
+                '#dragon-wrapper',
+            ) as SVGGElement | null;
+            if (wrapper) {
+                wrapper.style.opacity = '0';
+                wrapper.style.transition = 'opacity 0.9s ease-out';
+                requestAnimationFrame(() =>
+                    requestAnimationFrame(() => {
+                        wrapper.style.opacity = '1';
+                    }),
+                );
+            }
             return;
         }
 
