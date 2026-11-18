@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { ScrollService } from '../../utils/functions/scroll.service';
@@ -13,7 +13,7 @@ interface SocialLink {
 @Component({
     selector: 'app-footer',
     standalone: true,
-    imports: [TranslateModule, FaIconComponent],
+    imports: [TranslatePipe, FaIconComponent],
     templateUrl: './footer.html',
     styleUrl: './footer.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,

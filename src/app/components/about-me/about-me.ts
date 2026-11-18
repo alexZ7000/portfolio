@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { RevealOnScrollDirective } from '../../utils/directives/reveal-on-scroll';
@@ -13,7 +13,7 @@ interface Skill {
 @Component({
     selector: 'app-about-me',
     standalone: true,
-    imports: [TranslateModule, RevealOnScrollDirective, FaIconComponent],
+    imports: [TranslatePipe, RevealOnScrollDirective, FaIconComponent],
     templateUrl: './about-me.html',
     styleUrl: './about-me.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,

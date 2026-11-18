@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
@@ -17,7 +17,7 @@ interface ContactInfo {
 @Component({
     selector: 'app-contact',
     standalone: true,
-    imports: [TranslateModule, FaIconComponent],
+    imports: [TranslatePipe, FaIconComponent],
     templateUrl: './contact.html',
     styleUrl: './contact.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,

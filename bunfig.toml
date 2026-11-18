@@ -1,0 +1,4 @@
+# Hardlinks share package files; hoisting supports upstream Angular libraries with undeclared imports.
+[install]
+linker = "hoisted"
+globalStore = false

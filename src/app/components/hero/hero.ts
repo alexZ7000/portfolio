@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, ViewChild, computed, inject } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { DragonAnimationComponent } from '../dragon-animation/dragon-animation';
 import { ScrollService } from '../../utils/functions/scroll.service';
@@ -8,7 +8,7 @@ import { ThemeService } from '../../utils/functions/theme';
 @Component({
     selector: 'app-hero',
     standalone: true,
-    imports: [TranslateModule, DragonAnimationComponent, FaIconComponent],
+    imports: [TranslatePipe, DragonAnimationComponent, FaIconComponent],
     templateUrl: './hero.html',
     styleUrl: './hero.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,

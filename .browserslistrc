@@ -1,7 +1,7 @@
-chrome >= 88
-edge >= 88
-firefox >= 89
-safari >= 15.4
-ios_saf >= 15.4
+last 2 Chrome versions
+last 2 Edge versions
+last 2 Firefox versions
+last 2 Safari versions
+last 2 iOS versions
 not dead
 not op_mini all

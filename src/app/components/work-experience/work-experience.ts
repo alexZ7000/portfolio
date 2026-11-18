@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { RevealOnScrollDirective } from '../../utils/directives/reveal-on-scroll';
 
@@ -15,7 +15,7 @@ interface Experience {
 @Component({
     selector: 'app-work-experience',
     standalone: true,
-    imports: [TranslateModule, RevealOnScrollDirective, FaIconComponent],
+    imports: [TranslatePipe, RevealOnScrollDirective, FaIconComponent],
     templateUrl: './work-experience.html',
     styleUrl: './work-experience.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,

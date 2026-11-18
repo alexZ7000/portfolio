@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { RevealOnScrollDirective } from '../../utils/directives/reveal-on-scroll';
 
@@ -18,7 +18,7 @@ export interface Project {
 @Component({
     selector: 'app-projects',
     standalone: true,
-    imports: [TranslateModule, RevealOnScrollDirective, FaIconComponent],
+    imports: [TranslatePipe, RevealOnScrollDirective, FaIconComponent],
     templateUrl: './projects.html',
     styleUrl: './projects.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,

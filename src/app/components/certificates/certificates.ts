@@ -9,7 +9,7 @@ import {
     inject,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { RevealOnScrollDirective } from '../../utils/directives/reveal-on-scroll';
 import { DeviceCapabilityService } from '../../utils/functions/device-capability';
@@ -24,7 +24,7 @@ interface Certificate {
 @Component({
     selector: 'app-certificates',
     standalone: true,
-    imports: [TranslateModule, RevealOnScrollDirective, FaIconComponent],
+    imports: [TranslatePipe, RevealOnScrollDirective, FaIconComponent],
     templateUrl: './certificates.html',
     styleUrl: './certificates.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,

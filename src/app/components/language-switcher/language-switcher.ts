@@ -21,7 +21,7 @@ export class LanguageSwitcher {
 
     constructor() {
         this.translate.addLangs(SUPPORTED);
-        this.translate.setDefaultLang('pt');
+        this.translate.setFallbackLang('pt');
 
         const initial = this.resolveInitialLang();
         this.currentLang.set(initial);

@@ -37,7 +37,7 @@ describe('LanguageSwitcher', () => {
         it('uses the locale persisted in localStorage when present', () => {
             const { component, translate } = setup({ saved: 'en' });
             expect(component.currentLang()).toBe('en');
-            expect(translate.currentLang).toBe('en');
+            expect(translate.currentLang()).toBe('en');
         });
 
         it('falls back to the browser locale when no value is stored', () => {

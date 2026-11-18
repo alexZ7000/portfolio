@@ -8,7 +8,7 @@ import {
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { Observable, of } from 'rxjs';
 import { vi } from 'vitest';
@@ -31,9 +31,9 @@ export function provideTesting(extra: TestingProvider[] = []): TestingProvider[]
         provideHttpClientTesting(),
         provideRouter([]),
         provideAppInitializer(() => registerIcons(inject(FaIconLibrary))),
-        ...(TranslateModule.forRoot({
+        provideTranslateService({
             loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
-        }).providers ?? []),
+        }),
         ...extra,
     ];
 }

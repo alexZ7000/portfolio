@@ -1,14 +1,13 @@
 import {
     ApplicationConfig,
-    importProvidersFrom,
     inject,
     provideAppInitializer,
 } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
-import { provideClientHydration } from '@angular/platform-browser';
+import { provideClientHydration, withNoIncrementalHydration } from '@angular/platform-browser';
 import { HttpClient, provideHttpClient, withFetch } from '@angular/common/http';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { Observable, catchError, of } from 'rxjs';
 import { registerIcons } from './utils/icons/icon-library';
@@ -35,17 +34,15 @@ export const appConfig: ApplicationConfig = {
                 scrollPositionRestoration: 'enabled',
             }),
         ),
-        provideClientHydration(),
+        provideClientHydration(withNoIncrementalHydration()),
         provideHttpClient(withFetch()),
         provideAppInitializer(() => registerIcons(inject(FaIconLibrary))),
-        importProvidersFrom(
-            TranslateModule.forRoot({
-                loader: {
-                    provide: TranslateLoader,
-                    useClass: CustomLoader,
-                    deps: [HttpClient],
-                },
-            }),
-        ),
+        provideTranslateService({
+            loader: {
+                provide: TranslateLoader,
+                useClass: CustomLoader,
+                deps: [HttpClient],
+            },
+        }),
     ],
 };

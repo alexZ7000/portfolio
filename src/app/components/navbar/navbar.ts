@@ -8,7 +8,7 @@ import {
     signal,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { ThemeService } from '../../utils/functions/theme';
 import { ScrollService } from '../../utils/functions/scroll.service';
@@ -17,7 +17,7 @@ import { LanguageSwitcher } from '../language-switcher/language-switcher';
 @Component({
     selector: 'app-navbar',
     standalone: true,
-    imports: [TranslateModule, LanguageSwitcher, FaIconComponent],
+    imports: [TranslatePipe, LanguageSwitcher, FaIconComponent],
     templateUrl: './navbar.html',
     styleUrl: './navbar.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
